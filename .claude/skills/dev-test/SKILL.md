@@ -42,6 +42,7 @@ without adding a check leaves the convention as folklore.
 | View integrity | `view_filters_reference_real_columns`, `every_group_claims_something`, `group_priorities_are_unique` | a filter on a typo'd column silently matches nothing; a group nobody lands in is dead weight |
 | Prose voice | `no_clause_welding`, `no_antithesis`, `no_blacklist_words`, `schema_prose_is_clean` | the `Plain` style, applied to everything user-visible including the schema's own blurbs |
 | Build health | `build_is_current`, `page_is_self_contained`, `embedded_json_parses`, `review_scaffolding_is_stripped` | both pages are generated from one template, and the review layer must never reach the deliverable |
+| Publishing | `site_artifact_is_minimal` | Pages deploys `build.py --site`, not the repo tree, so this check is what keeps `build.py`, `serve.py` and `.claude/` off the public site |
 
 ## What it does not cover
 

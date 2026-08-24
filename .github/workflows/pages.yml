@@ -1,0 +1,57 @@
+name: pages
+
+# Every push to main republishes the site. A pull request only validates, so a
+# malformed paper entry fails review instead of reaching the public page.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deploy at a time, and never cancel a running one. A half-finished deploy
+# would leave the site serving nothing.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # index.html is generated and not committed, so build it before the
+      # tests that read it.
+      - run: python3 build.py
+      - run: python3 .claude/skills/dev-test/tests/test_database.py
+
+  deploy:
+    needs: validate
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/configure-pages@v5
+      # _site holds the page and the raw database. Nothing else in the repo
+      # reaches the public site, which is what keeps build.py, serve.py and
+      # .claude/ off it without deleting them from the repo.
+      - run: python3 build.py --site _site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4

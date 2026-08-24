@@ -332,8 +332,28 @@ def test_review_scaffolding_is_stripped():
         assert "__PHYSAI_REVIEW" not in page, f"{name} has an unfilled placeholder"
 
 
+def test_site_artifact_is_minimal():
+    """The public site is exactly what --site writes. Everything else stays private.
+
+    Pages deploys the artifact, not the repo tree, so this is the only thing standing
+    between a new file in the repo and that file being on the internet.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        dest = Path(tmp) / "_site"
+        built = subprocess.run(
+            [sys.executable, "build.py", "--site", str(dest)],
+            cwd=ROOT, capture_output=True, text=True,
+        )
+        assert built.returncode == 0, built.stderr
+        got = sorted(str(p.relative_to(dest)) for p in dest.rglob("*") if p.is_file())
+    want = sorted(["index.html", "data/schema.json"]
+                  + [f"data/papers/{f.name}" for f in FILES])
+    assert got == want, f"site artifact holds {got}\n  expected {want}"
+
+
 def test_build_is_current():
-    """index.html is generated. If it drifts from data/, someone hand-edited it."""
+    """Both pages are generated and neither is committed, so the only thing to
+    check is that building twice from the same data gives the same bytes."""
     built = subprocess.run(
         [sys.executable, "build.py"], cwd=ROOT, capture_output=True, text=True
     )

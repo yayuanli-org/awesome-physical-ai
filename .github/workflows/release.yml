@@ -1,0 +1,33 @@
+name: release
+
+# Tag a version to publish an offline copy. The page is one self-contained
+# file, so the asset is the whole database — download it and open it, with no
+# clone, no build and no network.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build the release assets
+        run: |
+          python3 build.py --site _site
+          mv _site/index.html "awesome-physical-ai-${GITHUB_REF_NAME}.html"
+          cd _site && zip -qr "../awesome-physical-ai-data-${GITHUB_REF_NAME}.zip" data
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "awesome-physical-ai-${GITHUB_REF_NAME}.html" \
+            "awesome-physical-ai-data-${GITHUB_REF_NAME}.zip" \
+            --title "$GITHUB_REF_NAME" --generate-notes

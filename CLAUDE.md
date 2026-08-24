@@ -13,19 +13,32 @@ The data is the product; the page is a view over it.
 data/schema.json + data/papers/*.json ─┐
                                        ├─→ build.py ─┬─→ index.html   (deliverable)
 src/template.html + src/comment-*.{css,js} ─────────┴─→ review.html   (+ comment layer)
+                                                     └─→ _site/       (what CI deploys)
 ```
 
 - `python3 build.py` — write both pages
 - `python3 build.py --check` — validate and report only, write nothing
+- `python3 build.py --site _site` — assemble the deploy artifact, touching neither page
 - `python3 .claude/skills/dev-test/tests/test_database.py` — the full test surface
 - `open index.html` — the deliverable; no server, no network, no dependencies
 - `python3 serve.py` then open `review.html` — mark the draft up in the browser
 - No lint or format script. Python is stdlib-only.
 
+## Publishing — `.github/workflows/pages.yml`
+
+`main` is the site, live at https://yayuanli-org.github.io/awesome-physical-ai/.
+Push to main and CI builds, tests and deploys. Open a pull request and CI runs the
+same tests without deploying. Nothing is published by hand.
+
 ## Universal gotchas
 
-- **Never edit `index.html` or `review.html`.** Both are generated from one template.
-  Edit `data/` or `src/` and rebuild, or your change is gone on the next build.
+- **Never edit `index.html` or `review.html`.** Both are generated from one template
+  and neither is committed. Edit `data/` or `src/` and rebuild, or your change is gone
+  on the next build. A fresh clone has no page until `python3 build.py` runs.
+- **The public site is what `--site` writes, not the repo tree.** GitHub Pages deploys
+  the `_site/` artifact, so adding a file to the repo does not publish it and `.claude/`
+  stays private-by-omission. To publish something new, add it to `emit_site` in
+  `build.py`.
 - **Review scaffolding never reaches the deliverable.** The comment layer is inlined
   into `review.html` only; `index.html` gets the three `__PHYSAI_REVIEW_*` placeholders
   stripped. A test enforces it.

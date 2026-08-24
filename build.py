@@ -9,9 +9,15 @@ second, and the review scaffolding never reaches the deliverable.
 
     python3 build.py            # writes index.html and review.html
     python3 build.py --check    # validate only, write nothing
+    python3 build.py --site DIR # assemble the public artifact in DIR
+
+--site is what CI publishes. It writes the page and the raw database into a
+fresh directory and nothing else, so build.py, serve.py and .claude/ stay out
+of the deployed site. Working-tree index.html and review.html are untouched.
 """
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -96,6 +102,33 @@ def fill_review(html, on):
             .replace("__PHYSAI_REVIEW_JS__", f"<script>\n{js}\n</script>"))
 
 
+def site_dir():
+    """The DIR in `--site DIR`, or None."""
+    if "--site" not in sys.argv:
+        return None
+    i = sys.argv.index("--site") + 1
+    if i >= len(sys.argv):
+        sys.exit("! --site needs a directory")
+    return Path(sys.argv[i]).expanduser()
+
+
+def emit_site(page, dest):
+    """Assemble the deployed artifact: the page, plus the raw database beside it.
+
+    Publishing data/ is deliberate. The page is one view over the database and
+    the JSON is the database, so anyone can fetch it without scraping the HTML.
+    Everything not written here is absent from the site.
+    """
+    if dest.exists():
+        shutil.rmtree(dest)
+    (dest / "data" / "papers").mkdir(parents=True)
+    (dest / "index.html").write_text(page, encoding="utf-8")
+    sources = [DATA / "schema.json", *sorted((DATA / "papers").glob("*.json"))]
+    for src in sources:
+        shutil.copyfile(src, dest / src.relative_to(DATA.parent))
+    print(f"wrote {dest}/  ({len(page)/1024:.0f} KB page + {len(sources)} data files)")
+
+
 def main():
     schema = json.loads((DATA / "schema.json").read_text(encoding="utf-8"))
     papers = load_papers()
@@ -123,6 +156,11 @@ def main():
     if "__PHYSAI_DATA__" not in html:
         sys.exit("! template has no __PHYSAI_DATA__ placeholder")
     html = html.replace("__PHYSAI_DATA__", blob)
+
+    dest = site_dir()
+    if dest:
+        emit_site(fill_review(html, False), dest)
+        return
 
     for path, review in ((OUT, False), (REVIEW, True)):
         page = fill_review(html, review)
