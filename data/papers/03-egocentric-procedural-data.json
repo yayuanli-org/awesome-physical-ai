@@ -1,0 +1,1165 @@
+[
+ {
+  "id": "ego4d",
+  "short": "Ego4D",
+  "title": "Ego4D: Around the World in 3,000 Hours of Egocentric Video",
+  "year": 2021,
+  "date": "2021-10",
+  "venue": "CVPR 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Kristen Grauman",
+   "Andrew Westbury",
+   "Eugene Byrne",
+   "Zachary Chavis",
+   "Antonino Furnari",
+   "Jitendra Malik"
+  ],
+  "n_authors": 85,
+  "institutions": [
+   "Meta AI",
+   "UT Austin",
+   "Ego4D consortium (13 universities)"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2110.07058",
+   "page": "https://ego4d-data.org/"
+  },
+  "tldr": "3,670 hours of unscripted first-person life from 931 wearers in 9 countries, with a benchmark suite split by tense: past, present, future.",
+  "contribution": [
+   "dataset",
+   "benchmark"
+  ],
+  "openness": [
+   "data",
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent",
+   "anticipate"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "agent-body",
+   "object-state",
+   "interaction",
+   "procedure"
+  ],
+  "representation": [
+   "pixels",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "audio",
+   "gaze",
+   "imu-wearable",
+   "depth-3d",
+   "multi-view"
+  ],
+  "regime": "offline",
+  "horizon": "hours",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "A benchmark suite over first-person video: episodic memory (past), hand-object and social interaction (present), forecasting (future).",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "Unscripted daily life, minutes to hours, hundreds of scenarios."
+     },
+     {
+      "name": "side channels",
+      "modality": "imu",
+      "tensor": "audio, IMU, gaze, stereo, 3D mesh",
+      "chars": "Present on subsets, not everywhere — a practical constraint people underestimate."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "per-benchmark labels",
+      "modality": "label",
+      "tensor": "varies",
+      "chars": "Query response windows, hand-object state changes, future actions."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Dense narrations plus benchmark-specific annotations.",
+    "note": "Collection was designed around consent and de-identification, which is part of why it exists at this scale at all."
+   }
+  },
+  "method": {
+   "intuition": "First-person video is a different distribution from web video — motion blur, out-of-frame hands, no editing — and the field could not study it without a corpus of this size.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "3,670 h / 931 wearers / 74 locations",
+    "dense timestamped narrations",
+    "five benchmark tracks"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Ego4D",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "per-track: recall, mAP, edit distance, success"
+   ],
+   "baselines": [
+    "adapted third-person video models"
+   ],
+   "headline": "Baselines across five tracks, most of them far from usable, which is the point of releasing it."
+  },
+  "why": "The dataset that made the human-embodiment branch of physical AI a field rather than a handful of lab captures.",
+  "confidence": "high",
+  "tags": [
+   "egocentric",
+   "dataset",
+   "benchmark"
+  ]
+ },
+ {
+  "id": "ego-exo4d",
+  "short": "Ego-Exo4D",
+  "title": "Ego-Exo4D: Understanding Skilled Human Activity from First- and Third-Person Perspectives",
+  "year": 2023,
+  "date": "2023-11",
+  "venue": "CVPR 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Kristen Grauman",
+   "Andrew Westbury",
+   "Lorenzo Torresani",
+   "Kris Kitani",
+   "Jitendra Malik",
+   "Triantafyllos Afouras"
+  ],
+  "n_authors": 101,
+  "institutions": [
+   "Meta AI",
+   "UT Austin",
+   "CMU",
+   "Ego-Exo4D consortium"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2311.18259",
+   "page": "http://ego-exo4d-data.org/"
+  },
+  "tldr": "1,286 hours of skilled activity filmed from the doer's eyes and from the outside at the same time, with coaches narrating what the performer is doing wrong.",
+  "contribution": [
+   "dataset",
+   "benchmark"
+  ],
+  "openness": [
+   "data",
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "agent-body",
+   "procedure",
+   "interaction"
+  ],
+  "representation": [
+   "pixels",
+   "language",
+   "geometry"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "exocentric",
+   "multi-view",
+   "gaze",
+   "imu-wearable",
+   "audio",
+   "depth-3d"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "skill",
+   "everyday",
+   "clinical"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Fine-grained activity understanding, proficiency estimation, ego-exo cross-view translation, and 3D hand/body pose over skilled activity.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "paired ego + exo video",
+      "modality": "video",
+      "tensor": "(V_ego, V_exo^{1..4})",
+      "chars": "Simultaneous capture, 1–42 minute takes, 123 natural scenes."
+     },
+     {
+      "name": "language",
+      "modality": "text",
+      "tensor": "narration, expert commentary",
+      "chars": "Coaches and teachers commenting on execution quality — the rare part."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "per-benchmark labels",
+      "modality": "label",
+      "tensor": "varies",
+      "chars": "Keysteps, proficiency scores, correspondences, 3D poses."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Multiple paired language descriptions plus dense benchmark annotations.",
+    "note": "Expert commentary is what makes proficiency and feedback tasks possible. Almost no other corpus has it."
+   }
+  },
+  "method": {
+   "intuition": "Guidance systems have to see what the performer sees and judge it the way an outside expert would, so the two views must be captured together.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "740 participants / 13 cities / 1,286 h",
+    "expert commentary track",
+    "multichannel audio, gaze, IMU, point clouds, camera poses",
+    "four benchmark families"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Ego-Exo4D",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "keystep accuracy",
+    "proficiency accuracy",
+    "correspondence IoU",
+    "pose error"
+   ],
+   "baselines": [
+    "ego-only and exo-only models"
+   ],
+   "headline": "Baselines across four benchmark families, with cross-view tasks the least solved."
+  },
+  "why": "The bridge dataset between watching a person and coaching one, and the source of most skill-feedback work on this list.",
+  "confidence": "high",
+  "tags": [
+   "ego-exo",
+   "dataset",
+   "skill",
+   "proficiency"
+  ]
+ },
+ {
+  "id": "epic-kitchens-100",
+  "short": "EPIC-KITCHENS-100",
+  "title": "Rescaling Egocentric Vision: Collection, Pipeline and Challenges for EPIC-KITCHENS-100",
+  "year": 2020,
+  "date": "2020-06",
+  "venue": "IJCV 2022",
+  "venue_type": "journal",
+  "authors": [
+   "Dima Damen",
+   "Hazel Doughty",
+   "Giovanni Maria Farinella",
+   "Antonino Furnari",
+   "Evangelos Kazakos",
+   "Michael Wray"
+  ],
+  "n_authors": 11,
+  "institutions": [
+   "University of Bristol",
+   "University of Catania",
+   "University of Toronto"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2006.13256",
+   "page": "http://epic-kitchens.github.io/"
+  },
+  "tldr": "100 hours of unscripted kitchen activity with 90K action segments, and a test-of-time split that asks whether a 2018 model still works on 2020 footage.",
+  "contribution": [
+   "dataset",
+   "benchmark"
+  ],
+  "openness": [
+   "data",
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent",
+   "anticipate"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "object-state",
+   "interaction",
+   "procedure"
+  ],
+  "representation": [
+   "pixels",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "audio"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Action recognition, detection, anticipation, cross-modal retrieval, and unsupervised domain adaptation across a two-year gap.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "700 variable-length videos, 45 kitchens, unscripted, 20M frames."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "verb + noun",
+      "modality": "label",
+      "tensor": "(v, n)",
+      "chars": "Compositional action labels; the long tail is the difficulty."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Narration-driven annotation pipeline giving 54% denser actions per minute than the previous version.",
+    "note": "The re-annotation pipeline itself is the methodological contribution — dense fine-grained labels from speech."
+   }
+  },
+  "method": {
+   "intuition": "Egocentric action is compositional and long-tailed, and only unscripted collection at scale exposes that.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "100 h / 90K actions / 700 videos",
+    "narration-based dense annotation",
+    "six challenge tracks including test-of-time"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "EPIC-KITCHENS-100",
+     "role": "reannotated"
+    }
+   ],
+   "metrics": [
+    "top-1 / top-5 verb, noun, action",
+    "mAP",
+    "recall@5 anticipation",
+    "retrieval mAP"
+   ],
+   "baselines": [
+    "TSN, TRN, TSM, SlowFast"
+   ],
+   "headline": "Six tracks with defined baselines. Anticipation and domain adaptation remain the hard ones."
+  },
+  "why": "The long-running benchmark that most egocentric numbers on this list are reported against.",
+  "confidence": "high",
+  "tags": [
+   "egocentric",
+   "dataset",
+   "action"
+  ]
+ },
+ {
+  "id": "hd-epic",
+  "short": "HD-EPIC",
+  "title": "HD-EPIC: A Highly-Detailed Egocentric Video Dataset",
+  "year": 2025,
+  "date": "2025-02",
+  "venue": "CVPR 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Toby Perrett",
+   "Ahmad Darkhalil",
+   "Saptarshi Sinha",
+   "Omar Emara",
+   "Sam Pollard",
+   "Dima Damen"
+  ],
+  "n_authors": 19,
+  "institutions": [
+   "University of Bristol",
+   "University of Leeds",
+   "University of Singapore"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2502.04144",
+   "page": "http://hd-epic.github.io"
+  },
+  "tldr": "263 annotations per minute of unscripted kitchen video, all grounded in a digital twin of the room. Gemini Pro scores 38.5% on the resulting VQA.",
+  "contribution": [
+   "dataset",
+   "benchmark"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "object-state",
+   "object-change",
+   "scene",
+   "procedure",
+   "interaction"
+  ],
+  "representation": [
+   "pixels",
+   "geometry",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "gaze",
+   "audio",
+   "depth-3d"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "VQA over recipes, ingredients, nutrition, fine-grained actions, 3D perception, object motion and gaze; plus action, sound and long-term VOS.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "41 h across 9 real home kitchens, unscripted."
+     },
+     {
+      "name": "question",
+      "modality": "text",
+      "tensor": "q",
+      "chars": "26K questions spanning seven annotation families."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "answer",
+      "modality": "text",
+      "tensor": "a",
+      "chars": ""
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Manual annotation grounded in 3D via digital twinning of fixtures and object locations, primed with gaze.",
+    "note": "In-the-wild collection with lab-grade label density — the combination is what is new."
+   }
+  },
+  "method": {
+   "intuition": "Annotation density and 3D grounding, not more hours, are what expose how little current models track about a scene.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "digital twins of 413 fixtures",
+    "69 recipes / 59K actions / 51K audio events",
+    "20K object movements, 37K masks lifted to 3D",
+    "26K-question VQA benchmark"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "HD-EPIC",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "VQA accuracy",
+    "action and sound recognition",
+    "long-term VOS"
+   ],
+   "baselines": [
+    "Gemini Pro and other long-context VLMs"
+   ],
+   "headline": "Gemini Pro reaches only 38.5% on the VQA benchmark."
+  },
+  "why": "Sets the bar for what \"grounded in the physical world\" means for an annotation, and shows current VLMs are nowhere near it.",
+  "confidence": "high",
+  "tags": [
+   "egocentric",
+   "dataset",
+   "3D",
+   "VQA"
+  ]
+ },
+ {
+  "id": "assembly101",
+  "short": "Assembly101",
+  "title": "Assembly101: A Large-Scale Multi-View Video Dataset for Understanding Procedural Activities",
+  "year": 2022,
+  "date": "2022-03",
+  "venue": "CVPR 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Fadime Sener",
+   "Dibyadip Chatterjee",
+   "Daniel Shelepov",
+   "Kun He",
+   "Dipika Singhania",
+   "Angela Yao"
+  ],
+  "n_authors": 7,
+  "institutions": [
+   "Meta Reality Labs",
+   "National University of Singapore"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2203.14712",
+   "page": "https://assembly-101.github.io/"
+  },
+  "tldr": "People assembling and disassembling toy vehicles with no instructions, so the mistakes and corrections are real. It is the first dataset that proposed detecting them.",
+  "contribution": [
+   "dataset",
+   "benchmark"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent",
+   "anticipate",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure",
+   "agent-body",
+   "object-state"
+  ],
+  "representation": [
+   "pixels",
+   "geometry"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "exocentric",
+   "multi-view"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "industrial",
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Action recognition, anticipation, temporal segmentation, and the newly proposed mistake detection.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "multi-view video",
+      "modality": "video",
+      "tensor": "(V_static^{1..8}, V_ego^{1..4})",
+      "chars": "8 static plus 4 egocentric cameras, simultaneous — the first dataset with both."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action segments",
+      "modality": "label",
+      "tensor": "{(t_s, t_e, a)}",
+      "chars": "100K coarse and 1M fine-grained segments."
+     },
+     {
+      "name": "mistake flag",
+      "modality": "label",
+      "tensor": "m ∈ {0,1}",
+      "chars": "Ordering errors and corrections, occurring naturally because participants had no script."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Manual action segments plus 18M 3D hand poses.",
+    "note": "Generalization to unseen toys is an explicit split, which is rarer than it should be."
+   }
+  },
+  "method": {
+   "intuition": "If you hand people instructions you get clean data and no errors. Taking the instructions away is what produces a mistake dataset.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "4,321 videos / 101 toy vehicles",
+    "8 static + 4 egocentric views",
+    "18M 3D hand poses",
+    "mistake detection task"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Assembly101",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "accuracy",
+    "edit score",
+    "F1@k",
+    "mistake detection AUC"
+   ],
+   "baselines": [
+    "temporal segmentation and recognition models, pose vs. appearance"
+   ],
+   "headline": "Benchmarks across three tasks plus mistake detection, with cross-view and unseen-toy generalization studies."
+  },
+  "why": "The origin point for procedural mistake detection, and still the most-used evaluation for it.",
+  "confidence": "high",
+  "tags": [
+   "procedural",
+   "mistakes",
+   "dataset",
+   "multi-view"
+  ]
+ },
+ {
+  "id": "holoassist",
+  "short": "HoloAssist",
+  "title": "HoloAssist: an Egocentric Human Interaction Dataset for Interactive AI Assistants in the Real World",
+  "year": 2023,
+  "date": "2023-09",
+  "venue": "ICCV 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Xin Wang",
+   "Taein Kwon",
+   "Mahdi Rad",
+   "Bowen Pan",
+   "Ishani Chakraborty",
+   "Marc Pollefeys"
+  ],
+  "n_authors": 12,
+  "institutions": [
+   "Microsoft"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2309.17024",
+   "page": "https://holoassist.github.io/"
+  },
+  "tldr": "Records what a human assistant actually does — 350 instructor-performer pairs, one wearing the headset, the other watching the feed and talking them through it.",
+  "contribution": [
+   "dataset",
+   "benchmark",
+   "analysis"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "represent",
+   "decide",
+   "act",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted",
+   "evaluator"
+  ],
+  "world_facet": [
+   "procedure",
+   "interaction",
+   "agent-body"
+  ],
+  "representation": [
+   "pixels",
+   "language"
+  ],
+  "change_channel": [
+   "language",
+   "alert"
+  ],
+  "sensing": [
+   "egocentric",
+   "gaze",
+   "audio",
+   "depth-3d",
+   "imu-wearable"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "industrial",
+   "everyday"
+  ],
+  "autonomy": "mixed-initiative",
+  "problem": {
+   "task": "Mistake detection, intervention type prediction, and hand forecasting — framed around what a human instructor does.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "seven synchronized streams",
+      "modality": "video",
+      "tensor": "RGB, depth, head/hand/eye tracking, IMU, audio",
+      "chars": "From a mixed-reality headset worn by the performer."
+     },
+     {
+      "name": "instructor speech",
+      "modality": "speech",
+      "tensor": "s_{0:t}",
+      "chars": "Live verbal guidance, transcribed and typed by intervention category."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "mistake / intervention",
+      "modality": "label",
+      "tensor": "y",
+      "chars": "Whether to intervene and how — correction, confirmation, warning."
+     },
+     {
+      "name": "future hand pose",
+      "modality": "hand-pose",
+      "tensor": "ĥ_{t+1:t+k}",
+      "chars": ""
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Action and conversational annotations over 166 hours.",
+    "note": "The instructor is a person, so intervention timing and phrasing are observed rather than designed."
+   }
+  },
+  "method": {
+   "intuition": "Before building an assistant, record what human assistants do — when they interrupt, how they ground an instruction in the scene, how they recover a mistake.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "166 h / 350 instructor-performer pairs",
+    "7 synchronized sensor streams",
+    "intervention-type taxonomy",
+    "three benchmarks"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "HoloAssist",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "mistake detection accuracy",
+    "intervention type accuracy",
+    "hand forecasting error"
+   ],
+   "baselines": [
+    "video-only models"
+   ],
+   "headline": "Baselines on all three tasks plus an analysis of how human assistants correct, intervene and ground instructions."
+  },
+  "why": "The reference recording of the interaction this whole branch is trying to automate.",
+  "confidence": "high",
+  "tags": [
+   "task guidance",
+   "dataset",
+   "mixed reality",
+   "intervention"
+  ]
+ },
+ {
+  "id": "captaincook4d",
+  "short": "CaptainCook4D",
+  "title": "CaptainCook4D: A Dataset for Understanding Errors in Procedural Activities",
+  "year": 2023,
+  "date": "2023-12",
+  "venue": "NeurIPS 2024 D&B",
+  "venue_type": "conference",
+  "authors": [
+   "Rohith Peddi",
+   "Shivvrat Arya",
+   "Bharath Challa",
+   "Likhitha Pallapothula",
+   "Akshay Vyas",
+   "Vibhav Gogate"
+  ],
+  "n_authors": 13,
+  "institutions": [
+   "UT Dallas"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2312.14556",
+   "page": "https://rohithpeddi.github.io/#/captaincook"
+  },
+  "tldr": "94.5 hours of real cooking where half the recordings deliberately induce errors, so a mistake detector has positive examples that were not staged after the fact.",
+  "contribution": [
+   "dataset",
+   "benchmark"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-change"
+  ],
+  "representation": [
+   "pixels",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "depth-3d"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Supervised error recognition, multi-step localization, and procedure learning.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric 4D recording",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3} (+ depth)",
+      "chars": "384 recordings in real kitchens; two conditions — following the recipe, and deviating from it."
+     },
+     {
+      "name": "recipe",
+      "modality": "text",
+      "tensor": "R",
+      "chars": "The reference procedure the execution is scored against."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "error label",
+      "modality": "label",
+      "tensor": "e",
+      "chars": "Typed errors over 5.3K step annotations."
+     },
+     {
+      "name": "step window",
+      "modality": "scalar",
+      "tensor": "(t_s, t_e)",
+      "chars": ""
+     }
+    ]
+   },
+   "training": {
+    "supervision": "5.3K step and 10K fine-grained action annotations.",
+    "note": "Errors are induced by instruction rather than waited for, which trades ecological validity for label balance."
+   }
+  },
+  "method": {
+   "intuition": "Errors are rare in natural recordings, so a usable error dataset has to be designed to contain them.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "384 recordings / 94.5 h",
+    "recipe-following vs. error-induced conditions",
+    "typed error taxonomy",
+    "three benchmarks"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "CaptainCook4D",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "error recognition accuracy / F1",
+    "localization IoU"
+   ],
+   "baselines": [
+    "video classification and segmentation models"
+   ],
+   "headline": "Benchmarks for supervised error recognition, multi-step localization and procedure learning."
+  },
+  "why": "The standard evaluation for procedural error work, and the dataset most task-graph papers report on.",
+  "confidence": "high",
+  "tags": [
+   "mistakes",
+   "procedural",
+   "dataset",
+   "cooking"
+  ]
+ },
+ {
+  "id": "industreal",
+  "short": "IndustReal",
+  "title": "IndustReal: A Dataset for Procedure Step Recognition Handling Execution Errors in Egocentric Videos in an Industrial-Like Setting",
+  "year": 2023,
+  "date": "2023-10",
+  "venue": "WACV 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Tim J. Schoonbeek",
+   "Tim Houben",
+   "Hans Onvlee",
+   "Peter H. N. de With",
+   "Fons van der Sommen"
+  ],
+  "n_authors": 5,
+  "institutions": [
+   "Eindhoven University of Technology",
+   "ASML"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2310.17323",
+   "code": "https://github.com/TimSchoonbeek/IndustReal"
+  },
+  "tldr": "Recognizing that an action happened is not the same as recognizing it worked. Procedure step recognition scores completion and order, and the test set holds out unseen mistakes.",
+  "contribution": [
+   "dataset",
+   "benchmark"
+  ],
+  "openness": [
+   "data",
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "pixels",
+   "geometry"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "depth-3d"
+  ],
+  "regime": "streaming",
+  "horizon": "minutes",
+  "domain": [
+   "industrial"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Procedure step recognition: did the step complete correctly, and in the right order?",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "Industrial-like assembly of a physical kit; 3D models of all parts released."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "assembly state",
+      "modality": "label",
+      "tensor": "s_t",
+      "chars": "Which parts are in place — the state, not the action."
+     },
+     {
+      "name": "step completion",
+      "modality": "label",
+      "tensor": "c ∈ {done, wrong, omitted}",
+      "chars": "Includes procedural omissions and execution errors."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Annotated action, assembly state, and PSR labels.",
+    "note": "A significant part of the errors appears only in validation and test, so robustness to unseen mistakes is measured rather than assumed."
+   }
+  },
+  "method": {
+   "intuition": "Industrial value lies in the outcome, not the gesture, so the task should score completion instead of action identity.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "procedure step recognition task definition",
+    "procedural + execution errors",
+    "held-out unseen errors",
+    "public 3D part models for synthetic training"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "IndustReal",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "PSR accuracy",
+    "assembly state detection",
+    "action recognition"
+   ],
+   "baselines": [
+    "action recognition and state detection models"
+   ],
+   "headline": "Benchmark performance for action recognition, assembly state detection and the new PSR task, with released code and weights."
+  },
+  "why": "Reframes the human-verify problem from \"what did they do\" to \"did the world reach the intended state\".",
+  "confidence": "high",
+  "tags": [
+   "procedural",
+   "mistakes",
+   "industrial",
+   "dataset"
+  ]
+ }
+]

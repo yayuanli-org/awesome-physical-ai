@@ -1,0 +1,801 @@
+[
+ {
+  "id": "prego",
+  "short": "PREGO",
+  "title": "PREGO: online mistake detection in PRocedural EGOcentric videos",
+  "year": 2024,
+  "date": "2024-04",
+  "venue": "CVPR 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Alessandro Flaborea",
+   "Guido Maria D'Amely di Melendugno",
+   "Leonardo Plini",
+   "Luca Scofano",
+   "Edoardo De Matteis",
+   "Antonino Furnari"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "Sapienza University of Rome",
+   "University of Catania"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2404.01933"
+  },
+  "tldr": "Mistakes are open-set, so train only on correct executions: recognize the current action, symbolically predict what should come next, and flag the disagreement.",
+  "contribution": [
+   "method",
+   "benchmark"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "procedure"
+  ],
+  "representation": [
+   "language",
+   "graph"
+  ],
+  "change_channel": [
+   "alert"
+  ],
+  "sensing": [
+   "egocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "industrial"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Online one-class mistake detection: decide, as each action ends, whether it was a mistake.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric video stream",
+      "modality": "video",
+      "tensor": "V_{0:t}",
+      "chars": "Causal — no future frames, which is what makes this online rather than retrospective."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "mistake flag",
+      "modality": "label",
+      "tensor": "m_t ∈ {0,1}",
+      "chars": "From the mismatch between recognized and predicted action."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Only correct executions. No mistake examples at training time.",
+    "note": "The one-class framing is the honest one: you cannot enumerate the ways a procedure can go wrong."
+   }
+  },
+  "method": {
+   "intuition": "A mistake is a disagreement between what the world did and what the procedure implies it should have done, so build both and compare.",
+   "family": [
+    "llm",
+    "transformer"
+   ],
+   "backbone": "online action recognition + symbolic next-step reasoner",
+   "init": "frozen-foundation",
+   "components": [
+    "online action recognition branch",
+    "symbolic next-action prediction branch",
+    "comparison-based detection",
+    "Assembly101-O and EPIC-Tent-O benchmarks"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Assembly101-O",
+     "role": "remix"
+    },
+    {
+     "name": "EPIC-Tent-O",
+     "role": "remix"
+    }
+   ],
+   "metrics": [
+    "F1",
+    "AUC"
+   ],
+   "baselines": [
+    "supervised mistake classifiers",
+    "anomaly detection"
+   ],
+   "headline": "The first online open-set procedural mistake detector, with two adapted benchmarks released for the setting."
+  },
+  "why": "Defines the online one-class setting that the rest of the mistake-detection literature now reports against.",
+  "confidence": "high",
+  "tags": [
+   "mistakes",
+   "online",
+   "one-class"
+  ]
+ },
+ {
+  "id": "egoopps",
+  "short": "EgoOops",
+  "title": "EgoOops: A Dataset for Mistake Action Detection from Egocentric Videos referring to Procedural Texts",
+  "year": 2024,
+  "date": "2024-10",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Yuto Haneji",
+   "Taichi Nishimura",
+   "Hirotaka Kameko",
+   "Keisuke Shirai",
+   "Tomoya Yoshida",
+   "Keiya Kajimura"
+  ],
+  "n_authors": 10,
+  "institutions": [
+   "Kyoto University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2410.05343",
+   "page": "https://y-haneji.github.io/EgoOops-project-page/"
+  },
+  "tldr": "Some mistakes are invisible without the instructions: you cannot tell salt from sugar by watching. So align the video to the procedural text and classify against it.",
+  "contribution": [
+   "dataset",
+   "method"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "language",
+   "pixels"
+  ],
+  "change_channel": [
+   "alert"
+  ],
+  "sensing": [
+   "egocentric"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "industrial"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Mistake action detection in text-following activities, across domains beyond cooking.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "Erroneous executions recorded deliberately."
+     },
+     {
+      "name": "procedural text",
+      "modality": "text",
+      "tensor": "P",
+      "chars": "The instructions being followed; without them some errors are undecidable."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "video-text alignment",
+      "modality": "scalar",
+      "tensor": "(t_s, t_e) ↔ step_i",
+      "chars": ""
+     },
+     {
+      "name": "mistake label + description",
+      "modality": "text",
+      "tensor": "(m, d)",
+      "chars": "Descriptions, which almost no other mistake dataset provides."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Three annotation types: alignment, mistake labels, and mistake descriptions.",
+    "note": "The ablation showing that the text is necessary is the experiment the whole claim rests on."
+   }
+  },
+  "method": {
+   "intuition": "Video-only mistake detection has a ceiling set by what is visually distinguishable, and text-following tasks sit above that ceiling.",
+   "family": [
+    "vlm",
+    "transformer"
+   ],
+   "backbone": "video-text alignment + classification",
+   "init": "finetune",
+   "components": [
+    "multi-domain error recordings",
+    "three-way annotation",
+    "alignment-then-classification baseline"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "EgoOops",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "alignment accuracy",
+    "mistake classification F1"
+   ],
+   "baselines": [
+    "video-only detectors"
+   ],
+   "headline": "Incorporating the procedural text is essential — video-only baselines are substantially worse."
+  },
+  "why": "Marks the boundary of what perception alone can verify, and why the procedure has to be in the loop.",
+  "confidence": "high",
+  "tags": [
+   "mistakes",
+   "dataset",
+   "text-grounded"
+  ]
+ },
+ {
+  "id": "gazing-into-missteps",
+  "short": "Gazing Into Missteps",
+  "title": "Gazing Into Missteps: Leveraging Eye-Gaze for Unsupervised Mistake Detection in Egocentric Videos of Skilled Human Activities",
+  "year": 2024,
+  "date": "2024-06",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Michele Mazzamuto",
+   "Antonino Furnari",
+   "Yoichi Sato",
+   "Giovanni Maria Farinella"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "University of Catania",
+   "University of Tokyo"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2406.08379"
+  },
+  "tldr": "When something goes wrong, the eyes go somewhere unexpected. Predict gaze from video, compare it to measured gaze, and detect mistakes with no mistake labels at all.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "anticipate",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure",
+   "interaction"
+  ],
+  "representation": [
+   "trajectory",
+   "latent"
+  ],
+  "change_channel": [
+   "alert"
+  ],
+  "sensing": [
+   "egocentric",
+   "gaze"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "industrial",
+   "skill"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Unsupervised mistake detection from the divergence between observed and predicted eye gaze.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "Skilled activity where hand-eye coordination matters."
+     },
+     {
+      "name": "measured gaze",
+      "modality": "gaze",
+      "tensor": "g_{1:T} ∈ R^{T×2}",
+      "chars": "From a tracker; partial trajectories are enough."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "mistake score",
+      "modality": "scalar",
+      "tensor": "s_t ∈ R",
+      "chars": "Inconsistency between predicted and observed fixations."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "No mistake annotations. The auxiliary supervision is gaze completion — predict fixations from video plus partial gaze.",
+    "note": "Gaze completion rather than gaze prediction is the modeling choice that makes the signal usable, since raw gaze prediction is too uncertain."
+   }
+  },
+  "method": {
+   "intuition": "Attention is a cheaper error signal than semantics. You do not have to know what went wrong to notice that the eyes stopped behaving normally.",
+   "family": [
+    "transformer"
+   ],
+   "backbone": "gaze completion network over video tokens",
+   "init": "scratch",
+   "components": [
+    "gaze completion task",
+    "gaze-visual token correlation modeling",
+    "deviation-based mistake scoring"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "EPIC-Tent",
+     "role": "existing"
+    },
+    {
+     "name": "HoloAssist",
+     "role": "existing"
+    },
+    {
+     "name": "IndustReal",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "AUC",
+    "relative gain over supervised"
+   ],
+   "baselines": [
+    "supervised mistake detectors"
+   ],
+   "headline": "Relative gains up to +14%, +11% and +5% on EPIC-Tent, HoloAssist and IndustReal, matching supervised methods without seeing a single label."
+  },
+  "why": "The strongest case for widening the sensing axis: the wearable already measures a signal nobody was using.",
+  "confidence": "high",
+  "tags": [
+   "gaze",
+   "mistakes",
+   "unsupervised"
+  ]
+ },
+ {
+  "id": "transparent-coherent-pmd",
+  "short": "Transparent PMD",
+  "title": "Transparent and Coherent Procedural Mistake Detection",
+  "year": 2024,
+  "date": "2024-12",
+  "venue": "EMNLP 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Shane Storks",
+   "Itamar Bar-Yossef",
+   "Yayuan Li",
+   "Zheyuan Zhang",
+   "Jason J. Corso",
+   "Joyce Chai"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "University of Michigan"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2412.11927"
+  },
+  "tldr": "A mistake detector that cannot explain itself is not deployable, so require a self-dialog rationale. Then measure whether the rationale actually entails the verdict.",
+  "contribution": [
+   "benchmark",
+   "method",
+   "analysis"
+  ],
+  "openness": [
+   "code",
+   "data"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "language",
+   "pixels"
+  ],
+  "change_channel": [
+   "alert",
+   "language"
+  ],
+  "sensing": [
+   "egocentric"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "human-in-loop",
+  "problem": {
+   "task": "Classify whether a step was executed successfully, and generate the visual self-dialog rationale that justifies the answer.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "frame",
+      "modality": "image",
+      "tensor": "x ∈ R^{H×W×3}",
+      "chars": "Reformulated to individual frames, which is what makes the rationale checkable."
+     },
+     {
+      "name": "procedural text",
+      "modality": "text",
+      "tensor": "p",
+      "chars": "The step the user was supposed to perform."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "verdict",
+      "modality": "label",
+      "tensor": "y ∈ {success, mistake}",
+      "chars": ""
+     },
+     {
+      "name": "rationale",
+      "modality": "text",
+      "tensor": "r",
+      "chars": "Self-dialog: questions the model asks itself about the image, and its answers."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Curated frame-level benchmark. VLMs are evaluated off the shelf, then improved by inference-time and fine-tuning methods driven by the new metrics.",
+    "note": "Two automated coherence metrics come from an NLI model checking whether the rationale entails the verdict."
+   }
+  },
+  "method": {
+   "intuition": "Accuracy alone hides whether a model is right for the right reason, and in a safety-relevant loop that distinction is the whole point.",
+   "family": [
+    "vlm",
+    "llm"
+   ],
+   "backbone": "open VLMs",
+   "init": "finetune",
+   "components": [
+    "frame-level PMD benchmark",
+    "visual self-dialog rationales",
+    "NLI-based coherence metrics",
+    "metric-guided inference and fine-tuning"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "curated frame-level PMD benchmark",
+     "role": "reannotated"
+    }
+   ],
+   "metrics": [
+    "accuracy",
+    "two automated rationale-coherence metrics",
+    "efficiency"
+   ],
+   "baselines": [
+    "off-the-shelf VLMs"
+   ],
+   "headline": "VLMs struggle off the shelf. Folding the coherence metrics into inference and fine-tuning improves accuracy and coherence, at a cost in efficiency."
+  },
+  "why": "Puts transparency on the same axis as accuracy for the verify stage, which is what a professional-domain assistant will be held to.",
+  "confidence": "high",
+  "tags": [
+   "mistakes",
+   "explanation",
+   "VLM",
+   "UMich"
+  ]
+ },
+ {
+  "id": "action-effect-pmd",
+  "short": "Action Effect Modeling",
+  "title": "Procedural Mistake Detection via Action Effect Modeling",
+  "year": 2025,
+  "date": "2025-12",
+  "venue": "ICLR 2026",
+  "venue_type": "conference",
+  "authors": [
+   "Wenliang Guo",
+   "Yujiang Pu",
+   "Yu Kong"
+  ],
+  "n_authors": 3,
+  "institutions": [
+   "Michigan State University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2512.03474"
+  },
+  "tldr": "Existing detectors watch how the action was performed. Many errors only show up in what it produced, so model the effect frame instead.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "object-change",
+   "object-state",
+   "procedure"
+  ],
+  "representation": [
+   "graph",
+   "latent",
+   "language"
+  ],
+  "change_channel": [
+   "alert"
+  ],
+  "sensing": [
+   "egocentric"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "One-class procedural mistake detection using both execution and outcome.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "action segment",
+      "modality": "video",
+      "tensor": "V_{t_s:t_e}",
+      "chars": ""
+     },
+     {
+      "name": "task prompt",
+      "modality": "text",
+      "tensor": "p",
+      "chars": "Task-specific, encoding the intended execution semantics."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "mistake score",
+      "modality": "scalar",
+      "tensor": "s ∈ R",
+      "chars": "One-class setting: trained on correct executions only."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Correct executions only. Symbolic scene graphs and visual grounding supply the effect representation.",
+    "note": "Effect-frame selection is itself learned, based on semantic relevance and visual quality."
+   }
+  },
+  "method": {
+   "intuition": "A wrong outcome can follow a perfectly normal-looking motion, so a detector that only watches the motion is structurally blind to a whole class of errors.",
+   "family": [
+    "vlm",
+    "graph"
+   ],
+   "backbone": "effect-aware representation + prompt-based detector",
+   "init": "finetune",
+   "components": [
+    "informative effect-frame selection",
+    "visual grounding + symbolic scene graph fusion",
+    "task-prompted detection head"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "EgoPER",
+     "role": "existing"
+    },
+    {
+     "name": "CaptainCook4D",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "one-class detection AUC / F1"
+   ],
+   "baselines": [
+    "execution-only mistake detectors"
+   ],
+   "headline": "State of the art on EgoPER and CaptainCook4D under the one-class setting by modeling execution and outcome jointly."
+  },
+  "why": "The verify-stage counterpart of the object-change axis: what changed matters more than what was done.",
+  "confidence": "high",
+  "tags": [
+   "mistakes",
+   "state change",
+   "one-class"
+  ]
+ },
+ {
+  "id": "mistake-analysis-review",
+  "short": "Mistake Analysis Review",
+  "title": "Vision-Based Mistake Analysis in Procedural Activities: A Review of Advances and Challenges",
+  "year": 2025,
+  "date": "2025-10",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Konstantinos Bacharidis",
+   "Antonis A. Argyros"
+  ],
+  "n_authors": 2,
+  "institutions": [
+   "FORTH",
+   "University of Crete"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2510.19292"
+  },
+  "tldr": "The map of the mistake-detection field: what counts as an error, which datasets exist, and why telling a permissible variation from a real mistake is still open.",
+  "contribution": [
+   "survey"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure"
+  ],
+  "representation": [
+   "language"
+  ],
+  "change_channel": [
+   "alert"
+  ],
+  "sensing": [
+   "egocentric",
+   "exocentric"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "industrial",
+   "everyday",
+   "clinical"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Survey of vision-based detection and prediction of procedural and executional errors.",
+   "inference": {
+    "inputs": [],
+    "outputs": []
+   },
+   "training": {
+    "supervision": "",
+    "note": "Organizes methods by use of procedural structure, supervision level and learning strategy."
+   }
+  },
+  "method": {
+   "intuition": "The field has no shared definition of a mistake, which is why numbers across papers are not comparable.",
+   "family": [
+    "survey"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "taxonomy of procedural vs. executional errors",
+    "dataset and metric inventory",
+    "open problems: permissible variation, error propagation, neuro-symbolic and counterfactual directions"
+   ]
+  },
+  "experiments": {
+   "datasets": [],
+   "metrics": [],
+   "baselines": [],
+   "headline": ""
+  },
+  "why": "The fastest way into the mistake-detection literature, and honest about which comparisons do not hold.",
+  "confidence": "high",
+  "tags": [
+   "survey",
+   "mistakes"
+  ]
+ }
+]

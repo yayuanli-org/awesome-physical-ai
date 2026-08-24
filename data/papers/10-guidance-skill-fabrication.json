@@ -1,0 +1,685 @@
+[
+{
+  "id": "skillformer",
+  "short": "SkillFormer",
+  "title": "SkillFormer: Unified Multi-View Video Understanding for Proficiency Estimation",
+  "year": 2025, "date": "2025-05", "venue": "ICMV 2025", "venue_type": "conference",
+  "authors": ["Edoardo Bianchi", "Antonio Liotta"],
+  "n_authors": 2, "institutions": ["Free University of Bozen-Bolzano"],
+  "links": { "arxiv": "https://arxiv.org/abs/2505.08665", "page": "https://edowhite.github.io/SkillFormer" },
+  "tldr": "Fuse the performer's own view with the outside views through cross-attention and LoRA, and proficiency estimation gets better while using 4.5× fewer parameters.",
+  "contribution": ["method"], "openness": ["code"],
+  "arc": ["change"], "closes_loop": false,
+  "loop_stage": ["represent", "verify"],
+  "human_role": ["observed"], "embodiment": ["human"],
+  "world_facet": ["agent-body", "procedure"],
+  "representation": ["latent"],
+  "change_channel": ["alert"],
+  "sensing": ["egocentric", "exocentric", "multi-view"],
+  "regime": "offline", "horizon": "minutes",
+  "domain": ["skill"], "autonomy": "none",
+  "problem": {
+    "task": "Estimate how skilled the performer is, from synchronized egocentric and exocentric video.",
+    "inference": {
+      "inputs": [{ "name": "multi-view video", "modality": "video", "tensor": "(V_ego, V_exo^{1..k})", "chars": "Ego-Exo4D structured activities — bouldering, cooking, music, basketball." }],
+      "outputs": [{ "name": "proficiency level", "modality": "label", "tensor": "y ∈ {novice … expert}", "chars": "" }]
+    },
+    "training": { "supervision": "Proficiency labels from Ego-Exo4D; only a LoRA subset of parameters is updated.", "note": "3.75× fewer training epochs than prior baselines, which matters because multi-view models are usually the expensive option." }
+  },
+  "method": {
+    "intuition": "Each viewpoint sees a different part of the skill, so fuse them adaptively rather than picking one or averaging.",
+    "family": ["transformer"], "backbone": "TimeSformer + CrossViewFusion", "init": "finetune",
+    "components": ["multi-head cross-view attention", "learnable gating", "adaptive self-calibration", "LoRA fine-tuning"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "Ego-Exo4D", "role": "existing" }],
+    "metrics": ["proficiency classification accuracy", "parameter and epoch cost"],
+    "baselines": ["prior multi-view proficiency estimators"],
+    "headline": "State-of-the-art multi-view accuracy on Ego-Exo4D with 4.5× fewer parameters and 3.75× fewer training epochs."
+  },
+  "why": "Judging skill is the prerequisite for coaching it, and this is the cheapest current way to do it across views.",
+  "confidence": "high", "tags": ["proficiency", "ego-exo", "skill"]
+},
+{
+  "id": "brickgpt",
+  "short": "BrickGPT",
+  "title": "Generating Physically Stable and Buildable Brick Structures from Text",
+  "year": 2025, "date": "2025-05", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Ava Pun", "Kangle Deng", "Ruixuan Liu", "Deva Ramanan", "Changliu Liu", "Jun-Yan Zhu"],
+  "n_authors": 6, "institutions": ["CMU"],
+  "links": { "arxiv": "https://arxiv.org/abs/2505.05469", "page": "https://avalovelace1.github.io/BrickGPT/" },
+  "tldr": "Generate a brick model one brick at a time, and prune each candidate token against gravity and assembly constraints, so the output is something a hand or an arm can actually build.",
+  "contribution": ["method", "dataset"], "openness": ["code", "data", "weights"],
+  "arc": ["change"], "closes_loop": true,
+  "loop_stage": ["decide", "act", "verify"],
+  "human_role": ["collaborator"], "embodiment": ["human+robot"],
+  "world_facet": ["object-state", "dynamics", "procedure"],
+  "representation": ["tokens", "physics-params"],
+  "change_channel": ["fabrication", "plan"],
+  "sensing": ["sim-render"],
+  "regime": "offline", "horizon": "minutes",
+  "domain": ["everyday", "industrial"], "autonomy": "autonomous",
+  "problem": {
+    "task": "Text to a physically stable, buildable interconnecting brick assembly.",
+    "inference": {
+      "inputs": [{ "name": "prompt", "modality": "text", "tensor": "ℓ", "chars": "A described object." }],
+      "outputs": [
+        { "name": "brick sequence", "modality": "tokens", "tensor": "(b₁..b_K)", "chars": "Next-brick prediction; each brick is a placement token." },
+        { "name": "assembly", "modality": "mesh", "tensor": "A", "chars": "Verified stable, and assembled in practice by hand and by a robot arm." }
+      ]
+    },
+    "training": { "supervision": "StableText2Brick: 47,000+ physically stable structures over 28,000+ unique 3D objects with captions.", "note": "Physics enters at inference as a rollback that prunes infeasible tokens, so stability is enforced rather than hoped for." }
+  },
+  "method": {
+    "intuition": "A generative model will happily emit a structure that falls over, so put the physics check inside the decoding loop rather than after it.",
+    "family": ["llm", "transformer"], "backbone": "autoregressive LM over brick tokens", "init": "finetune",
+    "components": ["StableText2Brick dataset", "next-brick prediction", "validity check and physics-aware rollback", "text-based brick texturing"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "StableText2Brick", "role": "new" }, { "name": "manual and robot-arm assembly trials", "role": "real-robot" }],
+    "metrics": ["stability rate", "prompt alignment", "diversity"],
+    "baselines": ["text-to-3D generation without physics constraints"],
+    "headline": "Stable, diverse structures that match the prompt, assembled both by hand and automatically by robotic arms."
+  },
+  "why": "The one paper here whose output is matter. Generation with a buildability constraint is what separates design from physical AI.",
+  "confidence": "high", "tags": ["fabrication", "physics", "generation"]
+},
+{
+  "id": "envharness",
+  "short": "EnvHarness",
+  "title": "EnvHarness: Awakening Static Worlds for Agent Learning",
+  "year": 2026, "date": "2026-08", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Chengsong Huang", "Zifeng Wang", "Rujun Han", "Jun Yan", "Tomas Pfister", "Chen-Yu Lee"],
+  "n_authors": 17, "institutions": ["Washington University in St. Louis", "Google"],
+  "links": { "arxiv": "https://arxiv.org/abs/2608.19880", "code": "https://github.com/google-research/envharness" },
+  "tldr": "Training environments are hand-built, blind to where the agent is weak, and obsolete once it improves. Wrap them in a layer that reads the agent's failures and reshapes the world around them.",
+  "contribution": ["method"], "openness": ["code"],
+  "arc": ["change"], "closes_loop": true,
+  "loop_stage": ["verify", "adapt"],
+  "human_role": ["none"], "embodiment": ["sim"],
+  "world_facet": ["procedure", "dynamics"],
+  "representation": ["program", "language"],
+  "change_channel": ["plan"],
+  "sensing": ["sim-render"],
+  "regime": "interactive", "horizon": "minutes",
+  "domain": ["lab-sim"], "autonomy": "autonomous",
+  "problem": {
+    "task": "Reshape an existing environment, through its own interface, to target the failures of the policy training in it.",
+    "inference": {
+      "inputs": [
+        { "name": "static environment", "modality": "program", "tensor": "E", "chars": "Any existing environment, reached through its standard interface, so its verifier survives." },
+        { "name": "policy trajectories", "modality": "plan", "tensor": "{τ_i}", "chars": "The target policy is a black box; only its behaviour is read." }
+      ],
+      "outputs": [{ "name": "harness components", "modality": "program", "tensor": "H", "chars": "Plug-in modifications aimed at diagnosed weaknesses, validated by fresh rollouts." }]
+    },
+    "training": { "supervision": "EnvRigger synthesizes and validates components; the harness also serves as an RL reward signal.", "note": "Policy and environment co-evolve, which is the adapt stage of the loop applied to the world rather than the model." }
+  },
+  "method": {
+    "intuition": "Rebuilding an environment per domain is the engineering cost that kills environment generation, so wrap instead of rebuild and keep the original verifier.",
+    "family": ["llm", "rl"], "backbone": "LLM component synthesizer over environment interfaces", "init": "prompt-only",
+    "components": ["programmable plug-in harness layer", "EnvRigger failure diagnosis from trajectories", "rollout validation", "harness as RL reward"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "five benchmarks across four domains", "role": "existing" }],
+    "metrics": ["held-out instance success", "execution steps"],
+    "baselines": ["original environments", "domain-specific environment generation pipelines"],
+    "headline": "Up to +9.0 points on held-out instances with 9.8% fewer execution steps, beating both the original environments and domain-specific generation pipelines."
+  },
+  "why": "The rare paper where the thing being adapted is the environment, which is what a physical curriculum would have to look like.",
+  "confidence": "medium", "tags": ["agent", "environment generation", "adaptation"]
+},
+{
+  "id": "egodex",
+  "short": "EgoDex",
+  "title": "EgoDex: Learning Dexterous Manipulation from Large-Scale Egocentric Video",
+  "year": 2025, "date": "2025-05", "venue": "ICLR 2026", "venue_type": "conference",
+  "authors": ["Ryan Hoque", "Peide Huang", "David J. Yoon", "Mouli Sivapurapu", "Jian Zhang"],
+  "n_authors": 5, "institutions": ["Apple"],
+  "links": { "arxiv": "https://arxiv.org/abs/2505.11709" },
+  "tldr": "829 hours of egocentric video with every finger joint tracked at recording time, because Apple Vision Pro can do the tracking that Ego4D never had.",
+  "contribution": ["dataset", "benchmark"], "openness": ["data"],
+  "arc": ["model", "change"], "closes_loop": false,
+  "loop_stage": ["sense", "represent", "anticipate"],
+  "human_role": ["demonstrator"], "embodiment": ["human"],
+  "world_facet": ["agent-body", "interaction"],
+  "representation": ["trajectory", "geometry"],
+  "change_channel": ["motor-action"],
+  "sensing": ["egocentric", "multi-view", "depth-3d"],
+  "regime": "offline", "horizon": "seconds",
+  "domain": ["everyday"], "autonomy": "none",
+  "problem": {
+    "task": "Hand trajectory prediction from egocentric video, as a stand-in for dexterous imitation at internet scale.",
+    "inference": {
+      "inputs": [{ "name": "egocentric video", "modality": "video", "tensor": "V", "chars": "194 tabletop tasks, from tying shoelaces to folding laundry." }],
+      "outputs": [{ "name": "3D hand and finger trajectory", "modality": "hand-pose", "tensor": "h ∈ R^{T×J×3}", "chars": "Every joint of each hand, tracked by on-device SLAM plus calibrated cameras rather than estimated post hoc." }]
+    },
+    "training": { "supervision": "Paired video and hand pose, captured simultaneously.", "note": "Native pose annotation is the difference from Ego4D — no downstream hand estimator in the loop, so the labels do not inherit its errors." }
+  },
+  "method": {
+    "intuition": "Dexterous manipulation has no internet-scale corpus, and the cheapest way to make one is to record the hands with hardware that already tracks them.",
+    "family": ["dataset", "imitation"], "backbone": "", "init": "",
+    "components": ["829 h of paired video and 3D hand tracking", "194 tabletop tasks", "hand trajectory prediction benchmark and metrics"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "EgoDex", "role": "new" }],
+    "metrics": ["hand trajectory prediction error"],
+    "baselines": ["imitation learning policies trained on the dataset"],
+    "headline": "The largest and most diverse dexterous human manipulation dataset to date, with a systematic evaluation of trajectory-prediction policies on it."
+  },
+  "why": "The clearest example of the human-video-as-robot-data bet, and the one with the fewest annotation caveats.",
+  "confidence": "high", "tags": ["egocentric", "dexterous", "dataset", "hand pose"]
+},
+{
+  "id": "web2grasp",
+  "short": "Web2Grasp",
+  "title": "Web2Grasp: Learning Functional Grasps from Web Images of Hand-Object Interactions",
+  "year": 2025, "date": "2025-05", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Hongyi Chen", "Yunchao Yao", "Yufei Ye", "Zhixuan Xu", "Homanga Bharadhwaj", "Jiashun Wang"],
+  "n_authors": 11, "institutions": [],
+  "links": { "arxiv": "https://arxiv.org/abs/2505.05517" },
+  "tldr": "Photographs of people holding things already encode how to hold them for use, which is the half a power grasp misses. Reconstruct those grasps in 3D, filter by physics, and train a hand on the survivors.",
+  "contribution": ["method"], "openness": ["none"],
+  "arc": ["change"], "closes_loop": false,
+  "loop_stage": ["represent", "decide", "act"],
+  "human_role": ["demonstrator"], "embodiment": ["robot"],
+  "world_facet": ["interaction", "agent-body", "object-state"],
+  "representation": ["geometry", "trajectory"],
+  "change_channel": ["motor-action"],
+  "sensing": ["web-video", "sim-render"],
+  "regime": "offline", "horizon": "seconds",
+  "domain": ["everyday", "web"], "autonomy": "autonomous",
+  "problem": {
+    "task": "Functional multi-finger grasping of everyday objects, learned without in-domain demonstrations.",
+    "inference": {
+      "inputs": [{ "name": "object", "modality": "mesh", "tensor": "O", "chars": "Including unseen and awkward ones — syringe, spray bottle, knife, tongs." }],
+      "outputs": [{ "name": "hand configuration", "modality": "hand-pose", "tensor": "q ∈ R^{d}", "chars": "A grasp that supports use, not only holding." }]
+    },
+    "training": { "supervision": "3D hand-object meshes reconstructed from web RGB images by a pretrained model, then filtered.", "note": "Two filters make the noisy data usable: geometric feasibility, then physical simulation under disturbance." }
+  },
+  "method": {
+    "intuition": "Power grasps are easy and useless. Functional grasps are what people photograph themselves doing, so mine those.",
+    "family": ["diffusion", "imitation"], "backbone": "interaction-centric grasp model", "init": "scratch",
+    "components": ["3D HOI reconstruction from web images", "interaction-centric grasp representation", "geometric filtering", "physics-based disturbance filtering"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "web HOI images", "role": "existing" }, { "name": "IsaacGym simulation", "role": "synthetic" }, { "name": "LEAP and Inspire hands, 12 objects", "role": "real-robot" }],
+    "metrics": ["grasp success rate", "functional quality"],
+    "baselines": ["power-grasp and in-domain-demonstration methods"],
+    "headline": "75.8% success in simulation on web-dataset objects with generalization to unseen ones, and 77.5% across 12 real objects on two hands."
+  },
+  "why": "Web images as a source of physical priors, which is the cheapest end of the human-data-to-robot spectrum.",
+  "confidence": "high", "tags": ["grasping", "human video", "affordance"]
+},
+{
+  "id": "ti-prego",
+  "short": "TI-PREGO",
+  "title": "TI-PREGO: Chain of Thought and In-Context Learning for Online Mistake Detection in Procedural Egocentric Videos",
+  "year": 2024, "date": "2024-11", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Leonardo Plini", "Luca Scofano", "Edoardo De Matteis", "Guido Maria D'Amely di Melendugno", "Alessandro Flaborea", "Fabio Galasso"],
+  "n_authors": 9, "institutions": ["Sapienza University of Rome"],
+  "links": { "arxiv": "https://arxiv.org/abs/2411.02570" },
+  "tldr": "Same recognize-and-anticipate mismatch as PREGO, but the anticipation branch is an LLM doing in-context pattern matching over action tokens.",
+  "contribution": ["method", "analysis"], "openness": ["code"],
+  "arc": ["change"], "closes_loop": true,
+  "loop_stage": ["represent", "anticipate", "verify"],
+  "human_role": ["assisted"], "embodiment": ["human"],
+  "world_facet": ["procedure"],
+  "representation": ["language", "tokens"],
+  "change_channel": ["alert"],
+  "sensing": ["egocentric"],
+  "regime": "streaming", "horizon": "minutes",
+  "domain": ["industrial", "clinical", "skill"], "autonomy": "autonomous",
+  "problem": {
+    "task": "Open-set online mistake detection with no examples of failure.",
+    "inference": {
+      "inputs": [{ "name": "egocentric frames", "modality": "video", "tensor": "V_{0:t}", "chars": "Streaming; per-frame evaluation is benchmarked explicitly, which earlier work skipped." }],
+      "outputs": [{ "name": "mistake flag", "modality": "label", "tensor": "m_t", "chars": "Mismatch between the recognized action token and the anticipated one." }]
+    },
+    "training": { "supervision": "Recognition is trained; anticipation is in-context, so no failure examples are needed anywhere.", "note": "Aggregating frame-level predictions into action tokens is what makes the LLM branch usable online." }
+  },
+  "method": {
+    "intuition": "Next-step anticipation over a procedure is sequence pattern matching, and an LLM does that in context without being trained on the task.",
+    "family": ["llm", "transformer"], "backbone": "step recognition branch + LLM anticipation branch", "init": "prompt-only",
+    "components": ["dual-branch recognition and anticipation", "frame-to-action-token aggregation", "chain-of-thought and in-context prompting", "per-frame evaluation benchmark"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "Assembly101-O", "role": "existing" }, { "name": "EPIC-Tent-O", "role": "existing" }],
+    "metrics": ["online mistake detection F1", "per-frame evaluation"],
+    "baselines": ["PREGO", "supervised detectors"],
+    "headline": "Improves online open-set mistake detection over PREGO and documents how hard per-frame evaluation actually is."
+  },
+  "why": "The follow-up that shows how much of the mistake-detection loop can be moved into a frozen language model.",
+  "confidence": "high", "tags": ["mistakes", "online", "LLM"]
+},
+{
+  "id": "amnar",
+  "short": "AMNAR",
+  "title": "Modeling Multiple Normal Action Representations for Error Detection in Procedural Tasks",
+  "year": 2025, "date": "2025-03", "venue": "CVPR 2025", "venue_type": "conference",
+  "authors": ["Wei-Jin Huang", "Yuan-Ming Li", "Zhi-Wei Xia", "Yu-Ming Tang", "Kun-Yu Lin", "Jian-Fang Hu"],
+  "n_authors": 7, "institutions": ["Sun Yat-sen University"],
+  "links": { "arxiv": "https://arxiv.org/abs/2503.22405", "code": "https://github.com/iSEE-Laboratory/AMNAR" },
+  "tldr": "After any given prefix there are usually several correct next actions. Detectors that hold one static prototype per step call the other correct ones errors.",
+  "contribution": ["method"], "openness": ["code"],
+  "arc": ["change"], "closes_loop": false,
+  "loop_stage": ["anticipate", "verify"],
+  "human_role": ["assisted"], "embodiment": ["human"],
+  "world_facet": ["procedure"],
+  "representation": ["latent"],
+  "change_channel": ["alert"],
+  "sensing": ["egocentric"],
+  "regime": "streaming", "horizon": "minutes",
+  "domain": ["everyday", "industrial"], "autonomy": "autonomous",
+  "problem": {
+    "task": "Detect execution errors by comparing the ongoing action against every action that would have been valid here.",
+    "inference": {
+      "inputs": [{ "name": "action history + current segment", "modality": "video", "tensor": "V_{0:t}", "chars": "" }],
+      "outputs": [
+        { "name": "valid next actions", "modality": "label", "tensor": "{a_i}", "chars": "All of them, not the single most likely one." },
+        { "name": "error score", "modality": "scalar", "tensor": "s_t", "chars": "Distance from the ongoing action to the nearest reconstructed normal representation." }
+      ]
+    },
+    "training": { "supervision": "Correct executions; representations are reconstructed per predicted valid action rather than stored as fixed prototypes.", "note": "Adaptivity is what survives a shift between the training and deployment distribution." }
+  },
+  "method": {
+    "intuition": "A static prototype assumes one right answer per step, and procedures rarely have one, so the comparison target has to be predicted afresh each time.",
+    "family": ["transformer"], "backbone": "adaptive multiple normal action representation", "init": "scratch",
+    "components": ["valid-next-action prediction", "per-action normal representation reconstruction", "comparison-based error scoring"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "procedural error detection benchmarks", "role": "existing" }],
+    "metrics": ["error detection accuracy / F1"],
+    "baselines": ["static-prototype and temporal-ordering error detectors"],
+    "headline": "State-of-the-art error detection, with ablations isolating the gain from modeling multiple valid next actions."
+  },
+  "why": "Names the failure mode a deployed task assistant would hit first: punishing a user for doing it a different correct way.",
+  "confidence": "high", "tags": ["mistakes", "multi-modal futures", "procedure"]
+},
+{
+  "id": "i2g",
+  "short": "I²G",
+  "title": "I²G: Generating Instructional Illustrations via Text-Conditioned Diffusion",
+  "year": 2025, "date": "2025-05", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Jing Bi", "Pinxin Liu", "Ali Vosoughi", "Jiarui Wu", "Jinxi He", "Chenliang Xu"],
+  "n_authors": 6, "institutions": ["University of Rochester"],
+  "links": { "arxiv": "https://arxiv.org/abs/2505.16425" },
+  "tldr": "Text cannot carry a spatial relationship. Parse the instruction into goal and steps, condition generation on that structure, and the illustrations stay coherent across the sequence.",
+  "contribution": ["method", "benchmark"], "openness": ["none"],
+  "arc": ["change"], "closes_loop": false,
+  "loop_stage": ["act"],
+  "human_role": ["assisted"], "embodiment": ["human"],
+  "world_facet": ["procedure", "object-change"],
+  "representation": ["pixels", "language"],
+  "change_channel": ["visual-guidance"],
+  "sensing": ["web-video"],
+  "regime": "offline", "horizon": "minutes",
+  "domain": ["everyday"], "autonomy": "human-in-loop",
+  "problem": {
+    "task": "Turn procedural text into a coherent sequence of instructional illustrations.",
+    "inference": {
+      "inputs": [{ "name": "procedural text", "modality": "text", "tensor": "(goal, s₁..s_K)", "chars": "Decomposed by a constituency parser, so long instructions keep their semantics." }],
+      "outputs": [{ "name": "illustration sequence", "modality": "image", "tensor": "(I₁..I_K)", "chars": "Consistent across steps, matched against a purpose-built alignment protocol." }]
+    },
+    "training": { "supervision": "Instructional datasets — HTStep, CaptainCook4D, WikiAll.", "note": "A pairwise discourse-coherence model enforces consistency between consecutive steps rather than per-image quality." }
+  },
+  "method": {
+    "intuition": "The failure in text-to-image for instructions is discourse, not rendering, so model the linguistic structure of the procedure explicitly.",
+    "family": ["diffusion", "llm"], "backbone": "text-conditioned diffusion", "init": "finetune",
+    "components": ["constituency-parser text encoding", "pairwise discourse coherence model", "procedural language-to-image alignment protocol"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "HTStep", "role": "existing" }, { "name": "CaptainCook4D", "role": "existing" }, { "name": "WikiAll", "role": "existing" }],
+    "metrics": ["language-to-image alignment", "sequence coherence"],
+    "baselines": ["text-to-image generation without discourse structure"],
+    "headline": "Outperforms existing baselines on all three instructional datasets for content accuracy and sequential consistency."
+  },
+  "why": "The generation side of visual guidance, with the evaluation problem taken seriously rather than eyeballed.",
+  "confidence": "high", "tags": ["visual guidance", "instructions", "diffusion"]
+},
+{
+  "id": "ar-visual-guidance",
+  "short": "AR Visual Guidance",
+  "title": "Enhancing User Performance and Human Factors through Visual Guidance in AR Assembly Tasks",
+  "year": 2025, "date": "2025-03", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Leon Pietschmann", "Michel Schimpf", "Zhu-Tian Chen", "Hanspeter Pfister", "Thomas Bohné"],
+  "n_authors": 5, "institutions": ["University of Cambridge", "Harvard University"],
+  "links": { "arxiv": "https://arxiv.org/abs/2503.05649" },
+  "tldr": "AR guidance cut assembly time 31% and raised the error rate at the same time. Speed and accuracy trade against each other, and most guidance papers only report one.",
+  "contribution": ["analysis"], "openness": ["none"],
+  "arc": ["change"], "closes_loop": false,
+  "loop_stage": ["act"],
+  "human_role": ["assisted", "evaluator"], "embodiment": ["human"],
+  "world_facet": ["procedure", "scene"],
+  "representation": ["pixels", "geometry"],
+  "change_channel": ["visual-guidance"],
+  "sensing": ["egocentric"],
+  "regime": "interactive", "horizon": "minutes",
+  "domain": ["industrial"], "autonomy": "human-in-loop",
+  "problem": {
+    "task": "Measure how different supportive visualizations change assembly performance and human factors.",
+    "inference": {
+      "inputs": [{ "name": "visualization condition", "modality": "mask", "tensor": "c", "chars": "Types of supportive visualization, varied between subjects; occlusion is manipulated by design." }],
+      "outputs": [
+        { "name": "task metrics", "modality": "scalar", "tensor": "(time, errors)", "chars": "" },
+        { "name": "human factors", "modality": "scalar", "tensor": "(cognitive load, motivation, usability)", "chars": "" }
+      ]
+    },
+    "training": { "supervision": "Between-subjects controlled experiment.", "note": "Prior AR guidance studies varied interaction method; this varies the visualization itself, which is why the results are less muddled." }
+  },
+  "method": {
+    "intuition": "The literature disagrees about whether AR guidance helps because it keeps changing the wrong variable.",
+    "family": ["analysis"], "backbone": "", "init": "",
+    "components": ["between-subjects design over visualization types", "occlusion manipulated deliberately", "cognitive load, motivation and usability measures"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "controlled AR assembly experiment", "role": "new" }],
+    "metrics": ["task completion time", "error rate", "cognitive load", "usability"],
+    "baselines": ["no visual guidance"],
+    "headline": "31% faster completion, offset by a significant rise in errors — a speed-accuracy trade-off that single-metric evaluations hide."
+  },
+  "why": "The empirical check on every AR guidance system on this list: faster is not automatically better.",
+  "confidence": "high", "tags": ["AR", "human factors", "guidance", "study"]
+},
+{
+  "id": "avattar",
+  "short": "avaTTAR",
+  "title": "avaTTAR: Table Tennis Stroke Training with On-body and Detached Visualization in Augmented Reality",
+  "year": 2024, "date": "2024-07", "venue": "UIST 2024", "venue_type": "conference",
+  "authors": ["Dizhi Ma", "Xiyun Hu", "Jingyu Shi", "Mayank Patel", "Rahul Jain", "Karthik Ramani"],
+  "n_authors": 8, "institutions": ["Purdue University"],
+  "links": { "arxiv": "https://arxiv.org/abs/2407.15373" },
+  "tldr": "Show the target stroke on the learner's own body and beside it at the same time, so they can both feel the correction and see it from outside.",
+  "contribution": ["system"], "openness": ["none"],
+  "arc": ["change"], "closes_loop": true,
+  "loop_stage": ["sense", "verify", "act"],
+  "human_role": ["assisted", "evaluator"], "embodiment": ["human"],
+  "world_facet": ["agent-body"],
+  "representation": ["geometry", "trajectory"],
+  "change_channel": ["visual-guidance"],
+  "sensing": ["egocentric", "imu-wearable", "exocentric"],
+  "regime": "interactive", "horizon": "seconds",
+  "domain": ["skill"], "autonomy": "human-in-loop",
+  "problem": {
+    "task": "Real-time stroke correction in AR against an expert reference.",
+    "inference": {
+      "inputs": [
+        { "name": "learner motion", "modality": "body-pose", "tensor": "θ_t ∈ R^{J×3}", "chars": "Pose estimation plus IMU on the paddle." },
+        { "name": "paddle orientation", "modality": "object-pose", "tensor": "R_t ∈ SO(3)", "chars": "" }
+      ],
+      "outputs": [{ "name": "dual-view overlay", "modality": "mask", "tensor": "on-body + detached avatar", "chars": "First-person overlay on the learner's own limbs, plus a third-person avatar beside them." }]
+    },
+    "training": { "supervision": "None — comparison against recorded expert strokes.", "note": "The two viewpoints answer different questions, which is why offering both beats choosing one." }
+  },
+  "method": {
+    "intuition": "A correction shown only in first person is hard to see and one shown only in third person is hard to map onto your own body.",
+    "family": ["system"], "backbone": "AR headset + pose estimation + IMU", "init": "",
+    "components": ["on-body first-person visualization", "detached third-person avatar", "3D pose and paddle reconstruction", "real-time expert comparison"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "user study with table tennis players", "role": "new" }],
+    "metrics": ["training outcome", "player experience"],
+    "baselines": ["conventional stroke practice"],
+    "headline": "Improved player experience and training results in a user study."
+  },
+  "why": "Shows the change channel of visual guidance being designed around the human's viewpoint, which the model-side papers rarely consider.",
+  "confidence": "high", "tags": ["AR", "skill", "coaching", "HCI"]
+},
+{
+  "id": "sneakpeek",
+  "short": "SneakPeek",
+  "title": "SneakPeek: Future-Guided Instructional Streaming Video Generation",
+  "year": 2025, "date": "2025-12", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Cheeun Hong", "German Barquero", "Fadime Sener", "Markos Georgopoulos", "Edgar Schönfeld", "Stefan Popov"],
+  "n_authors": 9, "institutions": ["Meta Reality Labs"],
+  "links": { "arxiv": "https://arxiv.org/abs/2512.13019" },
+  "tldr": "Streaming a multi-step demonstration drifts because each frame is generated blind to the step after next. Anticipate future keyframes and generate toward them.",
+  "contribution": ["method"], "openness": ["none"],
+  "arc": ["change"], "closes_loop": true,
+  "loop_stage": ["anticipate", "act"],
+  "human_role": ["assisted"], "embodiment": ["human"],
+  "world_facet": ["procedure", "object-change"],
+  "representation": ["pixels"],
+  "change_channel": ["visual-guidance"],
+  "sensing": ["egocentric", "exocentric"],
+  "regime": "streaming", "horizon": "minutes",
+  "domain": ["everyday"], "autonomy": "human-in-loop",
+  "problem": {
+    "task": "Generate a stepwise instructional video, streaming, from an initial image and structured step prompts.",
+    "inference": {
+      "inputs": [
+        { "name": "initial image", "modality": "image", "tensor": "x₀", "chars": "The user's scene." },
+        { "name": "multi-step prompts", "modality": "text", "tensor": "(s₁..s_K)", "chars": "One per procedural step, giving fine-grained control over the sequence." }
+      ],
+      "outputs": [{ "name": "streaming video", "modality": "video", "tensor": "V_t emitted causally", "chars": "Interactive — future steps can be changed while generation runs." }]
+    },
+    "training": { "supervision": "Causal adaptation of a diffusion model to next-frame prediction plus future keyframe anticipation.", "note": "Dual-region KV caching addresses exposure bias, which is the specific reason long autoregressive rollouts drift." }
+  },
+  "method": {
+    "intuition": "An instructional demonstration has a known destination, so let the generator see the destination instead of only the last frame.",
+    "family": ["diffusion", "transformer"], "backbone": "autoregressive video diffusion", "init": "finetune",
+    "components": ["predictive causal adaptation", "future-guided self-forcing with dual-region KV cache", "multi-prompt conditioning"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "instructional video corpora", "role": "existing" }],
+    "metrics": ["temporal consistency", "step controllability", "drift over length"],
+    "baselines": ["video diffusion without future guidance"],
+    "headline": "Mitigates temporal drift and preserves motion consistency across long multi-step sequences, with interactive control over what comes next."
+  },
+  "why": "The streaming regime applied to the visual-guidance channel, which is what an on-glasses demonstration would need.",
+  "confidence": "medium", "tags": ["visual guidance", "streaming", "video generation"]
+},
+{
+  "id": "ego-extra",
+  "short": "Ego-EXTRA",
+  "title": "Ego-EXTRA: video-language Egocentric Dataset for EXpert-TRAinee assistance",
+  "year": 2025, "date": "2025-12", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Francesco Ragusa", "Michele Mazzamuto", "Rosario Forte", "Irene D'Ambra", "James Fort", "Jakob Engel"],
+  "n_authors": 8, "institutions": ["University of Catania", "Meta Reality Labs"],
+  "links": { "arxiv": "https://arxiv.org/abs/2512.13238" },
+  "tldr": "A real expert plays the wearable assistant, seeing only the trainee's first-person view. 50 hours of that gives you what expert-level guidance sounds like.",
+  "contribution": ["dataset", "benchmark"], "openness": ["data"],
+  "arc": ["change"], "closes_loop": true,
+  "loop_stage": ["sense", "decide", "act"],
+  "human_role": ["assisted", "demonstrator"], "embodiment": ["human"],
+  "world_facet": ["procedure", "interaction"],
+  "representation": ["language", "pixels"],
+  "change_channel": ["language"],
+  "sensing": ["egocentric", "audio"],
+  "regime": "interactive", "horizon": "minutes",
+  "domain": ["industrial", "everyday"], "autonomy": "mixed-initiative",
+  "problem": {
+    "task": "Visual question answering that stands in for expert-level task assistance.",
+    "inference": {
+      "inputs": [
+        { "name": "trainee egocentric video", "modality": "video", "tensor": "V", "chars": "50 hours, unscripted procedural activity." },
+        { "name": "trainee question", "modality": "speech", "tensor": "q", "chars": "Asked mid-task, as it actually comes out." }
+      ],
+      "outputs": [{ "name": "expert answer", "modality": "text", "tensor": "a", "chars": "15k+ high-quality VQA sets drawn from the recorded two-way dialogue." }]
+    },
+    "training": { "supervision": "Wizard-of-Oz collection: a human expert enacts the assistant, restricted to the trainee's egocentric view.", "note": "The restriction is what makes the transcript a valid target — the expert had exactly the information a wearable would have." }
+  },
+  "method": {
+    "intuition": "You cannot train an expert assistant without a record of expert assistance, and the only honest way to record it is to give a real expert the assistant's sensory limits.",
+    "family": ["dataset"], "backbone": "", "init": "",
+    "components": ["50 h of trainee-expert sessions", "proactive and reactive expert turns", "transcribed two-way dialogue", "15k+ VQA benchmark"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "Ego-EXTRA", "role": "new" }],
+    "metrics": ["VQA accuracy against expert answers"],
+    "baselines": ["multimodal large language models"],
+    "headline": "Challenging for current MLLMs, exposing their limits when asked to provide expert-level assistance."
+  },
+  "why": "The successor to HoloAssist's premise, with the expert's information restricted to what a wearable would actually see.",
+  "confidence": "medium", "tags": ["task guidance", "dataset", "dialogue", "egocentric"]
+},
+{
+  "id": "howtodiv",
+  "short": "HowToDIV",
+  "title": "Generating Dialogues from Egocentric Instructional Videos for Task Assistance: Dataset, Method and Benchmark",
+  "year": 2025, "date": "2025-08", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Lavisha Aggarwal", "Vikas Bahirwani", "Lin Li", "Andrea Colaco"],
+  "n_authors": 4, "institutions": ["Google"],
+  "links": { "arxiv": "https://arxiv.org/abs/2508.11192" },
+  "tldr": "Human-collected guidance dialogue is expensive, so synthesize it: turn single-person how-to videos into two-person teaching conversations aligned to the steps.",
+  "contribution": ["dataset", "method", "benchmark"], "openness": ["data"],
+  "arc": ["change"], "closes_loop": false,
+  "loop_stage": ["decide", "act"],
+  "human_role": ["assisted"], "embodiment": ["human"],
+  "world_facet": ["procedure"],
+  "representation": ["language", "pixels"],
+  "change_channel": ["language"],
+  "sensing": ["egocentric", "audio"],
+  "regime": "interactive", "horizon": "minutes",
+  "domain": ["everyday", "industrial"], "autonomy": "mixed-initiative",
+  "problem": {
+    "task": "Multi-turn task-guidance dialogue grounded in a wearable's video and audio.",
+    "inference": {
+      "inputs": [
+        { "name": "wearable video", "modality": "video", "tensor": "V_t", "chars": "The novice's surroundings, streaming." },
+        { "name": "dialogue history", "modality": "text", "tensor": "h_{1:t}", "chars": "" }
+      ],
+      "outputs": [{ "name": "expert turn", "modality": "text", "tensor": "r_t", "chars": "Step-aligned teaching, one turn at a time." }]
+    },
+    "training": { "supervision": "HowToDIV: 507 conversations, 6,636 QA pairs, 24 hours of clips across cooking, mechanics and planting, generated automatically by LLMs from single-person video.", "note": "Synthetic dialogue trades fidelity for scale, which is the trade Ego-EXTRA makes in the other direction." }
+  },
+  "method": {
+    "intuition": "The scarce resource is dialogue, not video, and an LLM can manufacture the missing half of the conversation from an existing demonstration.",
+    "family": ["llm"], "backbone": "LLM dialogue synthesis + Gemma-3 baseline", "init": "finetune",
+    "components": ["automatic single-video to two-person dialogue conversion", "step and clip alignment", "HowToDIV dataset", "baseline benchmark"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "HowToDIV", "role": "synthetic" }],
+    "metrics": ["dialogue quality against held-out sessions"],
+    "baselines": ["Gemma-3"],
+    "headline": "507 conversations and 24 hours of clips built with no human-assisted collection, plus a baseline for the new task."
+  },
+  "why": "Read next to Ego-EXTRA: the same task, one dataset synthesized and one recorded, which is the cleanest available comparison of that choice.",
+  "confidence": "high", "tags": ["dialogue", "task guidance", "synthetic data"]
+},
+{
+  "id": "pdc-humanoid",
+  "short": "PDC",
+  "title": "Emergent Active Perception and Dexterity of Simulated Humanoids from Visual Reinforcement Learning",
+  "year": 2025, "date": "2025-05", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Zhengyi Luo", "Chen Tessler", "Toru Lin", "Ye Yuan", "Tairan He", "Wenli Xiao"],
+  "n_authors": 11, "institutions": ["NVIDIA", "CMU"],
+  "links": { "arxiv": "https://arxiv.org/abs/2505.12278", "page": "https://zhengyiluo.github.io/PDC" },
+  "tldr": "Take away privileged object positions and give a humanoid only its own eyes, and searching for things emerges by itself.",
+  "contribution": ["method"], "openness": ["none"],
+  "arc": ["change"], "closes_loop": true,
+  "loop_stage": ["sense", "decide", "act"],
+  "human_role": ["none"], "embodiment": ["sim"],
+  "world_facet": ["agent-body", "object-state", "interaction"],
+  "representation": ["trajectory", "pixels"],
+  "change_channel": ["motor-action"],
+  "sensing": ["egocentric", "sim-render"],
+  "regime": "streaming", "horizon": "seconds",
+  "domain": ["lab-sim", "everyday"], "autonomy": "autonomous",
+  "problem": {
+    "task": "Whole-body dexterous control of a simulated humanoid from egocentric vision only.",
+    "inference": {
+      "inputs": [{ "name": "egocentric render", "modality": "image", "tensor": "o_t", "chars": "The only task specification. No 3D object positions, no geometry." }],
+      "outputs": [{ "name": "whole-body action", "modality": "action", "tensor": "a_t", "chars": "One policy covering reaching, grasping, placing and articulated manipulation." }]
+    },
+    "training": { "supervision": "Reinforcement learning from scratch on visual observation.", "note": "Removing privileged state is the experimental manipulation; active search is what appears when you do." }
+  },
+  "method": {
+    "intuition": "Human movement is shaped by having to look for what it needs, so a policy that must gather its own information should develop the same behaviours.",
+    "family": ["rl"], "backbone": "vision-driven whole-body controller", "init": "scratch",
+    "components": ["perception-as-interface task specification", "single multi-task policy", "emergent active search behaviour"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "simulated household tasks", "role": "synthetic" }],
+    "metrics": ["task success across reaching, grasping, placing, articulated manipulation"],
+    "baselines": ["policies with privileged state"],
+    "headline": "One policy performs multiple household tasks from vision alone, with active search emerging from training rather than being engineered."
+  },
+  "why": "The perception-action loop closed inside a single policy, and the strongest argument here that perception is an action.",
+  "confidence": "high", "tags": ["humanoid", "RL", "active perception"]
+},
+{
+  "id": "latmos",
+  "short": "LATMOS",
+  "title": "LATMOS: Latent Automaton Task Model from Observation Sequences",
+  "year": 2025, "date": "2025-03", "venue": "IROS 2025", "venue_type": "conference",
+  "authors": ["Weixiao Zhan", "Qiyue Dong", "Eduardo Sebastián", "Nikolay Atanasov"],
+  "n_authors": 4, "institutions": ["UC San Diego"],
+  "links": { "arxiv": "https://arxiv.org/abs/2503.08090" },
+  "tldr": "Learn an automaton whose symbols live in a latent feature space, and one model factorizes the task, verifies an execution and plans the next step.",
+  "contribution": ["method"], "openness": ["none"],
+  "arc": ["model", "change"], "closes_loop": true,
+  "loop_stage": ["represent", "decide", "verify"],
+  "human_role": ["observed"], "embodiment": ["robot"],
+  "world_facet": ["procedure", "object-state"],
+  "representation": ["graph", "latent"],
+  "change_channel": ["plan"],
+  "sensing": ["robot-onboard", "exocentric"],
+  "regime": "streaming", "horizon": "minutes",
+  "domain": ["lab-sim", "everyday"], "autonomy": "autonomous",
+  "problem": {
+    "task": "Learn a task model from correct executions that supports factorization, planning and verification at once.",
+    "inference": {
+      "inputs": [{ "name": "observation sequence", "modality": "video", "tensor": "(o₁..o_t)", "chars": "Logical formulas, human task video with prompts, or robot images and states — three setups, one model." }],
+      "outputs": [
+        { "name": "latent automaton state", "modality": "graph", "tensor": "q_t", "chars": "Symbols live in the encoder's feature space rather than a hand-written vocabulary." },
+        { "name": "plan / verdict", "modality": "plan", "tensor": "(π, valid?)", "chars": "" }
+      ]
+    },
+    "training": { "supervision": "Observations from correct executions only.", "note": "Automata give verification for free, which most learned task models cannot do." }
+  },
+  "method": {
+    "intuition": "Task planning needs factorization, state estimation and verification together, and an automaton with learned symbols gives all three in one object.",
+    "family": ["graph", "transformer"], "backbone": "observation encoder + latent automaton", "init": "scratch",
+    "components": ["latent symbol learning", "sequential automaton model", "planning and verification operations"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "logical formula tasks", "role": "synthetic" }, { "name": "real human task videos with prompts", "role": "existing" }, { "name": "robot image and state observations", "role": "real-robot" }],
+    "metrics": ["plan generation quality", "verification accuracy"],
+    "baselines": ["learned task models without automaton structure"],
+    "headline": "Improved plan generation and verification across all three setups, from abstract formulas to a real robot task."
+  },
+  "why": "The neuro-symbolic middle of the procedure axis: learned features, but a structure you can check a plan against.",
+  "confidence": "high", "tags": ["automaton", "task model", "verification"]
+},
+{
+  "id": "ar-medical-viz",
+  "short": "AR Medical Visualisation",
+  "title": "Evaluating the Effects of Situated and Embedded Visualisation in Augmented Reality Guidance for Isolated Medical Assistance",
+  "year": 2025, "date": "2025-02", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Frederick George Vickery", "Sébastien Kubicki", "Charlotte Hoareau", "Lucas Brand", "Aurelien Duval", "Seamus Thierry"],
+  "n_authors": 7, "institutions": [],
+  "links": { "arxiv": "https://arxiv.org/abs/2502.09076" },
+  "tldr": "When the nearest expert is a continent away, the question is where to put the instruction: on the patient, or projected beside them. 23 novices, two conditions.",
+  "contribution": ["analysis"], "openness": ["none"],
+  "arc": ["change"], "closes_loop": false,
+  "loop_stage": ["act"],
+  "human_role": ["assisted", "evaluator"], "embodiment": ["human"],
+  "world_facet": ["procedure", "scene"],
+  "representation": ["geometry", "pixels"],
+  "change_channel": ["visual-guidance"],
+  "sensing": ["egocentric"],
+  "regime": "interactive", "horizon": "minutes",
+  "domain": ["clinical"], "autonomy": "human-in-loop",
+  "problem": {
+    "task": "Compare embedded visualization against situated projected visualization for AR-guided medical procedures.",
+    "inference": {
+      "inputs": [{ "name": "visualization condition", "modality": "mask", "tensor": "c ∈ {embedded, situated}", "chars": "Embedded sits on the object; situated is projected nearby." }],
+      "outputs": [{ "name": "performance and preference", "modality": "scalar", "tensor": "(accuracy, time, subjective)", "chars": "23 participants with latent or novice medical knowledge." }]
+    },
+    "training": { "supervision": "Controlled user study.", "note": "The population is chosen to match the real case — trained but out of practice, and out of reach of help." }
+  },
+  "method": {
+    "intuition": "Guidance for an isolated operator has to promote autonomy, and where the information sits in the physical world decides whether it does.",
+    "family": ["analysis"], "backbone": "", "init": "",
+    "components": ["situated analytics framing", "two AR visualization conditions", "novice-operator participant profile"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "controlled AR medical guidance study, N=23", "role": "new" }],
+    "metrics": ["task performance", "subjective preference"],
+    "baselines": ["the other visualization condition"],
+    "headline": "A direct comparison of embedded against situated projected AR guidance for medical procedures performed without expert help."
+  },
+  "why": "The clinical end of visual guidance, where the operator is alone and the cost of a wrong instruction is highest.",
+  "confidence": "high", "tags": ["AR", "medical", "guidance", "study"]
+}
+]

@@ -1,0 +1,1114 @@
+[
+ {
+  "id": "diff-task-graph",
+  "short": "Differentiable Task Graphs",
+  "title": "Differentiable Task Graph Learning: Procedural Activity Representation and Online Mistake Detection from Egocentric Videos",
+  "year": 2024,
+  "date": "2024-06",
+  "venue": "NeurIPS 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Luigi Seminara",
+   "Giovanni Maria Farinella",
+   "Antonino Furnari"
+  ],
+  "n_authors": 3,
+  "institutions": [
+   "University of Catania"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2406.01486",
+   "code": "https://github.com/fpv-iplab/Differentiable-Task-Graph-Learning"
+  },
+  "tldr": "Make the task graph a differentiable parameter instead of a hand-built artifact, and the same graph that represents the procedure also flags mistakes online.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "procedure"
+  ],
+  "representation": [
+   "graph",
+   "latent"
+  ],
+  "change_channel": [
+   "alert"
+  ],
+  "sensing": [
+   "egocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "industrial"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Learn a partial ordering over key-steps from observed sequences, then use it to detect mistakes as they happen.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "key-step sequence",
+      "modality": "label",
+      "tensor": "(k₁..k_t)",
+      "chars": "Observed so far; the causal setting means no future frames."
+     },
+     {
+      "name": "step embeddings",
+      "modality": "latent",
+      "tensor": "e ∈ R^{K×d}",
+      "chars": "Text or video features, in the feature-based variant."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "task graph",
+      "modality": "graph",
+      "tensor": "A ∈ [0,1]^{K×K}",
+      "chars": "Edge weights are learned parameters — human-readable as a partial order."
+     },
+     {
+      "name": "mistake flag",
+      "modality": "label",
+      "tensor": "m_t ∈ {0,1}",
+      "chars": "Current step violates the learned ordering."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Direct maximum-likelihood on edge weights from observed key-step sequences.",
+    "note": "Because it is differentiable, the graph can be a layer inside a larger network rather than a preprocessing step."
+   }
+  },
+  "method": {
+   "intuition": "A task graph is just a set of edge weights, so optimize them directly instead of hand-crafting an extraction procedure.",
+   "family": [
+    "graph",
+    "transformer"
+   ],
+   "backbone": "differentiable task-graph layer",
+   "init": "scratch",
+   "components": [
+    "maximum-likelihood edge weight learning",
+    "feature-based graph prediction from text or video embeddings",
+    "online mistake detection head"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "CaptainCook4D",
+     "role": "existing"
+    },
+    {
+     "name": "Assembly101-O",
+     "role": "remix"
+    },
+    {
+     "name": "EPIC-Tent-O",
+     "role": "remix"
+    }
+   ],
+   "metrics": [
+    "task graph accuracy",
+    "online mistake detection F1"
+   ],
+   "baselines": [
+    "hand-crafted task graph extraction",
+    "MSGI, count-based methods"
+   ],
+   "headline": "+16.7% task graph accuracy over prior work on CaptainCook4D, and +19.8% / +7.5% mistake detection on Assembly101-O and EPIC-Tent-O."
+  },
+  "why": "The clearest demonstration that a symbolic procedure representation and a neural pipeline do not have to be separate systems.",
+  "confidence": "high",
+  "tags": [
+   "task graph",
+   "procedure",
+   "mistakes"
+  ]
+ },
+ {
+  "id": "video-mined-task-graphs",
+  "short": "Video-Mined Task Graphs",
+  "title": "Video-Mined Task Graphs for Keystep Recognition in Instructional Videos",
+  "year": 2023,
+  "date": "2023-07",
+  "venue": "NeurIPS 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Kumar Ashutosh",
+   "Santhosh Kumar Ramakrishnan",
+   "Triantafyllos Afouras",
+   "Kristen Grauman"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "UT Austin",
+   "Meta AI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2307.08763"
+  },
+  "tldr": "Mine how people actually order steps across thousands of how-to videos, then use that distribution to regularize keystep recognition in a new video.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure"
+  ],
+  "representation": [
+   "graph",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "exocentric",
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Zero-shot keystep localization in an unseen instructional video.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "How-to video for a known task."
+     },
+     {
+      "name": "keystep list",
+      "modality": "text",
+      "tensor": "{k₁..k_K}",
+      "chars": "From a task vocabulary; the ordering is not given."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "keystep assignment",
+      "modality": "label",
+      "tensor": "y_{1:T}",
+      "chars": "Per-segment, regularized by the mined graph."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "The graph is mined from unlabeled how-to video corpora. Recognition itself stays zero-shot.",
+    "note": "Probabilistic ordering, not a rigid script — that flexibility is the difference from earlier procedure-alignment work."
+   }
+  },
+  "method": {
+   "intuition": "People do not follow recipes in a fixed order, so a script is the wrong prior and a distribution over orderings is the right one.",
+   "family": [
+    "graph"
+   ],
+   "backbone": "video-language features + graph decoding",
+   "init": "frozen-foundation",
+   "components": [
+    "automatic task graph discovery from how-to video",
+    "graph-regularized keystep decoding"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "HowTo100M-derived corpora",
+     "role": "existing"
+    },
+    {
+     "name": "CrossTask, COIN, Ego4D Goal-Step",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "keystep localization accuracy",
+    "representation quality"
+   ],
+   "baselines": [
+    "script-based alignment",
+    "unstructured keystep recognition"
+   ],
+   "headline": "More reliable zero-shot keystep localization and better video representations than prior work across multiple instructional datasets."
+  },
+  "why": "Establishes the probabilistic-ordering view of procedure that the differentiable and online-mistake work later builds on.",
+  "confidence": "high",
+  "tags": [
+   "task graph",
+   "procedure",
+   "zero-shot"
+  ]
+ },
+ {
+  "id": "neural-task-graphs",
+  "short": "Neural Task Graphs",
+  "title": "Neural Task Graphs: Generalizing to Unseen Tasks from a Single Video Demonstration",
+  "year": 2018,
+  "date": "2018-07",
+  "venue": "CVPR 2019",
+  "venue_type": "conference",
+  "authors": [
+   "De-An Huang",
+   "Suraj Nair",
+   "Danfei Xu",
+   "Yuke Zhu",
+   "Animesh Garg",
+   "Li Fei-Fei"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "Stanford University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/1807.03480"
+  },
+  "tldr": "Put a conjugate task graph between the demonstration and the policy, and one video is enough to do a task the model has never seen.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot",
+   "sim"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "graph"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action"
+  ],
+  "sensing": [
+   "exocentric",
+   "sim-render"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "lab-sim",
+   "clinical"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "One-shot visual imitation of a compositional task.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "demo video",
+      "modality": "video",
+      "tensor": "V_demo",
+      "chars": "A single demonstration of a task never seen in training."
+     },
+     {
+      "name": "current observation",
+      "modality": "image",
+      "tensor": "o_t",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "conjugate task graph",
+      "modality": "graph",
+      "tensor": "G",
+      "chars": "Nodes are actions, edges are states — the inverse of the usual convention."
+     },
+     {
+      "name": "action",
+      "modality": "action",
+      "tensor": "a_t",
+      "chars": ""
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Task-graph structure plus action supervision on seen tasks only.",
+    "note": "Generalization is measured on task compositions absent from training, not on new instances of the same task."
+   }
+  },
+  "method": {
+   "intuition": "A policy that maps a demonstration straight to actions has to relearn structure every time. Making the structure an explicit intermediate lets it be recombined.",
+   "family": [
+    "graph",
+    "imitation"
+   ],
+   "backbone": "task graph generator + execution network",
+   "init": "scratch",
+   "components": [
+    "conjugate task graph representation",
+    "demonstration-to-graph module",
+    "graph-conditioned policy"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Block Stacking (BulletPhysics)",
+     "role": "synthetic"
+    },
+    {
+     "name": "Object Collection (AI2-THOR)",
+     "role": "synthetic"
+    },
+    {
+     "name": "JIGSAWS surgical",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "task success",
+    "graph prediction accuracy"
+   ],
+   "baselines": [
+    "end-to-end one-shot imitation"
+   ],
+   "headline": "Inter-task generalization on two compositional benchmarks with better data efficiency, and task structure prediction that transfers to surgical video."
+  },
+  "why": "The historical root of the task-graph line, and a reminder that this idea started on the robot side.",
+  "confidence": "high",
+  "tags": [
+   "task graph",
+   "imitation",
+   "compositional"
+  ]
+ },
+ {
+  "id": "hiero",
+  "short": "HiERO",
+  "title": "HiERO: understanding the hierarchy of human behavior enhances reasoning on egocentric videos",
+  "year": 2025,
+  "date": "2025-05",
+  "venue": "ICCV 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Simone Alberto Peirone",
+   "Francesca Pistilli",
+   "Giuseppe Averta"
+  ],
+  "n_authors": 3,
+  "institutions": [
+   "Politecnico di Torino"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2505.12911",
+   "code": "https://github.com/sapeirone/hiero"
+  },
+  "tldr": "Activity hierarchy falls out of unscripted video if you align clips to their narrations at several scales at once. Zero-shot then beats fully supervised procedure learning.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure"
+  ],
+  "representation": [
+   "latent",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Enrich video-segment features with hierarchical activity threads, for retrieval, grounding and procedure learning.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "video segments",
+      "modality": "video",
+      "tensor": "{v_i}",
+      "chars": "Long unscripted egocentric recordings."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "hierarchy-aware features",
+      "modality": "latent",
+      "tensor": "f ∈ R^{N×d}",
+      "chars": "Used with minimal extra training on downstream tasks."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Weak — alignment between video clips and their narrated descriptions.",
+    "note": "No procedure labels at any point, which is why the zero-shot procedure-learning result is meaningful."
+   }
+  },
+  "method": {
+   "intuition": "Human activity varies wildly on the surface but is generated by a hierarchy of related actions, and that hierarchy is recoverable from narration alignment alone.",
+   "family": [
+    "ssl",
+    "transformer"
+   ],
+   "backbone": "hierarchical video-text architecture",
+   "init": "frozen-foundation",
+   "components": [
+    "multi-scale clip-narration alignment",
+    "hierarchical activity threads",
+    "contextual and temporal reasoning heads"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "EgoMCQ, EgoNLQ",
+     "role": "existing"
+    },
+    {
+     "name": "EgoProceL, Ego4D Goal-Step",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "retrieval accuracy",
+    "grounding",
+    "procedure learning F1"
+   ],
+   "baselines": [
+    "flat video-text alignment",
+    "fully-supervised procedure learning"
+   ],
+   "headline": "State of the art on all benchmarks, and +12.5% F1 on EgoProceL zero-shot over fully supervised methods."
+  },
+  "why": "Argues that procedure structure need not be annotated. It is already latent in how people narrate what they are doing.",
+  "confidence": "high",
+  "tags": [
+   "hierarchy",
+   "egocentric",
+   "procedure",
+   "weak supervision"
+  ]
+ },
+ {
+  "id": "p-jepa",
+  "short": "P-JEPA",
+  "title": "P-JEPA: Procedural Video Representation Learning via Joint Embedding Predictive Architecture",
+  "year": 2026,
+  "date": "2026-06",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Felix Tristram",
+   "Stefano Gasperini",
+   "Benjamin Killeen",
+   "Marcel Walch",
+   "Christian Benz",
+   "Nassir Navab"
+  ],
+  "n_authors": 7,
+  "institutions": [
+   "TU Munich",
+   "Johns Hopkins University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2606.23256"
+  },
+  "tldr": "Turning the stove on and off look identical. JEPA over a frame-aligned action space with pooled latent targets lets a 30-minute procedure fit in one model.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "exocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "hours",
+  "domain": [
+   "everyday",
+   "industrial"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Long-duration procedural video representation learning and temporal action segmentation.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "long video features",
+      "modality": "latent",
+      "tensor": "z ∈ R^{T×d}",
+      "chars": "Videos over 30 minutes; features from V-JEPA 2, TSM or I3D — backbone-agnostic."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "frame-aligned representation",
+      "modality": "latent",
+      "tensor": "h ∈ R^{T×d}",
+      "chars": "Probed by linear separability and streaming segmentation."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Self-supervised: predict pooled masked latent vectors in a dense frame-aligned action space.",
+    "note": "The pooling is what dodges the quadratic attention cost that keeps other video models from seeing a whole procedure."
+   }
+  },
+  "method": {
+   "intuition": "Procedural steps depend on context that arrived thirty minutes earlier, and a model that cannot hold that window cannot tell two visually identical actions apart.",
+   "family": [
+    "ssl",
+    "transformer"
+   ],
+   "backbone": "backbone-agnostic predictor over frozen features",
+   "init": "frozen-foundation",
+   "components": [
+    "dense frame-aligned action space",
+    "pooled masked latent prediction",
+    "streaming inference"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Ego-Exo4D",
+     "role": "existing"
+    },
+    {
+     "name": "EgoProceL",
+     "role": "existing"
+    },
+    {
+     "name": "Assembly101",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "linear separability",
+    "temporal action segmentation",
+    "streaming accuracy"
+   ],
+   "baselines": [
+    "V-JEPA 2 features",
+    "LLM-based video models"
+   ],
+   "headline": "State of the art on Ego-Exo4D fine-grained action classification with an order of magnitude fewer parameters than LLM-based alternatives."
+  },
+  "why": "Carries the JEPA idea from generic video into procedure, where the long-range dependency is the whole problem.",
+  "confidence": "medium",
+  "tags": [
+   "JEPA",
+   "procedure",
+   "long video"
+  ]
+ },
+ {
+  "id": "ashita",
+  "short": "ASHiTA",
+  "title": "ASHiTA: Automatic Scene-grounded Hierarchical Task Analysis",
+  "year": 2025,
+  "date": "2025-04",
+  "venue": "CVPR 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Yun Chang",
+   "Leonor Fermoselle",
+   "Duy Ta",
+   "Bernadette Bucher",
+   "Luca Carlone",
+   "Jiuguang Wang"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "MIT",
+   "University of Michigan",
+   "RAI Institute"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2504.06553"
+  },
+  "tldr": "Decomposing a high-level instruction depends on the room you are standing in, so build the task hierarchy and the 3D scene graph together instead of in sequence.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "decide"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "graph",
+   "language",
+   "geometry"
+  ],
+  "change_channel": [
+   "plan"
+  ],
+  "sensing": [
+   "depth-3d",
+   "robot-onboard"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Turn an abstract instruction into grounded subtasks tied to specific objects in a specific 3D scene.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "posed RGB-D",
+      "modality": "rgbd",
+      "tensor": "{(I_i, D_i, π_i)}",
+      "chars": "A scan of the environment."
+     },
+     {
+      "name": "high-level task",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "Abstract enough that it names nothing in the scene."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "task hierarchy",
+      "modality": "graph",
+      "tensor": "H",
+      "chars": "Subtasks, each attached to scene-graph nodes."
+     },
+     {
+      "name": "3D scene graph",
+      "modality": "graph",
+      "tensor": "G",
+      "chars": "Built task-driven, so it contains what the task needs."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "LLM-assisted, no task-hierarchy training data.",
+    "note": "The alternation matters: the graph decides what the decomposition can refer to, and the decomposition decides what the graph must contain."
+   }
+  },
+  "method": {
+   "intuition": "Hierarchical task analysis is environment-dependent, so doing it before you have a scene representation gets you subtasks the robot cannot execute.",
+   "family": [
+    "llm",
+    "graph"
+   ],
+   "backbone": "LLM + open-vocabulary 3D scene graph",
+   "init": "prompt-only",
+   "components": [
+    "alternating task analysis and scene graph construction",
+    "task-driven node selection",
+    "grounded subtask output"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "indoor 3D scans with high-level instructions",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "decomposition quality",
+    "grounding accuracy"
+   ],
+   "baselines": [
+    "LLM-only decomposition",
+    "state-of-the-art 3D grounding"
+   ],
+   "headline": "Substantially better than LLM baselines at environment-dependent decomposition, with grounding comparable to dedicated 3D grounding methods."
+  },
+  "why": "Shows procedure structure and scene structure are the same problem once you have to execute rather than describe.",
+  "confidence": "high",
+  "tags": [
+   "task hierarchy",
+   "scene graph",
+   "grounding"
+  ]
+ },
+ {
+  "id": "every-mistake-counts",
+  "short": "Every Mistake Counts",
+  "title": "Every Mistake Counts in Assembly",
+  "year": 2023,
+  "date": "2023-07",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Guodong Ding",
+   "Fadime Sener",
+   "Shugao Ma",
+   "Angela Yao"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "National University of Singapore",
+   "Meta Reality Labs"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2307.16453"
+  },
+  "tldr": "Build the constraint set from the mistakes you have already watched: spatial beliefs about how parts fit, temporal beliefs about what must come first, updated online.",
+  "contribution": [
+   "method",
+   "dataset"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "verify",
+   "adapt"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "graph"
+  ],
+  "change_channel": [
+   "alert"
+  ],
+  "sensing": [
+   "egocentric",
+   "exocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "industrial"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Identify ordering mistakes in an assembly sequence, online.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "action sequence",
+      "modality": "label",
+      "tensor": "(a₁..a_t)",
+      "chars": "Observed so far, real-world and noisy."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "ordering violation",
+      "modality": "label",
+      "tensor": "m_t ∈ {0,1}",
+      "chars": "Checked against the current belief sets."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Beliefs are accumulated from observed mistakes rather than fit offline.",
+    "note": "Episodic memory means the knowledge base grows during deployment — a rare instance of the adapt stage actually being implemented."
+   }
+  },
+  "method": {
+   "intuition": "You cannot enumerate every wrong ordering in advance, but you can accumulate the constraints that the wrong ones violate.",
+   "family": [
+    "graph",
+    "classical"
+   ],
+   "backbone": "belief-set knowledge base with episodic memory",
+   "init": "scratch",
+   "components": [
+    "spatial beliefs over part topology",
+    "temporal beliefs over prerequisites",
+    "online belief update",
+    "new coarse part-position annotations for Assembly101"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Assembly101",
+     "role": "reannotated"
+    }
+   ],
+   "metrics": [
+    "ordering mistake detection accuracy"
+   ],
+   "baselines": [
+    "sequence models without an explicit knowledge base"
+   ],
+   "headline": "Inferred spatial and temporal beliefs identify incorrect orderings in real action sequences, outperforming the compared inference algorithms on Assembly101."
+  },
+  "why": "The clearest statement that a task assistant should keep learning its constraints while it watches, during deployment.",
+  "confidence": "high",
+  "tags": [
+   "mistakes",
+   "knowledge base",
+   "online"
+  ]
+ },
+ {
+  "id": "action-genome",
+  "short": "Action Genome",
+  "title": "Action Genome: Actions as Composition of Spatio-temporal Scene Graphs",
+  "year": 2019,
+  "date": "2019-12",
+  "venue": "CVPR 2020",
+  "venue_type": "conference",
+  "authors": [
+   "Jingwei Ji",
+   "Ranjay Krishna",
+   "Li Fei-Fei",
+   "Juan Carlos Niebles"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "Stanford University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/1912.06992"
+  },
+  "tldr": "An action is a sequence of changing object relationships. Annotating those relationships gives few-shot recognition for free.",
+  "contribution": [
+   "dataset",
+   "method"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "object-state",
+   "object-change",
+   "interaction"
+  ],
+  "representation": [
+   "graph"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "exocentric"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Decompose actions into spatio-temporal scene graphs, and predict those graphs from video.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "10K videos of daily activity."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "scene graph per frame",
+      "modality": "graph",
+      "tensor": "G_t",
+      "chars": "0.4M objects, 1.7M visual relationships annotated."
+     },
+     {
+      "name": "action label",
+      "modality": "label",
+      "tensor": "a",
+      "chars": ""
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Dense object and relationship annotations on Charades video.",
+    "note": "The relationship track is the reusable part. The action labels came with the source dataset."
+   }
+  },
+  "method": {
+   "intuition": "Cognitive science says people encode events as part structures. The prototypical part is an action-object interaction, so annotate those.",
+   "family": [
+    "graph",
+    "cnn"
+   ],
+   "backbone": "scene-graph feature banks over an action recognition model",
+   "init": "finetune",
+   "components": [
+    "spatio-temporal scene graph representation",
+    "graph feature banks",
+    "spatio-temporal scene graph prediction task"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Action Genome (over Charades)",
+     "role": "reannotated"
+    }
+   ],
+   "metrics": [
+    "action mAP",
+    "few-shot mAP",
+    "scene graph recall"
+   ],
+   "baselines": [
+    "monolithic action recognition",
+    "image scene graph models"
+   ],
+   "headline": "42.7% mAP few-shot action recognition with as few as 10 examples, by decomposing the temporal change in visual relationships."
+  },
+  "why": "The symbolic ancestor of object-centric procedural understanding, and still the cleanest argument for why decomposition helps.",
+  "confidence": "high",
+  "tags": [
+   "scene graph",
+   "compositional",
+   "dataset"
+  ]
+ }
+]

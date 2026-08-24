@@ -1,0 +1,909 @@
+<html lang="en"__PHYSAI_REVIEW_ATTRS__>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Awesome Physical AI</title>
+__PHYSAI_REVIEW_CSS__<style>
+/* ---------- tokens ---------- */
+:root{
+  --bg:#fbfbf9; --bg2:#ffffff; --bg3:#f4f4f1;
+  --ink:#17171b; --ink2:#4a4a55; --ink3:#84848f;
+  --line:#e5e5e0; --line2:#d3d3cc;
+  --rose:#a4386e; --rose-bg:#f7e9f0; --rose-line:#e9c9da;
+  --blue:#3a51a8; --blue-bg:#e9ecf7; --blue-line:#cbd3ee;
+  --shadow:0 1px 2px rgba(20,20,30,.05),0 8px 24px rgba(20,20,30,.06);
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+}
+:root[data-theme="dark"], :root:not([data-theme="light"]).dark-pref{}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e0e11; --bg2:#16161a; --bg3:#1c1c21;
+    --ink:#ececef; --ink2:#a9a9b4; --ink3:#75757f;
+    --line:#26262c; --line2:#33333b;
+    --rose:#ffafd7; --rose-bg:#2a1a23; --rose-line:#4a2b3a;
+    --blue:#93a9ff; --blue-bg:#16192a; --blue-line:#2c3358;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 28px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e0e11; --bg2:#16161a; --bg3:#1c1c21;
+  --ink:#ececef; --ink2:#a9a9b4; --ink3:#75757f;
+  --line:#26262c; --line2:#33333b;
+  --rose:#ffafd7; --rose-bg:#2a1a23; --rose-line:#4a2b3a;
+  --blue:#93a9ff; --blue-bg:#16192a; --blue-line:#2c3358;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 28px rgba(0,0,0,.45);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+::selection{background:var(--rose-bg)}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:saturate(1.6) blur(12px);border-bottom:1px solid var(--line)}
+.hrow{display:flex;align-items:center;gap:14px;padding:10px 20px;max-width:1720px;margin:0 auto}
+.brand{font-weight:650;letter-spacing:-.015em;font-size:15px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.brand .dot{width:7px;height:7px;border-radius:50%;background:var(--rose);flex:none}
+.brand .v{font:500 10px/1 var(--mono);color:var(--ink3);border:1px solid var(--line2);
+  padding:3px 5px;border-radius:4px;margin-left:2px}
+nav{display:flex;gap:2px;background:var(--bg3);padding:3px;border-radius:8px;border:1px solid var(--line)}
+nav button{padding:5px 11px;border-radius:6px;font-size:12.5px;font-weight:500;color:var(--ink2);white-space:nowrap}
+nav button[aria-selected="true"]{background:var(--bg2);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.07)}
+.spacer{flex:1}
+.searchwrap{position:relative;flex:1;max-width:420px;min-width:150px}
+.searchwrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--ink3);pointer-events:none}
+#q{width:100%;padding:6px 30px 6px 29px;border-radius:8px;border:1px solid var(--line2);
+  background:var(--bg2);color:var(--ink);font-size:13px;outline:none}
+#q:focus{border-color:var(--rose);box-shadow:0 0 0 3px var(--rose-bg)}
+.kbd{position:absolute;right:7px;top:50%;transform:translateY(-50%);font:500 10px/1 var(--mono);
+  color:var(--ink3);border:1px solid var(--line2);border-radius:4px;padding:3px 4px;background:var(--bg3)}
+.iconbtn{width:30px;height:30px;display:grid;place-items:center;border-radius:7px;border:1px solid var(--line);color:var(--ink2)}
+.iconbtn:hover{background:var(--bg3);color:var(--ink)}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:246px minmax(0,1fr);gap:26px;max-width:1720px;margin:0 auto;padding:20px}
+aside{position:sticky;top:56px;align-self:start;max-height:calc(100vh - 76px);overflow-y:auto;
+  padding-right:6px;padding-bottom:40px}
+aside::-webkit-scrollbar{width:7px} aside::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+.fhead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.fhead b{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.clearall{font-size:11.5px;color:var(--rose)}
+.facet{border-bottom:1px solid var(--line);padding:8px 0}
+.facet > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:var(--ink2);padding:2px 0;user-select:none}
+.facet > summary::-webkit-details-marker{display:none}
+.facet > summary .caret{transition:transform .15s;color:var(--ink3);font-size:9px}
+.facet[open] > summary .caret{transform:rotate(90deg)}
+.facet > summary .n{margin-left:auto;font:500 10px/1 var(--mono);color:var(--ink3)}
+.facet .opts{padding:6px 0 4px}
+.opt{display:flex;align-items:center;gap:7px;padding:3px 5px;border-radius:6px;cursor:pointer;
+  font-size:12.5px;color:var(--ink2);position:relative}
+.opt:hover{background:var(--bg3);color:var(--ink)}
+.opt input{accent-color:var(--rose);margin:0;width:13px;height:13px;flex:none}
+.opt .cnt{margin-left:auto;font:500 10px/1 var(--mono);color:var(--ink3)}
+.opt.on{color:var(--ink);font-weight:550}
+.opt .tip{display:none}
+.opt[data-help]:hover .tip{display:block;position:absolute;left:100%;top:0;margin-left:8px;z-index:60;
+  width:210px;background:var(--bg2);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;
+  box-shadow:var(--shadow);font-size:11.5px;font-weight:400;color:var(--ink2);line-height:1.45}
+
+/* ---------- shared ---------- */
+.lede{max-width:70ch}
+.lede h1{font:600 27px/1.2 var(--sans);letter-spacing:-.025em;margin:2px 0 8px}
+.lede .thesis{font-family:var(--serif);font-size:16.5px;line-height:1.6;color:var(--ink)}
+.lede p{color:var(--ink2);font-size:13.5px}
+.statbar{display:flex;flex-wrap:wrap;gap:16px;margin:16px 0 22px;padding:11px 14px;border:1px solid var(--line);
+  border-radius:10px;background:var(--bg2)}
+.stat{display:flex;flex-direction:column;gap:1px}
+.stat b{font:600 15px/1.1 var(--sans);letter-spacing:-.02em}
+.stat span{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;line-height:1;padding:4px 7px;
+  border-radius:5px;border:1px solid var(--line);background:var(--bg3);color:var(--ink2);white-space:nowrap}
+.chip.k{background:var(--blue-bg);border-color:var(--blue-line);color:var(--blue)}
+.chip.r{background:var(--rose-bg);border-color:var(--rose-line);color:var(--rose)}
+.chip b{font-weight:600}
+.chip button{color:var(--ink3);font-size:13px;line-height:1;padding:0 0 0 2px}
+.chip button:hover{color:var(--rose)}
+.muted{color:var(--ink3)}
+.empty{padding:60px 20px;text-align:center;color:var(--ink3);font-size:13.5px}
+
+/* ---------- framework view ---------- */
+.arc{margin:0 0 44px}
+.archead{border-top:2px solid var(--ink);padding-top:12px;margin-bottom:6px}
+.archead .n{font:600 11px/1 var(--mono);color:var(--rose);letter-spacing:.1em}
+.archead h2{font:600 22px/1.25 var(--sans);letter-spacing:-.02em;margin:7px 0 6px}
+.archead p{margin:0;color:var(--ink2);font-size:13.5px;max-width:78ch}
+.grp{margin-top:24px}
+.grphead{display:flex;align-items:baseline;gap:9px;border-bottom:1px solid var(--line);padding-bottom:5px;margin-bottom:2px}
+.grphead h3{font:600 14px/1.3 var(--sans);margin:0;letter-spacing:-.01em}
+.grphead .sub{color:var(--ink3);font-size:12.5px;flex:1;min-width:0}
+.grphead .n{font:500 10.5px/1 var(--mono);color:var(--ink3)}
+.plist{display:flex;flex-direction:column}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;
+  padding:9px 8px 9px 9px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:6px}
+.prow:hover{background:var(--bg2)}
+.prow .t{font-weight:560;font-size:13.5px;letter-spacing:-.005em}
+.prow .t em{font-style:normal;background:var(--rose-bg);color:var(--rose);border-radius:3px;padding:0 2px}
+.prow .meta{font-size:11.5px;color:var(--ink3);margin-top:1px}
+.prow .meta .yr{font-family:var(--mono);font-size:11px}
+.prow .tl{font-size:12.5px;color:var(--ink2);margin-top:4px;max-width:88ch}
+.prow .side{display:flex;flex-direction:column;align-items:flex-end;gap:5px;padding-top:2px}
+.marks{display:flex;gap:3px}
+.mark{font:600 9.5px/1 var(--mono);letter-spacing:.04em;padding:3.5px 5px;border-radius:4px;
+  border:1px solid var(--line2);color:var(--ink3);text-transform:uppercase}
+.mark.m{background:var(--blue-bg);border-color:var(--blue-line);color:var(--blue)}
+.mark.d{background:var(--rose-bg);border-color:var(--rose-line);color:var(--rose)}
+.loopstrip{display:flex;gap:2px}
+.ls{width:12px;height:4px;border-radius:2px;background:var(--line2)}
+.ls.on{background:var(--rose)}
+
+.legend{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:-8px 0 22px;
+  font-size:11.5px;color:var(--ink3)}
+.legend .grp2{display:flex;align-items:center;gap:6px}
+.legend b{font-weight:600;color:var(--ink2);letter-spacing:.03em;text-transform:uppercase;font-size:10.5px}
+.legend .ls{width:11px;height:4px}
+.legend .stage{display:flex;align-items:center;gap:3px}
+
+/* ---------- table view ---------- */
+.tbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.tbar .n{font-size:12.5px;color:var(--ink3)}
+.mini{font-size:12px;padding:4px 9px;border:1px solid var(--line2);border-radius:7px;color:var(--ink2);background:var(--bg2)}
+.mini:hover{border-color:var(--rose);color:var(--rose)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--bg2)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:12.5px}
+th{position:sticky;top:0;z-index:5;background:var(--bg3);text-align:left;font-weight:600;font-size:11px;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);padding:8px 10px;white-space:nowrap;
+  border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+th:hover{color:var(--ink)}
+th .ar{opacity:.45;font-size:9px}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--bg3)}
+td.ttl{font-weight:550;min-width:250px;max-width:420px}
+td.ttl .s{color:var(--ink3);font-weight:400;font-size:11.5px;display:block}
+td.num{font-family:var(--mono);font-size:11.5px;color:var(--ink2);white-space:nowrap}
+.cols{display:flex;flex-wrap:wrap;gap:5px;padding:10px 12px;border:1px solid var(--line);
+  border-radius:10px;background:var(--bg2);margin-bottom:12px}
+.cols label{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink2);
+  border:1px solid var(--line);border-radius:6px;padding:3px 7px;cursor:pointer}
+.cols label:hover{border-color:var(--line2)}
+.cols input{accent-color:var(--rose);margin:0;width:12px;height:12px}
+
+/* ---------- protocol view ---------- */
+.doc{max-width:80ch}
+.doc h2{font:600 19px/1.3 var(--sans);letter-spacing:-.02em;margin:34px 0 8px;
+  border-top:1px solid var(--line);padding-top:16px}
+.doc h3{font:600 14px/1.3 var(--sans);margin:22px 0 5px}
+.doc p{color:var(--ink2);font-size:13.5px}
+.doc code{font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--line);
+  border-radius:4px;padding:1px 4px}
+.pcard{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--bg2);margin:10px 0}
+.pcard .lbl{font:600 10.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--rose)}
+.pcard h4{margin:7px 0 5px;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.pcard p{margin:0;font-size:13px;color:var(--ink2)}
+.fieldtable{width:100%;font-size:12.5px;border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;background:var(--bg2);margin:8px 0 18px}
+.fieldtable td{border-bottom:1px solid var(--line);padding:8px 11px;vertical-align:top}
+.fieldtable tr:last-child td{border-bottom:none}
+.fieldtable td:first-child{width:150px;font-weight:600;white-space:nowrap}
+.fieldtable td:first-child span{display:block;font:400 10.5px/1.3 var(--mono);color:var(--ink3);font-weight:400}
+pre.fmt{font-family:var(--mono);font-size:11.5px;line-height:1.6;background:var(--bg3);border:1px solid var(--line);
+  border-radius:10px;padding:14px 16px;overflow-x:auto;color:var(--ink2);margin:8px 0}
+
+/* ---------- detail panel ---------- */
+#scrim{position:fixed;inset:0;background:rgba(10,10,14,.34);backdrop-filter:blur(2px);z-index:70;
+  opacity:0;pointer-events:none;transition:opacity .16s}
+#scrim.on{opacity:1;pointer-events:auto}
+#panel{position:fixed;top:0;right:0;height:100%;width:min(660px,94vw);background:var(--bg2);z-index:80;
+  border-left:1px solid var(--line);box-shadow:var(--shadow);transform:translateX(100%);
+  transition:transform .2s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+#panel.on{transform:none}
+.ptop{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);flex:none}
+.ptop .nav{display:flex;gap:4px}
+.ptop .nav button{width:26px;height:26px;border:1px solid var(--line);border-radius:6px;
+  display:grid;place-items:center;color:var(--ink2);font-size:12px}
+.ptop .nav button:hover{background:var(--bg3);color:var(--ink)}
+.ptop .idx{font:500 11px/1 var(--mono);color:var(--ink3)}
+.pbody{overflow-y:auto;padding:18px 22px 60px}
+.pbody h1{font:600 19px/1.32 var(--sans);letter-spacing:-.02em;margin:0 0 7px}
+.byline{font-size:12.5px;color:var(--ink2);margin-bottom:3px}
+.venue{font-size:12px;color:var(--ink3);margin-bottom:10px}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.links a{font-size:11.5px;padding:4px 9px;border:1px solid var(--line2);border-radius:6px;
+  text-decoration:none;color:var(--ink2)}
+.links a:hover{border-color:var(--rose);color:var(--rose)}
+.tldr{font-family:var(--serif);font-size:15.5px;line-height:1.55;padding:12px 15px;border-radius:9px;
+  background:var(--rose-bg);border:1px solid var(--rose-line);margin-bottom:8px}
+.why{font-size:13px;color:var(--ink2);border-left:2px solid var(--line2);padding-left:11px;margin:12px 0 18px}
+.sec{margin:20px 0 0}
+.sec > h5{font:600 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);
+  margin:0 0 9px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.kv{display:grid;grid-template-columns:112px minmax(0,1fr);gap:5px 12px;font-size:12.5px;margin-bottom:4px}
+.kv .k{color:var(--ink3);font-size:11.5px;padding-top:2px}
+.io{border:1px solid var(--line);border-radius:9px;overflow:hidden;margin:7px 0 12px}
+.io .iohead{background:var(--bg3);padding:5px 11px;font:600 10.5px/1.4 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink3);border-bottom:1px solid var(--line)}
+.iorow{padding:8px 11px;border-bottom:1px solid var(--line);font-size:12.5px}
+.iorow:last-child{border-bottom:none}
+.iorow .nm{font-weight:600}
+.iorow .md{font:500 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.05em;
+  background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-line);border-radius:4px;padding:3px 5px;margin-left:6px}
+.iorow .tn{font-family:var(--mono);font-size:11.5px;color:var(--ink);background:var(--bg3);
+  border:1px solid var(--line);border-radius:4px;padding:1px 5px;display:inline-block;margin-top:4px}
+.iorow .ch{color:var(--ink2);font-size:12.5px;margin-top:3px}
+ul.tight{margin:4px 0 10px;padding-left:17px;font-size:12.5px;color:var(--ink2)}
+ul.tight li{margin:2px 0}
+.dsrow{display:flex;gap:7px;align-items:center;font-size:12.5px;padding:3px 0}
+.dsrow .role{font:500 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);
+  border:1px solid var(--line2);border-radius:4px;padding:3px 5px;flex:none}
+.dsrow .role.new{background:var(--rose-bg);border-color:var(--rose-line);color:var(--rose)}
+.headline{font-size:13px;color:var(--ink);background:var(--bg3);border:1px solid var(--line);
+  border-radius:8px;padding:9px 12px;margin-top:8px}
+.conf{font-size:11.5px;color:var(--ink3);margin-top:22px;padding-top:10px;border-top:1px solid var(--line)}
+
+@media (max-width:1080px){
+  .shell{grid-template-columns:1fr;gap:14px}
+  aside{position:static;max-height:none;border-bottom:1px solid var(--line);padding-bottom:10px}
+  .hrow{flex-wrap:wrap}
+}
+
+/* ---------- comment layer ---------- */
+/* comment-layer.css ships light-only tokens and a handful of hardcoded white
+   surfaces. Retune both to this page's palette, in both themes. */
+:root{
+  --cmt-font:var(--sans);
+  --cmt-accent:#eda0c6; --cmt-highlight:rgba(237,160,198,.34); --cmt-highlight-strong:rgba(226,120,175,.62);
+  --cmt-ai:#3a51a8; --cmt-ai-bg:#e9ecf7;
+  --cmt-ink:#17171b; --cmt-muted:#84848f; --cmt-line:#e5e5e0; --cmt-card:#ffffff;
+  --cmt-shadow:0 1px 2px rgba(20,20,30,.06),0 10px 30px rgba(20,20,30,.13);
+  --cmt-surface:#ffffff; --cmt-surface2:#f4f4f1;
+  --cmt-fab:#17171b; --cmt-fab-ink:#fbfbf9; --cmt-fab-hover:#000;
+  --cmt-primary:#a4386e; --cmt-primary-ink:#ffffff; --cmt-primary-hover:#8b2c5c;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --cmt-accent:#ffafd7; --cmt-highlight:rgba(255,175,215,.20); --cmt-highlight-strong:rgba(255,175,215,.46);
+    --cmt-ai:#93a9ff; --cmt-ai-bg:#16192a;
+    --cmt-ink:#ececef; --cmt-muted:#8b8b96; --cmt-line:#2b2b33; --cmt-card:#16161a;
+    --cmt-shadow:0 1px 2px rgba(0,0,0,.4),0 10px 34px rgba(0,0,0,.55);
+    --cmt-surface:#1c1c21; --cmt-surface2:#22222a;
+    --cmt-fab:#ececef; --cmt-fab-ink:#0e0e11; --cmt-fab-hover:#ffffff;
+    --cmt-primary:#ffafd7; --cmt-primary-ink:#2a1a23; --cmt-primary-hover:#ffc7e3;
+  }
+}
+:root[data-theme="dark"]{
+  --cmt-accent:#ffafd7; --cmt-highlight:rgba(255,175,215,.20); --cmt-highlight-strong:rgba(255,175,215,.46);
+  --cmt-ai:#93a9ff; --cmt-ai-bg:#16192a;
+  --cmt-ink:#ececef; --cmt-muted:#8b8b96; --cmt-line:#2b2b33; --cmt-card:#16161a;
+  --cmt-shadow:0 1px 2px rgba(0,0,0,.4),0 10px 34px rgba(0,0,0,.55);
+  --cmt-surface:#1c1c21; --cmt-surface2:#22222a;
+  --cmt-fab:#ececef; --cmt-fab-ink:#0e0e11; --cmt-fab-hover:#ffffff;
+  --cmt-primary:#ffafd7; --cmt-primary-ink:#2a1a23; --cmt-primary-hover:#ffc7e3;
+}
+/* the hardcoded surfaces, routed through the tokens above */
+.cmt-fab{background:var(--cmt-fab);color:var(--cmt-fab-ink)}
+.cmt-fab:hover{background:var(--cmt-fab-hover)}
+.cmt-pop-head,.cmt-item:hover,.cmt-agent{background:var(--cmt-surface2)}
+.cmt-ta,.cmt-who,.cmt-btn,.cmt-pill{background:var(--cmt-surface)}
+.cmt-btn:hover,.cmt-btn.cmt-ghost:hover,.cmt-msg-edit:hover{background:var(--cmt-surface2)}
+.cmt-btn.cmt-primary{background:var(--cmt-primary);color:var(--cmt-primary-ink);border-color:var(--cmt-primary)}
+.cmt-btn.cmt-primary:hover{background:var(--cmt-primary-hover);border-color:var(--cmt-primary-hover)}
+.cmt-pin{border-color:var(--cmt-card)}
+.cmt-pin.cmt-resolved{background:var(--cmt-line);color:var(--cmt-muted)}
+.cmt-drawer,.cmt-pop{background:var(--cmt-card)}
+
+/* the docked panel is fixed to the right edge; header and paper card give it room.
+   .shell re-margins itself through the layer's own dock accounting. */
+body.cmt-docked .hrow{padding-right:calc(var(--cmt-panel-w,340px) + 26px)}
+body.cmt-docked #panel,body.cmt-docked #scrim{right:var(--cmt-panel-w,340px)}
+
+/* which tab a comment lives in — stamped onto panel rows by comment-bridge.js */
+.cb-view{display:inline-block;margin-left:7px;padding:0 5px;border-radius:999px;
+  border:1px solid var(--cmt-line);background:var(--cmt-surface2);color:var(--cmt-muted);
+  font:600 9.5px/1.75 var(--sans);letter-spacing:.06em;text-transform:uppercase;vertical-align:1px}
+</style>
+
+<header>
+  <div class="hrow">
+    <div class="brand"><span class="dot"></span>Awesome Physical AI<span class="v" id="ver"></span></div>
+    <nav role="tablist">
+      <button role="tab" data-view="framework" aria-selected="true">Framework</button>
+      <button role="tab" data-view="table" aria-selected="false">Papers</button>
+      <button role="tab" data-view="protocol" aria-selected="false">How a paper is read</button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="searchwrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" placeholder="Search titles, authors, methods, tags…" autocomplete="off" spellcheck="false">
+      <span class="kbd">/</span>
+    </div>
+    <button class="iconbtn" id="theme" title="Toggle theme">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="shell">
+  <aside>
+    <div class="fhead"><b>Filters</b><button class="clearall" id="clearall">clear</button></div>
+    <div id="facets"></div>
+  </aside>
+  <main>
+    <div id="view-framework"></div>
+    <div id="view-table" hidden></div>
+    <div id="view-protocol" hidden></div>
+  </main>
+</div>
+
+<div id="scrim"></div>
+<aside id="panel" aria-hidden="true">
+  <div class="ptop">
+    <div class="nav">
+      <button id="pprev" title="Previous (←)">‹</button>
+      <button id="pnext" title="Next (→)">›</button>
+    </div>
+    <span class="idx" id="pidx"></span>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="pclose" title="Close (Esc)">✕</button>
+  </div>
+  <div class="pbody" id="pbody"></div>
+</aside>
+
+<script id="db" type="application/json">__PHYSAI_DATA__</script>
+<script>
+(function(){
+"use strict";
+const DB = JSON.parse(document.getElementById('db').textContent);
+const S = DB.schema, P = DB.papers;
+const $ = s => document.querySelector(s);
+const el = (t,c,h) => { const n=document.createElement(t); if(c)n.className=c; if(h!=null)n.innerHTML=h; return n; };
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Every block a reader can point at carries a stable id. Comment anchors resolve by
+// id first, so ids are what keep comments attached when a filter redraws the page.
+const slugId = v => String(v).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') || 'x';
+
+/* ---------- vocab lookup ---------- */
+const F = {}; S.fields.forEach(f=>F[f.key]=f);
+const LBL = {};
+S.fields.forEach(f=>{ LBL[f.key]={}; (f.vocab||[]).forEach(v=>LBL[f.key][v.v]=v.label); });
+const label = (k,v)=> (LBL[k]&&LBL[k][v]) || v;
+const arr = v => v==null?[]:(Array.isArray(v)?v:[v]);
+const LOOP = (F.loop_stage.vocab||[]).map(v=>v.v);
+
+/* ---------- search index ---------- */
+P.forEach(p=>{
+  p._blob = [p.title,p.short,p.tldr,p.why,(p.authors||[]).join(' '),(p.institutions||[]).join(' '),
+    p.venue,(p.tags||[]).join(' '),p.method&&p.method.intuition,p.problem&&p.problem.task,
+    p.experiments&&p.experiments.headline,(p.method&&p.method.family||[]).join(' '),
+    (p.experiments&&p.experiments.datasets||[]).map(d=>d.name).join(' '),
+    S.fields.filter(f=>f.facet&&f.kind!=='bool').map(f=>arr(p[f.key]).map(v=>label(f.key,v)).join(' ')).join(' ')
+  ].filter(Boolean).join(' \u2022 ').toLowerCase();
+});
+
+/* ---------- state ---------- */
+const VIEWS = ['framework','table','protocol'];
+const state = {
+  view:'framework', q:'',
+  filters:{},            // key -> Set(values)
+  sort:{key:'date',dir:-1},
+  cols:['title','date','venue','arc','embodiment','loop_stage','world_facet','representation','contribution'],
+  dedupe:true, showcols:false
+};
+
+const FACET_KEYS = S.fields.filter(f=>f.facet).map(f=>f.key);
+FACET_KEYS.forEach(k=>state.filters[k]=new Set());
+
+function facetValues(key){
+  const f=F[key];
+  if(f && f.kind==='bool') return ['true','false'];
+  if(f && f.vocab) return f.vocab.map(v=>v.v);
+  const s=new Set(); P.forEach(p=>arr(p[key]).forEach(v=>{ if(v!=null&&v!=='') s.add(String(v)); }));
+  return [...s].sort((a,b)=> key==='year'? b-a : String(a).localeCompare(String(b)));
+}
+function pv(p,key){
+  const f=F[key];
+  if(f&&f.kind==='bool') return [String(!!p[key])];
+  return arr(p[key]).map(String);
+}
+function passesExcept(p, skipKey){
+  for(const k of FACET_KEYS){
+    if(k===skipKey) continue;
+    const sel=state.filters[k]; if(!sel.size) continue;
+    const vals=pv(p,k);
+    if(!vals.some(v=>sel.has(v))) return false;
+  }
+  if(state.q){
+    const toks=state.q.toLowerCase().split(/\s+/).filter(Boolean);
+    if(!toks.every(t=>p._blob.includes(t))) return false;
+  }
+  return true;
+}
+const matches = p => passesExcept(p,null);
+function filtered(){ return P.filter(matches); }
+
+/* ---------- facets UI ---------- */
+function renderFacets(){
+  const host=$('#facets'); const open=new Set([...host.querySelectorAll('details[open]')].map(d=>d.dataset.k));
+  if(!host.dataset.init){ FACET_KEYS.forEach(k=>{ if(['arc','embodiment','loop_stage','contribution'].includes(k)) open.add(k); }); host.dataset.init='1'; }
+  host.innerHTML='';
+  FACET_KEYS.forEach(key=>{
+    const f=F[key];
+    const pool=P.filter(p=>passesExcept(p,key));
+    const counts={}; pool.forEach(p=>pv(p,key).forEach(v=>counts[v]=(counts[v]||0)+1));
+    const vals=facetValues(key).filter(v=>counts[v]||state.filters[key].has(String(v)));
+    if(!vals.length) return;
+    const d=el('details','facet'); d.dataset.k=key; d.id='facet-'+slugId(key);
+    if(open.has(key)||state.filters[key].size) d.open=true;
+    const sel=state.filters[key].size;
+    d.appendChild(el('summary',null,
+      `<span class="caret">▶</span>${esc(f?f.label:key)}<span class="n">${sel?sel+' ✓':vals.length}</span>`));
+    const box=el('div','opts');
+    vals.forEach(v=>{
+      const on=state.filters[key].has(String(v));
+      const vo=(f&&f.vocab||[]).find(x=>x.v===v);
+      const help=vo&&vo.help?vo.help:'';
+      const lab=el('label','opt'+(on?' on':''));
+      lab.id='opt-'+slugId(key)+'-'+slugId(v);
+      if(help) lab.dataset.help='1';
+      lab.innerHTML=`<input type="checkbox" ${on?'checked':''}><span>${esc(label(key,v))}</span>`+
+        `<span class="cnt">${counts[v]||0}</span>`+(help?`<span class="tip">${esc(help)}</span>`:'');
+      lab.querySelector('input').addEventListener('change',e=>{
+        const S_=state.filters[key]; e.target.checked?S_.add(String(v)):S_.delete(String(v)); render();
+      });
+      box.appendChild(lab);
+    });
+    d.appendChild(box); host.appendChild(d);
+  });
+}
+$('#clearall').onclick=()=>{ FACET_KEYS.forEach(k=>state.filters[k].clear()); state.q=''; $('#q').value=''; render(); };
+
+/* ---------- active chips ---------- */
+function activeChips(){
+  const wrap=el('div','chips'); let any=false;
+  FACET_KEYS.forEach(k=>state.filters[k].forEach(v=>{
+    any=true;
+    const c=el('span','chip r',`<b>${esc(F[k]?F[k].label:k)}</b> ${esc(label(k,v))}`);
+    const b=el('button',null,'×'); b.onclick=()=>{state.filters[k].delete(v);render();};
+    c.appendChild(b); wrap.appendChild(c);
+  }));
+  if(state.q){ any=true;
+    const c=el('span','chip r',`<b>search</b> ${esc(state.q)}`);
+    const b=el('button',null,'×'); b.onclick=()=>{state.q='';$('#q').value='';render();};
+    c.appendChild(b); wrap.appendChild(c);
+  }
+  return any?wrap:null;
+}
+
+/* ---------- paper row ---------- */
+function hl(text){
+  if(!state.q) return esc(text);
+  let out=esc(text);
+  state.q.split(/\s+/).filter(Boolean).forEach(t=>{
+    out=out.replace(new RegExp('('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<em>$1</em>');
+  });
+  return out;
+}
+function loopStrip(p){
+  const on=new Set(arr(p.loop_stage));
+  return `<span class="loopstrip" title="loop stage: ${LOOP.filter(s=>on.has(s)).map(s=>label('loop_stage',s)).join(' → ')||'—'}">`+
+    LOOP.map(s=>`<span class="ls${on.has(s)?' on':''}"></span>`).join('')+`</span>`;
+}
+function markChips(p){
+  const c=arr(p.contribution);
+  const pri=['dataset','benchmark','method','system','survey','analysis'].filter(x=>c.includes(x)).slice(0,3);
+  return `<span class="marks">`+pri.map(x=>{
+    const cls=x==='dataset'||x==='benchmark'?'d':(x==='method'?'m':'');
+    return `<span class="mark ${cls}">${esc(x.slice(0,4))}</span>`;
+  }).join('')+`</span>`;
+}
+// A paper shows up in several groups when dedupe is off. The first copy keeps the
+// plain id and repeats get a suffix, so the id a comment stored stays unique.
+const rowSeen=new Set();
+function paperRow(p){
+  const r=el('div','prow'); r.dataset.id=p.id;
+  let rid='row-'+p.id, k=1;
+  while(rowSeen.has(rid)) rid='row-'+p.id+'--'+(++k);
+  rowSeen.add(rid); r.id=rid;
+  const inst=(p.institutions||[])[0]||'';
+  const a1=(p.authors||[])[0]||'';
+  r.innerHTML=`<div>
+      <div class="t">${hl(p.title)}</div>
+      <div class="meta"><span class="yr">${esc(p.date||p.year||'')}</span> · ${esc(p.venue||'')}${a1?' · '+esc(a1)+((p.n_authors||1)>1?' et al.':''):''}${inst?' · '+esc(inst):''}</div>
+      <div class="tl">${hl(p.tldr||'')}</div>
+    </div>
+    <div class="side">${markChips(p)}${loopStrip(p)}</div>`;
+  r.onclick=()=>openPanel(p.id);
+  return r;
+}
+
+/* ---------- framework view ---------- */
+function groupMatch(p,filter){
+  for(const k in filter){
+    const want=arr(filter[k]);
+    const have=pv(p,k);
+    if(!want.some(w=>have.includes(String(w)))) return false;
+  }
+  return true;
+}
+function renderFramework(){
+  const host=$('#view-framework'); host.innerHTML=''; rowSeen.clear();
+  const rows=filtered();
+
+  const lede=el('div','lede'); lede.id='lede';
+  lede.innerHTML=`<h1 id="lede-title">Awesome Physical AI</h1>
+    <div class="thesis" id="thesis-line">${esc(S.thesis.line)}</div>
+    <p id="thesis-body">${esc(S.thesis.body)}</p>`;
+  host.appendChild(lede);
+
+  const withCode=rows.filter(p=>arr(p.openness).includes('code')).length;
+  const withData=rows.filter(p=>arr(p.contribution).some(c=>c==='dataset'||c==='benchmark')).length;
+  const yrs=rows.map(p=>p.year).filter(Boolean);
+  const bar=el('div','statbar'); bar.id='statbar';
+  bar.innerHTML=[
+    ['papers',rows.length],['modeling',rows.filter(p=>arr(p.arc).includes('model')).length],
+    ['changing',rows.filter(p=>arr(p.arc).includes('change')).length],
+    ['closed loop',rows.filter(p=>p.closes_loop).length],
+    ['datasets & benchmarks',withData],['code released',withCode],
+    ['years',yrs.length?Math.min(...yrs)+'–'+Math.max(...yrs):'—']
+  ].map(([k,v])=>`<div class="stat"><b>${v}</b><span>${k}</span></div>`).join('');
+  host.appendChild(bar);
+
+  const leg=el('div','legend'); leg.id='legend';
+  leg.innerHTML='<span class="grp2"><b>loop</b>'+
+    LOOP.map(s=>`<span class="stage"><span class="ls on"></span>${esc(label('loop_stage',s))}</span>`).join('')+'</span>'+
+    '<span class="grp2"><b>contributes</b>'+
+    [['meth','m','method'],['data','d','dataset'],['benc','d','benchmark'],['syst','','system'],['anal','','analysis'],['surv','','survey']]
+      .map(([k,c,t])=>`<span class="stage"><span class="mark ${c}">${k}</span></span>`).join('')+'</span>'+
+    '<span class="muted">every row: click to open the full card</span>';
+  host.appendChild(leg);
+  const ac=activeChips(); if(ac){ ac.style.margin='0 0 18px'; host.appendChild(ac); }
+  if(!rows.length){ host.appendChild(el('div','empty','No paper matches these filters.')); return; }
+
+  S.views.forEach((view,vi)=>{
+    const pool=rows.filter(p=>groupMatch(p,view.filter||{}));
+    if(!pool.length) return;
+    const sec=el('section','arc'); sec.id='arc-'+slugId(view.id);
+    const h=el('div','archead');
+    h.innerHTML=`<div class="n">${String(vi+1).padStart(2,'0')} — ${pool.length} papers</div>
+      <h2 id="${sec.id}-name">${esc(view.name)}</h2><p id="${sec.id}-blurb">${esc(view.blurb)}</p>`;
+    sec.appendChild(h);
+    const used=new Set();
+    const groups=view.groups.slice();
+    groups.push({id:view.id+'-rest',name:'Everything else in this arc',sub:'Matches the arc but none of the groups above.',filter:{},pri:999});
+    // Array order is the reading order. `pri` is the assignment order, most specific first,
+    // so a paper lands in the tightest group that claims it wherever that group is shown.
+    const claim={};
+    groups.map((g,i)=>({g,i})).sort((a,b)=>(a.g.pri==null?a.i:a.g.pri)-(b.g.pri==null?b.i:b.g.pri))
+      .forEach(({g})=>pool.forEach(p=>{
+        if(!used.has(p.id)&&groupMatch(p,g.filter||{})){ used.add(p.id); (claim[g.id]=claim[g.id]||[]).push(p); }
+      }));
+    groups.forEach(g=>{
+      const items=(state.dedupe?(claim[g.id]||[]):pool.filter(p=>groupMatch(p,g.filter||{}))).slice();
+      if(!items.length) return;
+      items.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+      const gd=el('div','grp'); gd.id='grp-'+slugId(view.id)+'-'+slugId(g.id);
+      gd.innerHTML=`<div class="grphead"><h3 id="${gd.id}-name">${esc(g.name)}</h3>`+
+        `<span class="sub" id="${gd.id}-sub">${esc(g.sub||'')}</span><span class="n">${items.length}</span></div>`;
+      const list=el('div','plist');
+      items.forEach(p=>list.appendChild(paperRow(p)));
+      gd.appendChild(list); sec.appendChild(gd);
+    });
+    host.appendChild(sec);
+  });
+
+  const foot=el('div','tbar');
+  const t=el('button','mini', state.dedupe?'Each paper listed once · show in every matching group':'Papers repeat across groups · list each once');
+  t.onclick=()=>{state.dedupe=!state.dedupe;render();};
+  foot.appendChild(t); host.appendChild(foot);
+}
+
+/* ---------- table view ---------- */
+const COLDEF=[
+  {k:'title',label:'Paper',get:p=>`<span>${hl(p.title)}</span><span class="s">${esc((p.authors||[])[0]||'')}${(p.n_authors||1)>1?' et al.':''}${(p.institutions||[]).length?' · '+esc(p.institutions.join(', ')):''}</span>`,cls:'ttl',sort:p=>p.title},
+  {k:'date',label:'Date',get:p=>esc(p.date||''),cls:'num',sort:p=>p.date||''},
+  {k:'venue',label:'Venue',get:p=>esc(p.venue||''),sort:p=>p.venue||''},
+  {k:'tldr',label:'One line',get:p=>hl(p.tldr||''),sort:p=>p.tldr||''},
+  {k:'contribution',label:'Contribution'},{k:'arc',label:'Arc'},{k:'closes_loop',label:'Loop'},
+  {k:'loop_stage',label:'Loop stage'},{k:'embodiment',label:'Embodiment'},{k:'human_role',label:'Human role'},
+  {k:'world_facet',label:'Models what'},{k:'representation',label:'Representation'},
+  {k:'change_channel',label:'Change channel'},{k:'sensing',label:'Sensing'},{k:'regime',label:'Regime'},
+  {k:'horizon',label:'Horizon'},{k:'domain',label:'Domain'},{k:'autonomy',label:'Autonomy'},
+  {k:'openness',label:'Released'},
+  {k:'task',label:'Task',get:p=>esc((p.problem&&p.problem.task)||''),sort:p=>(p.problem&&p.problem.task)||''},
+  {k:'intuition',label:'Method intuition',get:p=>esc((p.method&&p.method.intuition)||''),sort:p=>(p.method&&p.method.intuition)||''},
+  {k:'headline',label:'Headline result',get:p=>esc((p.experiments&&p.experiments.headline)||''),sort:p=>(p.experiments&&p.experiments.headline)||''}
+];
+COLDEF.forEach(c=>{
+  if(!c.get) c.get=p=>{
+    if(c.k==='closes_loop') return p.closes_loop?'<span class="chip r">closed</span>':'<span class="muted">open</span>';
+    const vs=pv(p,c.k).filter(v=>v&&v!=='none');
+    return vs.length? vs.map(v=>`<span class="chip">${esc(label(c.k,v))}</span>`).join(' ') : '<span class="muted">—</span>';
+  };
+  if(!c.sort) c.sort=p=>pv(p,c.k).join(',');
+});
+function renderTable(){
+  const host=$('#view-table'); host.innerHTML='';
+  const rows=filtered().slice().sort((a,b)=>{
+    const c=COLDEF.find(x=>x.k===state.sort.key)||COLDEF[1];
+    const A=c.sort(a),B=c.sort(b);
+    return (A<B?-1:A>B?1:0)*state.sort.dir;
+  });
+  const bar=el('div','tbar');
+  bar.appendChild(el('span','n',`<b>${rows.length}</b> of ${P.length} papers`));
+  const cb=el('button','mini',state.showcols?'Hide columns':'Columns');
+  cb.onclick=()=>{state.showcols=!state.showcols;render();};
+  bar.appendChild(cb);
+  const dl=el('button','mini','Copy JSON');
+  dl.onclick=()=>{navigator.clipboard.writeText(JSON.stringify(rows.map(p=>{const q={...p};delete q._blob;return q;}),null,1)).then(()=>{dl.textContent='Copied ✓';setTimeout(()=>dl.textContent='Copy JSON',1400);});};
+  bar.appendChild(dl);
+  const ac=activeChips(); if(ac) bar.appendChild(ac);
+  host.appendChild(bar);
+
+  if(state.showcols){
+    const cols=el('div','cols');
+    COLDEF.forEach(c=>{
+      const on=state.cols.includes(c.k);
+      const l=el('label',null,`<input type="checkbox" ${on?'checked':''}>${esc(c.label)}`);
+      l.querySelector('input').onchange=e=>{
+        if(e.target.checked){ if(!state.cols.includes(c.k)) state.cols.push(c.k); }
+        else state.cols=state.cols.filter(x=>x!==c.k);
+        render();
+      };
+      cols.appendChild(l);
+    });
+    host.appendChild(cols);
+  }
+  if(!rows.length){ host.appendChild(el('div','empty','No paper matches these filters.')); return; }
+
+  const active=COLDEF.filter(c=>state.cols.includes(c.k));
+  const w=el('div','tablewrap');
+  const t=el('table'); t.id='papers-table';
+  const thead=el('thead');
+  const tr=el('tr');
+  active.forEach(c=>{
+    const th=el('th',null,esc(c.label)+(state.sort.key===c.k?` <span class="ar">${state.sort.dir>0?'▲':'▼'}</span>`:''));
+    th.id='th-'+slugId(c.k);
+    th.onclick=()=>{ if(state.sort.key===c.k) state.sort.dir*=-1; else state.sort={key:c.k,dir:1}; render(); };
+    tr.appendChild(th);
+  });
+  thead.appendChild(tr); t.appendChild(thead);
+  const tb=el('tbody');
+  rows.forEach(p=>{
+    const r=el('tr'); r.id='t-'+p.id; r.onclick=()=>openPanel(p.id);
+    active.forEach(c=>{ const td=el('td',c.cls||null,c.get(p)); td.id='c-'+p.id+'-'+slugId(c.k); r.appendChild(td); });
+    tb.appendChild(r);
+  });
+  t.appendChild(tb); w.appendChild(t); host.appendChild(w);
+}
+
+/* ---------- protocol view ---------- */
+function renderProtocol(){
+  const host=$('#view-protocol');
+  if(host.dataset.done) return; host.dataset.done='1';
+  const d=el('div','doc'); d.id='protocol';
+  const rp=S.reading_protocol;
+  let h=`<h1 id="p-title" style="font:600 27px/1.2 var(--sans);letter-spacing:-.025em;margin:2px 0 10px">How a paper is read here</h1>
+    <p id="p-note" style="font-family:var(--serif);font-size:16px;color:var(--ink)">${esc(rp.note)}</p>`;
+  rp.steps.forEach((s,i)=>{
+    const sid='p-step-'+slugId(s.name);
+    h+=`<div class="pcard" id="${sid}"><div class="lbl">${String(i+1).padStart(2,'0')}</div>`+
+      `<h4 id="${sid}-name">${esc(s.name)}</h4><p id="${sid}-body">${esc(s.body)}</p></div>`;
+  });
+  h+=`<h3 id="p-shape">The shape a problem setting is written in</h3>
+  <pre class="fmt" id="p-format">Inference:
+  Inputs
+    Component 1
+      modality:      video
+      tensor:        V ∈ R^{T×H×W×3}
+      content:       T = 8–16 frames sampled from 30–300 s egocentric clips
+    Component 2
+      modality:      text
+      tensor:        p
+      content:       the recipe step the user was told to perform
+  Outputs
+    Component 1
+      modality:      label
+      tensor:        y ∈ {success, mistake}
+      content:       one decision per step, causal — no future frames
+
+Training:
+  supervision:       correct executions only (one-class)
+  note:              what differs from inference, and why</pre>
+  <p id="p-rule">The rule is an exhaustive structure with short cells. Every column exists for every paper, and no cell runs past a sentence or two. Detail lives in the paper — this is the index that tells you which paper to open.</p>
+
+  <h2 id="p-columns">Columns</h2>
+  <p id="p-columns-note">Sections on the Framework tab are filters over these columns rather than folders. A paper that models the world and changes it carries both values, and appears in both arcs.</p>`;
+  d.innerHTML=h;
+
+  ['topic','meta'].forEach(axis=>{
+    const fs=S.fields.filter(f=>f.axis===axis&&(f.vocab||f.kind==='bool'));
+    if(!fs.length) return;
+    const ah=el('h3',null,axis==='topic'?'Physical-AI axes':'Bibliographic and contribution');
+    ah.id='p-axes-'+axis; d.appendChild(ah);
+    const t=el('table','fieldtable'); t.id='fields-'+axis; const tb=el('tbody');
+    fs.forEach(f=>{
+      const tr=el('tr'); tr.id='field-'+slugId(f.key);
+      tr.appendChild(el('td',null,`${esc(f.label)}<span>${esc(f.key)} · ${esc(f.kind)}</span>`));
+      const vals=(f.vocab||[]).map(v=>`<span class="chip">${esc(v.label)}</span>`).join(' ')||'<span class="chip">true</span> <span class="chip">false</span>';
+      tr.appendChild(el('td',null,(f.help?`<div style="margin-bottom:6px;color:var(--ink2)">${esc(f.help)}</div>`:'')+`<div class="chips">${vals}</div>`));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); d.appendChild(t);
+  });
+
+  const dr=el('div');
+  dr.innerHTML=`<h3 id="p-dataroles">What was done to the data</h3>
+    <p id="p-dataroles-note">Every dataset an experiment touches is tagged with what the authors did to it. In this field that is often the real contribution.</p>
+    <div class="chips">${S.data_roles.map(r=>`<span class="chip">${esc(r.label)}</span>`).join(' ')}</div>
+    <h2 id="p-adding">Adding a paper</h2>
+    <p id="p-adding-note">Drop a JSON object into a file under <code>data/papers/</code> and run <code>python3 build.py</code>. The schema in <code>data/schema.json</code> is the contract; unknown values simply show up as new facet options, so the vocabulary can grow without a migration.</p>
+    <p class="muted" id="p-confidence" style="margin-top:26px">Entries marked <b>medium</b> confidence are grounded in the abstract and the authors' own claims but were not read end to end. Venues are recorded from what the source says; a paper listed as arXiv may have been published since.</p>`;
+  d.appendChild(dr);
+  host.appendChild(d);
+}
+
+/* ---------- detail panel ---------- */
+let panelList=[], panelIdx=-1;
+function ioBlock(title, items){
+  if(!items||!items.length) return '';
+  return `<div class="io"><div class="iohead">${esc(title)}</div>`+items.map(c=>`
+    <div class="iorow">
+      <span class="nm">${esc(c.name||'')}</span>${c.modality?`<span class="md">${esc(c.modality)}</span>`:''}
+      ${c.tensor?`<div><span class="tn">${esc(c.tensor)}</span></div>`:''}
+      ${c.chars?`<div class="ch">${esc(c.chars)}</div>`:''}
+    </div>`).join('')+`</div>`;
+}
+function chipRow(key,p){
+  const vs=pv(p,key).filter(v=>v&&v!=='none');
+  if(!vs.length) return '<span class="muted">—</span>';
+  return vs.map(v=>`<span class="chip">${esc(label(key,v))}</span>`).join(' ');
+}
+function renderPanel(p){
+  const links=Object.entries(p.links||{}).filter(([k,v])=>v)
+    .map(([k,v])=>`<a href="${esc(v)}" target="_blank" rel="noopener">${esc(k==='page'?'project page':k)} ↗</a>`).join('');
+  const m=p.method||{}, x=p.experiments||{}, pr=p.problem||{};
+  const authors=(p.authors||[]).join(', ')+((p.n_authors||0)>(p.authors||[]).length?`, +${p.n_authors-(p.authors||[]).length} more`:'');
+  let h=`
+   <h1>${esc(p.title)}</h1>
+   <div class="byline">${esc(authors)}</div>
+   <div class="venue">${esc(p.venue||'')}${p.date?' · '+esc(p.date):''}${(p.institutions||[]).length?' · '+esc(p.institutions.join(' · ')):''}</div>
+   <div class="links">${links}</div>
+   <div class="tldr">${esc(p.tldr||'')}</div>
+   ${p.why?`<div class="why"><b>Why it is on this list.</b> ${esc(p.why)}</div>`:''}
+
+   <div class="sec"><h5>Where it sits</h5>
+     <div class="kv"><div class="k">Arc</div><div>${chipRow('arc',p)}</div></div>
+     <div class="kv"><div class="k">Loop stage</div><div>${chipRow('loop_stage',p)} ${p.closes_loop?'<span class="chip r">closes the loop</span>':''}</div></div>
+     <div class="kv"><div class="k">Embodiment</div><div>${chipRow('embodiment',p)} ${pv(p,'human_role').filter(v=>v&&v!=='none').map(v=>`<span class="chip">human: ${esc(label('human_role',v))}</span>`).join(' ')}</div></div>
+     <div class="kv"><div class="k">Models what</div><div>${chipRow('world_facet',p)}</div></div>
+     <div class="kv"><div class="k">Representation</div><div>${chipRow('representation',p)}</div></div>
+     <div class="kv"><div class="k">Change channel</div><div>${chipRow('change_channel',p)}</div></div>
+     <div class="kv"><div class="k">Sensing</div><div>${chipRow('sensing',p)}</div></div>
+     <div class="kv"><div class="k">Setting</div><div>${chipRow('regime',p)} ${chipRow('horizon',p)} ${chipRow('domain',p)} ${chipRow('autonomy',p)}</div></div>
+     <div class="kv"><div class="k">Contribution</div><div>${chipRow('contribution',p)} ${chipRow('openness',p)}</div></div>
+   </div>`;
+
+  if(pr.task||((pr.inference||{}).inputs||[]).length){
+    h+=`<div class="sec"><h5>Problem setting</h5>`;
+    if(pr.task) h+=`<div style="font-size:13px;margin-bottom:8px">${esc(pr.task)}</div>`;
+    h+=ioBlock('Inference · inputs',(pr.inference||{}).inputs);
+    h+=ioBlock('Inference · outputs',(pr.inference||{}).outputs);
+    const tr=pr.training||{};
+    if(tr.supervision||tr.note){
+      h+=`<div class="io"><div class="iohead">Training</div>`;
+      if(tr.supervision) h+=`<div class="iorow"><span class="nm">supervision</span><div class="ch">${esc(tr.supervision)}</div></div>`;
+      if(tr.note) h+=`<div class="iorow"><span class="nm">note</span><div class="ch">${esc(tr.note)}</div></div>`;
+      h+=ioBlock('',tr.inputs).replace('<div class="io">','').replace(/<\/div>$/,'');
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  }
+
+  if(m.intuition||(m.components||[]).length){
+    h+=`<div class="sec"><h5>Method</h5>`;
+    if(m.intuition) h+=`<div style="font-size:13.5px;margin-bottom:9px">${esc(m.intuition)}</div>`;
+    if(m.backbone) h+=`<div class="kv"><div class="k">Backbone</div><div>${esc(m.backbone)}</div></div>`;
+    if(m.init) h+=`<div class="kv"><div class="k">Init</div><div><span class="chip">${esc(m.init)}</span></div></div>`;
+    if((m.family||[]).length) h+=`<div class="kv"><div class="k">Family</div><div>${m.family.map(f=>`<span class="chip k">${esc(f)}</span>`).join(' ')}</div></div>`;
+    if((m.components||[]).length) h+=`<div class="kv"><div class="k">Components</div><div><ul class="tight">${m.components.map(c=>`<li>${esc(c)}</li>`).join('')}</ul></div></div>`;
+    h+=`</div>`;
+  }
+
+  if(p.data){
+    const dsp=p.data;
+    h+=`<div class="sec"><h5>Dataset</h5>`;
+    Object.entries(dsp).forEach(([k,v])=>{ h+=`<div class="kv"><div class="k">${esc(k)}</div><div>${esc(Array.isArray(v)?v.join(', '):v)}</div></div>`; });
+    h+=`</div>`;
+  }
+
+  if((x.datasets||[]).length||x.headline){
+    h+=`<div class="sec"><h5>Experiments</h5>`;
+    (x.datasets||[]).forEach(d=>{
+      const isNew=['new','synthetic','reannotated'].includes(d.role);
+      h+=`<div class="dsrow"><span class="role${isNew?' new':''}">${esc(d.role||'')}</span><span>${esc(d.name)}</span></div>`;
+    });
+    if((x.metrics||[]).length) h+=`<div class="kv" style="margin-top:8px"><div class="k">Metrics</div><div>${x.metrics.map(v=>`<span class="chip">${esc(v)}</span>`).join(' ')}</div></div>`;
+    if((x.baselines||[]).length) h+=`<div class="kv"><div class="k">Baselines</div><div>${esc(x.baselines.join('; '))}</div></div>`;
+    if(x.headline) h+=`<div class="headline">${esc(x.headline)}</div>`;
+    h+=`</div>`;
+  }
+
+  if((p.tags||[]).length) h+=`<div class="sec"><h5>Tags</h5><div class="chips">${p.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div></div>`;
+  h+=`<div class="conf">Entry confidence: <b>${esc(p.confidence||'—')}</b>. ID <code style="font-family:var(--mono)">${esc(p.id)}</code>.</div>`;
+  $('#pbody').innerHTML=h; $('#pbody').scrollTop=0;
+  $('#pidx').textContent=(panelIdx+1)+' / '+panelList.length;
+}
+function openPanel(id){
+  panelList=filtered().map(p=>p.id);
+  panelIdx=panelList.indexOf(id);
+  if(panelIdx<0){ panelList=[id]; panelIdx=0; }
+  renderPanel(P.find(p=>p.id===id));
+  $('#panel').classList.add('on'); $('#scrim').classList.add('on');
+  $('#panel').setAttribute('aria-hidden','false');
+  location.hash=id;
+}
+function closePanel(){
+  $('#panel').classList.remove('on'); $('#scrim').classList.remove('on');
+  $('#panel').setAttribute('aria-hidden','true');
+  if(location.hash) history.replaceState(null,'',location.pathname+location.search);
+}
+function step(d){
+  if(!panelList.length) return;
+  panelIdx=(panelIdx+d+panelList.length)%panelList.length;
+  const p=P.find(x=>x.id===panelList[panelIdx]); renderPanel(p); location.hash=p.id;
+}
+$('#pclose').onclick=closePanel; $('#scrim').onclick=closePanel;
+$('#pprev').onclick=()=>step(-1); $('#pnext').onclick=()=>step(1);
+
+/* ---------- wiring ---------- */
+function setView(v){
+  if(!VIEWS.includes(v)||state.view===v) return false;
+  state.view=v;
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',String(x.dataset.view===v)));
+  render(); return true;
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+let qt;
+$('#q').addEventListener('input',e=>{ clearTimeout(qt); qt=setTimeout(()=>{ state.q=e.target.value.trim(); render(); },110); });
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==$('#q')){ e.preventDefault(); $('#q').focus(); }
+  if(e.key==='Escape'){ if($('#panel').classList.contains('on')) closePanel(); else if(document.activeElement===$('#q')) $('#q').blur(); }
+  if($('#panel').classList.contains('on')){
+    if(e.key==='ArrowLeft'){e.preventDefault();step(-1);} if(e.key==='ArrowRight'){e.preventDefault();step(1);}
+  }
+});
+const root=document.documentElement;
+try{ const saved=localStorage.getItem('physai-theme'); if(saved) root.setAttribute('data-theme',saved); }catch(e){}
+$('#theme').onclick=()=>{
+  const cur=root.getAttribute('data-theme');
+  const sysDark=matchMedia('(prefers-color-scheme: dark)').matches;
+  const next=cur? (cur==='dark'?'light':'dark') : (sysDark?'light':'dark');
+  root.setAttribute('data-theme',next);
+  try{ localStorage.setItem('physai-theme',next); }catch(e){}
+};
+$('#ver').textContent='v'+S.version+' · '+P.length;
+
+// comment-bridge.js drives the tabs when a comment sits on a view you are not on
+window.__physai={ views:VIEWS.slice(), view:()=>state.view, setView:setView };
+
+function render(){
+  renderFacets();
+  VIEWS.forEach(v=>{ $('#view-'+v).hidden = (v!==state.view); });
+  // the filter rail has nothing to act on while the protocol doc is open
+  document.querySelector('aside:not(#panel)').style.display = state.view==='protocol' ? 'none' : '';
+  document.querySelector('.shell').style.gridTemplateColumns = state.view==='protocol' ? 'minmax(0,1fr)' : '';
+  if(state.view==='framework') renderFramework();
+  else if(state.view==='table') renderTable();
+  else renderProtocol();
+}
+render();
+if(location.hash){ const id=location.hash.slice(1); if(P.some(p=>p.id===id)) openPanel(id); }
+})();
+</script>
+
+__PHYSAI_REVIEW_JS__

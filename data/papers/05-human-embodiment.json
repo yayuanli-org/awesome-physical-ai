@@ -1,0 +1,1600 @@
+[
+ {
+  "id": "vlamp",
+  "short": "VLaMP",
+  "title": "Pretrained Language Models as Visual Planners for Human Assistance",
+  "year": 2023,
+  "date": "2023-04",
+  "venue": "ICCV 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Dhruvesh Patel",
+   "Hamid Eghbalzadeh",
+   "Nitin Kamra",
+   "Michael Louis Iuzzolino",
+   "Unnat Jain",
+   "Ruta Desai"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "Meta AI",
+   "UMass Amherst"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2304.09179"
+  },
+  "tldr": "Names the task: given a goal in words and video of how far the person got, output the remaining steps. Planning for a human, not for a gripper.",
+  "contribution": [
+   "method",
+   "benchmark"
+  ],
+  "openness": [
+   "code",
+   "data",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "procedure"
+  ],
+  "representation": [
+   "language",
+   "latent"
+  ],
+  "change_channel": [
+   "language",
+   "plan"
+  ],
+  "sensing": [
+   "egocentric",
+   "exocentric"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "human-in-loop",
+  "problem": {
+   "task": "Visual Planning for Assistance (VPA): goal + progress video → the next actions the person should take.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "goal",
+      "modality": "text",
+      "tensor": "g",
+      "chars": "One short phrase — \"make a shelf\"."
+     },
+     {
+      "name": "progress video",
+      "modality": "video",
+      "tensor": "V_{0:t}",
+      "chars": "Untrimmed, arbitrarily long, showing what has been done so far."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action plan",
+      "modality": "text",
+      "tensor": "(a_{t+1} .. a_{t+k})",
+      "chars": "An ordered sequence, evaluated by success rate and mean IoU against the ground-truth remainder."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Segment labels for the observed part, action sequences for the plan.",
+    "note": "Decomposing into segmentation then forecasting is what lets a pretrained LM be dropped into the second half."
+   }
+  },
+  "method": {
+   "intuition": "Forecasting the rest of a procedure is sequence modeling over actions, which is exactly what a pretrained language model is already good at.",
+   "family": [
+    "llm",
+    "transformer"
+   ],
+   "backbone": "video segmentation model + pretrained LM",
+   "init": "finetune",
+   "components": [
+    "VPA task formulation",
+    "video action segmentation front end",
+    "multimodal sequence forecasting with an LM",
+    "ablations isolating language pretraining, visual input and goal"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "CrossTask",
+     "role": "existing"
+    },
+    {
+     "name": "COIN",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "success rate",
+    "mean accuracy",
+    "mean IoU"
+   ],
+   "baselines": [
+    "procedure planning models",
+    "no-goal and no-vision ablations"
+   ],
+   "headline": "Outperforms baselines across plan-quality metrics. Ablations show language pretraining, visual observation and the goal each carry independent weight."
+  },
+  "why": "The task definition the human-assistance branch has been iterating on ever since.",
+  "confidence": "high",
+  "tags": [
+   "task guidance",
+   "planning",
+   "LLM"
+  ]
+ },
+ {
+  "id": "expertaf",
+  "short": "ExpertAF",
+  "title": "ExpertAF: Expert Actionable Feedback from Video",
+  "year": 2024,
+  "date": "2024-08",
+  "venue": "CVPR 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Kumar Ashutosh",
+   "Tushar Nagarajan",
+   "Georgios Pavlakos",
+   "Kris Kitani",
+   "Kristen Grauman"
+  ],
+  "n_authors": 5,
+  "institutions": [
+   "UT Austin",
+   "Meta AI",
+   "CMU"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2408.00672"
+  },
+  "tldr": "A skill score tells you that you are bad. This outputs what to change, in words and as a corrected demonstration of your own body.",
+  "contribution": [
+   "method",
+   "dataset"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "verify",
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted",
+   "evaluator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "procedure"
+  ],
+  "representation": [
+   "language",
+   "pixels",
+   "geometry"
+  ],
+  "change_channel": [
+   "language",
+   "visual-guidance"
+  ],
+  "sensing": [
+   "egocentric",
+   "exocentric"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "skill"
+  ],
+  "autonomy": "human-in-loop",
+  "problem": {
+   "task": "Generate actionable coaching feedback from a video of someone performing a physical skill.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "performance video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "Basketball, soccer, and other skilled activity."
+     },
+     {
+      "name": "3D body pose",
+      "modality": "body-pose",
+      "tensor": "θ ∈ R^{T×J×3}",
+      "chars": "Accompanies the video; the correction is expressed in this space."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "expert commentary",
+      "modality": "text",
+      "tensor": "c",
+      "chars": "Free-form: what is going well, what to change."
+     },
+     {
+      "name": "expert demonstration",
+      "modality": "body-pose",
+      "tensor": "θ*",
+      "chars": "A generated pose sequence with the correction applied, plus retrieved expert video."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Weakly-supervised pairs built from Ego-Exo4D expert commentary with an LLM.",
+    "note": "Building the training set out of coach commentary is what makes the task learnable at all — nobody annotates corrections directly."
+   }
+  },
+  "method": {
+   "intuition": "Feedback is only useful if it is executable, so the output has to be a change to the body, not a number.",
+   "family": [
+    "vlm",
+    "llm"
+   ],
+   "backbone": "multimodal video-language model",
+   "init": "finetune",
+   "components": [
+    "weakly-supervised feedback dataset from expert commentary",
+    "commentary generation",
+    "expert video retrieval",
+    "corrected pose generation"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Ego-Exo4D",
+     "role": "reannotated"
+    }
+   ],
+   "metrics": [
+    "language quality metrics",
+    "retrieval accuracy",
+    "human preference"
+   ],
+   "baselines": [
+    "strong general-purpose VLMs"
+   ],
+   "headline": "Outperforms strong VLMs on established metrics and in human preference studies across commentary, retrieval and pose generation."
+  },
+  "why": "The most complete instance of the act stage in a human-embodied loop: the system's output is a change to the person's motion.",
+  "confidence": "high",
+  "tags": [
+   "feedback",
+   "skill",
+   "coaching"
+  ]
+ },
+ {
+  "id": "vid2coach",
+  "short": "Vid2Coach",
+  "title": "Vid2Coach: Transforming How-To Videos into Task Assistants",
+  "year": 2025,
+  "date": "2025-05",
+  "venue": "UIST 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Mina Huh",
+   "Zihui Xue",
+   "Ujjaini Das",
+   "Kumar Ashutosh",
+   "Kristen Grauman",
+   "Amy Pavel"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "UT Austin"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.00717",
+   "page": "https://minahuh.com/Vid2Coach/"
+  },
+  "tldr": "Watch what rehabilitation therapists actually do when guiding blind cooks, then build the system to do that. Errors drop 58.5%.",
+  "contribution": [
+   "system",
+   "analysis"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted",
+   "evaluator"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "language",
+   "pixels"
+  ],
+  "change_channel": [
+   "language",
+   "alert"
+  ],
+  "sensing": [
+   "egocentric",
+   "audio"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "mixed-initiative",
+  "problem": {
+   "task": "Turn a how-to video into a wearable-camera assistant that gives accessible instructions and monitors progress.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "how-to video",
+      "modality": "video",
+      "tensor": "V_ref",
+      "chars": "Offline: the source recipe or tutorial."
+     },
+     {
+      "name": "live camera",
+      "modality": "video",
+      "tensor": "V_live",
+      "chars": "From commercial smart glasses, streaming."
+     },
+     {
+      "name": "user speech",
+      "modality": "speech",
+      "tensor": "q",
+      "chars": "Questions asked mid-task."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "instruction",
+      "modality": "speech",
+      "tensor": "i_t",
+      "chars": "Augmented with demonstration detail and explicit completion criteria."
+     },
+     {
+      "name": "proactive feedback",
+      "modality": "speech",
+      "tensor": "f_t",
+      "chars": "Unprompted, when progress deviates."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "No model training — retrieval-augmented generation over BLV-specific resources plus VLM inference.",
+    "note": "The design comes from observing visual rehabilitation therapists, which is the part that generalizes beyond this system."
+   }
+  },
+  "method": {
+   "intuition": "Video instructions assume visual comparison, so making them accessible means supplying the completion criteria the video leaves implicit.",
+   "family": [
+    "vlm",
+    "llm",
+    "rag"
+   ],
+   "backbone": "commercial VLM + RAG",
+   "init": "prompt-only",
+   "components": [
+    "instruction augmentation with completion criteria",
+    "RAG over non-visual workaround resources",
+    "camera-based progress monitoring",
+    "mixed-initiative feedback"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "formative study with visual rehabilitation therapists",
+     "role": "new"
+    },
+    {
+     "name": "user study, N=8 BLV participants",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "task errors",
+    "self-reported usefulness"
+   ],
+   "baselines": [
+    "participants' own typical workflow"
+   ],
+   "headline": "58.5% fewer errors than participants' typical workflow, with participants wanting to keep using it."
+  },
+  "why": "The strongest evidence on this list that task guidance is an interaction design problem as much as a perception problem.",
+  "confidence": "high",
+  "tags": [
+   "task guidance",
+   "accessibility",
+   "wearable",
+   "HCI"
+  ]
+ },
+ {
+  "id": "satori",
+  "short": "Satori",
+  "title": "Satori: Towards Proactive AR Assistant with Belief-Desire-Intention User Modeling",
+  "year": 2024,
+  "date": "2024-10",
+  "venue": "ISMAR 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Chenyi Li",
+   "Guande Wu",
+   "Gromit Yeuk-Yin Chan",
+   "Dishita G Turakhia",
+   "Sonia Castelo Quispe",
+   "Claudio Silva"
+  ],
+  "n_authors": 9,
+  "institutions": [
+   "New York University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2410.16668"
+  },
+  "tldr": "Most AR assistants wait to be asked. Wiring a BDI user model to a multimodal LLM makes one that decides on its own when to speak, and it matches a hand-tuned Wizard of Oz.",
+  "contribution": [
+   "system"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted",
+   "evaluator"
+  ],
+  "world_facet": [
+   "procedure",
+   "scene"
+  ],
+  "representation": [
+   "language",
+   "graph"
+  ],
+  "change_channel": [
+   "visual-guidance",
+   "language"
+  ],
+  "sensing": [
+   "egocentric"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Decide when and what to show a user in AR without being asked.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric stream",
+      "modality": "video",
+      "tensor": "V_live",
+      "chars": "From an AR headset during assembly or cooking."
+     },
+     {
+      "name": "user state",
+      "modality": "graph",
+      "tensor": "(B, D, I)",
+      "chars": "Beliefs, desires, intentions — inferred, not configured."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "AR guidance",
+      "modality": "mask",
+      "tensor": "overlay + prompt",
+      "chars": "Contextually timed, no heuristics or manual authoring."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None — prompting a multimodal LLM inside a BDI loop.",
+    "note": "The system was designed from two formative studies with twelve experts, so the intervention policy is grounded in practice."
+   }
+  },
+  "method": {
+   "intuition": "Proactivity requires a model of what the user believes and wants, which is exactly what the BDI framework was built to express — an LLM just makes it inferable from video.",
+   "family": [
+    "vlm",
+    "llm"
+   ],
+   "backbone": "multimodal LLM + BDI reasoning",
+   "init": "prompt-only",
+   "components": [
+    "BDI user model",
+    "environmental context integration",
+    "proactive guidance trigger"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "within-subject user study, N=16",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "task performance",
+    "perceived helpfulness"
+   ],
+   "baselines": [
+    "designer-authored Wizard-of-Oz AR system"
+   ],
+   "headline": "Matches the Wizard-of-Oz system without manual configuration or heuristics."
+  },
+  "why": "Puts a name on the hardest open question in human-embodied physical AI: not what to say, but when.",
+  "confidence": "high",
+  "tags": [
+   "AR",
+   "proactive",
+   "user modeling"
+  ]
+ },
+ {
+  "id": "explainmr",
+  "short": "eXplainMR",
+  "title": "eXplainMR: Generating Real-time Textual and Visual eXplanations to Facilitate UltraSonography Learning in MR",
+  "year": 2025,
+  "date": "2025-02",
+  "venue": "CHI 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Jingying Wang",
+   "Jingjing Zhang",
+   "Juana Nicoll Capizzano",
+   "Matthew Sigakis",
+   "Xu Wang",
+   "Vitaliy Popov"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "University of Michigan"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2502.18640"
+  },
+  "tldr": "Ultrasound training needs a patient, a probe and an expert. This replaces all three with a headset, a controller and a desk, then explains why the current view is wrong.",
+  "contribution": [
+   "system"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "verify",
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted",
+   "evaluator"
+  ],
+  "world_facet": [
+   "scene",
+   "agent-body",
+   "procedure"
+  ],
+  "representation": [
+   "geometry",
+   "language",
+   "pixels"
+  ],
+  "change_channel": [
+   "visual-guidance",
+   "language"
+  ],
+  "sensing": [
+   "egocentric",
+   "depth-3d"
+  ],
+  "regime": "interactive",
+  "horizon": "seconds",
+  "domain": [
+   "clinical"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Real-time formative feedback during cardiac surface ultrasound practice in mixed reality.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "probe pose",
+      "modality": "object-pose",
+      "tensor": "T ∈ SE(3)",
+      "chars": "Controller standing in for the transducer, desk standing in for the body."
+     },
+     {
+      "name": "simulated ultrasound image",
+      "modality": "image",
+      "tensor": "U ∈ R^{H×W}",
+      "chars": "Rendered from the slicing plane through an anatomical model."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "textual explanation",
+      "modality": "text",
+      "tensor": "e",
+      "chars": "Compares the current wrong view to the target view, so the trainee learns why it is wrong."
+     },
+     {
+      "name": "3D visual cue",
+      "modality": "mask",
+      "tensor": "overlay",
+      "chars": "Shows the intersection of the slicing plane with the anatomy."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None — rule- and model-based feedback over a simulated anatomy.",
+    "note": "Subgoal decomposition into single-movement steps is what makes each explanation actionable."
+   }
+  },
+  "method": {
+   "intuition": "A trainee who is told the view is wrong learns nothing. Being shown the geometric relationship between the probe and the anatomy is what transfers.",
+   "family": [
+    "system",
+    "classical"
+   ],
+   "backbone": "MR headset + anatomical simulation",
+   "init": "",
+   "components": [
+    "subgoal decomposition into single movements",
+    "comparative textual explanation",
+    "real-time segmentation and annotation",
+    "3D slicing-plane cues"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "user study with medical trainees",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "learning gains",
+    "usability"
+   ],
+   "baselines": [
+    "conventional training setup"
+   ],
+   "headline": "Supports low-cost anywhere training with automated feedback through four explanation mechanisms."
+  },
+  "why": "The clinical end of the everyday-to-professional axis, where a wrong action has a cost and explanation becomes mandatory.",
+  "confidence": "high",
+  "tags": [
+   "mixed reality",
+   "medical",
+   "guidance",
+   "explanation"
+  ]
+ },
+ {
+  "id": "aroma",
+  "short": "AROMA",
+  "title": "AROMA: Mixed-Initiative AI Assistance for Non-Visual Cooking by Grounding Multi-modal Information Between Reality and Videos",
+  "year": 2025,
+  "date": "2025-07",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Zheng Ning",
+   "Leyang Li",
+   "Daniel Killough",
+   "JooYoung Seo",
+   "Patrick Carrington",
+   "Yapeng Tian"
+  ],
+  "n_authors": 9,
+  "institutions": [
+   "University of Notre Dame"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2507.10963"
+  },
+  "tldr": "Aligns three streams — what the user feels, what the camera sees, and what the recipe video says — so a blind cook can locate themselves inside the procedure.",
+  "contribution": [
+   "system",
+   "analysis"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "represent",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted",
+   "evaluator"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "language",
+   "pixels"
+  ],
+  "change_channel": [
+   "language",
+   "alert"
+  ],
+  "sensing": [
+   "egocentric",
+   "audio"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "mixed-initiative",
+  "problem": {
+   "task": "Context-aware assistance for cooking without sight, grounded jointly in the live scene and a reference video.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "wearable camera",
+      "modality": "video",
+      "tensor": "V_live",
+      "chars": "Streaming, monitored continuously rather than on request."
+     },
+     {
+      "name": "video recipe",
+      "modality": "video",
+      "tensor": "V_ref",
+      "chars": "The reference the physical state is aligned to."
+     },
+     {
+      "name": "non-visual cues reported by the user",
+      "modality": "speech",
+      "tensor": "c",
+      "chars": "Touch, smell, sound — information the camera does not have."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "response or alert",
+      "modality": "speech",
+      "tensor": "r_t",
+      "chars": "Answers requests and volunteers timely warnings."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None — VLM inference plus alignment logic.",
+    "note": "The user is treated as a sensor as well as a recipient. That is the design move worth stealing."
+   }
+  },
+  "method": {
+   "intuition": "Neither the person nor the camera has the full state, so the system's job is to reconcile two partial views of the same kitchen.",
+   "family": [
+    "vlm",
+    "llm"
+   ],
+   "backbone": "multimodal LLM",
+   "init": "prompt-only",
+   "components": [
+    "reality-to-video grounding",
+    "proactive stream monitoring",
+    "mixed-initiative response policy"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "user study, N=8 BLV participants",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "qualitative task support",
+    "design insights"
+   ],
+   "baselines": [
+    "existing accessible cooking practices"
+   ],
+   "headline": "A study with eight BLV participants and design implications for interactive AI that supports activities of daily living."
+  },
+  "why": "The clearest case where the human supplies perception the AI lacks — collaboration inside a single embodiment.",
+  "confidence": "high",
+  "tags": [
+   "accessibility",
+   "mixed initiative",
+   "task guidance"
+  ]
+ },
+ {
+  "id": "showhowto",
+  "short": "ShowHowTo",
+  "title": "ShowHowTo: Generating Scene-Conditioned Step-by-Step Visual Instructions",
+  "year": 2024,
+  "date": "2024-12",
+  "venue": "CVPR 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Tomáš Souček",
+   "Prajwal Gatti",
+   "Michael Wray",
+   "Ivan Laptev",
+   "Dima Damen",
+   "Josef Sivic"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "Czech Technical University",
+   "University of Bristol",
+   "MBZUAI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2412.01987"
+  },
+  "tldr": "Generate the step images conditioned on a photo of the user's own scene, so the instructions are rendered in their kitchen rather than a stock one.",
+  "contribution": [
+   "method",
+   "dataset"
+  ],
+  "openness": [
+   "code",
+   "data",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-change",
+   "scene"
+  ],
+  "representation": [
+   "pixels",
+   "language"
+  ],
+  "change_channel": [
+   "visual-guidance"
+  ],
+  "sensing": [
+   "exocentric",
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "human-in-loop",
+  "problem": {
+   "task": "Scene-conditioned step-by-step visual instruction generation.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "scene image",
+      "modality": "image",
+      "tensor": "x₀ ∈ R^{H×W×3}",
+      "chars": "The user's actual environment — this is the conditioning that makes it grounded."
+     },
+     {
+      "name": "textual steps",
+      "modality": "text",
+      "tensor": "(s₁..s_K)",
+      "chars": "The written procedure."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "step images",
+      "modality": "image",
+      "tensor": "(I₁..I_K)",
+      "chars": "One per step, consistent with each other and with the input scene."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "0.6M image-text step sequences, mined automatically from 1M instructional videos.",
+    "note": "The mining pipeline is the reusable half — it converts how-to video into supervised step sequences without annotators."
+   }
+  },
+  "method": {
+   "intuition": "The barrier was never the generator but the absence of paired step-sequence data grounded in a scene, and that pairing can be harvested from video.",
+   "family": [
+    "diffusion",
+    "transformer"
+   ],
+   "backbone": "video diffusion model",
+   "init": "finetune",
+   "components": [
+    "automatic step-sequence mining from 1M videos",
+    "0.6M-sequence dataset",
+    "multi-image consistent generation"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "ShowHowTo dataset (0.6M sequences)",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "step accuracy",
+    "scene fidelity",
+    "task accuracy"
+   ],
+   "baselines": [
+    "text-to-image and image-editing pipelines"
+   ],
+   "headline": "State of the art on all three accuracy dimensions, with code, data and weights released."
+  },
+  "why": "Visual guidance as generation rather than retrieval — the channel that AR assistance is converging on.",
+  "confidence": "high",
+  "tags": [
+   "visual guidance",
+   "generation",
+   "instructions"
+  ]
+ },
+ {
+  "id": "visualchef",
+  "short": "VisualChef",
+  "title": "VisualChef: Generating Visual Aids in Cooking via Mask Inpainting",
+  "year": 2025,
+  "date": "2025-06",
+  "venue": "GCPR 2025 (Oral)",
+  "venue_type": "conference",
+  "authors": [
+   "Oleh Kuzyk",
+   "Zuoyue Li",
+   "Marc Pollefeys",
+   "Xi Wang"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "ETH Zurich"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.18569"
+  },
+  "tldr": "Show what the action looks like and what the object looks like afterwards, by inpainting only the action-relevant objects and leaving the kitchen alone.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "anticipate",
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "object-change",
+   "object-state"
+  ],
+  "representation": [
+   "pixels"
+  ],
+  "change_channel": [
+   "visual-guidance"
+  ],
+  "sensing": [
+   "egocentric"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "human-in-loop",
+  "problem": {
+   "task": "Given a frame and an action, generate what the action looks like and what the object looks like once it is done.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "initial frame",
+      "modality": "image",
+      "tensor": "x₀ ∈ R^{H×W×3}",
+      "chars": "Egocentric; environment must be preserved."
+     },
+     {
+      "name": "action",
+      "modality": "text",
+      "tensor": "a",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action image",
+      "modality": "image",
+      "tensor": "I_act",
+      "chars": "The action mid-execution."
+     },
+     {
+      "name": "final state image",
+      "modality": "image",
+      "tensor": "I_final",
+      "chars": "The object after — the part a text instruction cannot convey."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Automatically extracted initial / action / final state frame triplets from egocentric video.",
+    "note": "Mask-based grounding replaces the fine-grained textual descriptions earlier work needed, which removes an annotation dependency."
+   }
+  },
+  "method": {
+   "intuition": "Regenerating the whole frame throws away the environment the user is standing in. Identify the action-relevant objects and change only those.",
+   "family": [
+    "diffusion"
+   ],
+   "backbone": "mask-conditioned inpainting diffusion",
+   "init": "finetune",
+   "components": [
+    "action-relevant object identification and classification",
+    "mask-based visual grounding",
+    "automated triplet extraction pipeline"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "three egocentric video datasets",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "generation fidelity",
+    "state correctness",
+    "environment preservation"
+   ],
+   "baselines": [
+    "LLM-description-guided generation"
+   ],
+   "headline": "Improves over state-of-the-art methods on three egocentric datasets, quantitatively and qualitatively."
+  },
+  "why": "Isolates the object-state-change signal inside visual guidance, which is the part that actually tells you whether you did it right.",
+  "confidence": "high",
+  "tags": [
+   "visual guidance",
+   "state change",
+   "inpainting"
+  ]
+ },
+ {
+  "id": "lego-cobuilder",
+  "short": "LEGO Co-builder",
+  "title": "LEGO Co-builder: Exploring Fine-Grained Vision-Language Modeling for Multimodal LEGO Assembly Assistants",
+  "year": 2025,
+  "date": "2025-07",
+  "venue": "ICMI 2026",
+  "venue_type": "conference",
+  "authors": [
+   "Haochen Huang",
+   "Yue Su",
+   "Xin Sun",
+   "Moonisa Ahsan",
+   "Mohammad Aliannejadi",
+   "Irene Viola"
+  ],
+  "n_authors": 14,
+  "institutions": [
+   "University of Amsterdam",
+   "CWI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2507.05515"
+  },
+  "tldr": "Detecting the brick is solved. Knowing whether the assembly is in the right state is not, and GPT-4o gets 40.5% F1 on it.",
+  "contribution": [
+   "benchmark",
+   "analysis"
+  ],
+  "openness": [
+   "code",
+   "data"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "verify"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "object-state",
+   "procedure"
+  ],
+  "representation": [
+   "pixels",
+   "language"
+  ],
+  "change_channel": [
+   "visual-guidance",
+   "alert"
+  ],
+  "sensing": [
+   "exocentric",
+   "sim-render"
+  ],
+  "regime": "streaming",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "industrial"
+  ],
+  "autonomy": "human-in-loop",
+  "problem": {
+   "task": "Stepwise instruction following, object detection and assembly state detection for an AR assembly assistant.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "scene",
+      "modality": "image",
+      "tensor": "x_t",
+      "chars": "Programmatically generated multimodal scenes with real LEGO assembly logic."
+     },
+     {
+      "name": "step instruction",
+      "modality": "text",
+      "tensor": "s_t",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "detected objects",
+      "modality": "bbox",
+      "tensor": "{b_i}",
+      "chars": ""
+     },
+     {
+      "name": "assembly state",
+      "modality": "label",
+      "tensor": "y_t",
+      "chars": "Whether the build matches the expected state at this step."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Zero-shot and fine-tuned evaluation of existing VLMs.",
+    "note": "Programmatic scene generation gives controlled difficulty, at the cost of some realism."
+   }
+  },
+  "method": {
+   "intuition": "An assembly assistant fails at state verification, not at object recognition, and a benchmark should separate the two so the failure is visible.",
+   "family": [
+    "benchmark",
+    "vlm"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "hybrid real-logic / synthetic-scene benchmark",
+    "unified evaluation framework",
+    "zero-shot and fine-tuned protocols"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "LEGO Co-builder",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "detection accuracy",
+    "entity F1",
+    "state detection F1"
+   ],
+   "baselines": [
+    "GPT-4o, Gemini, Qwen-VL, InstructBLIP, MiniGPT-v2, GLM-4.1-thinking"
+   ],
+   "headline": "98.16% object detection with fine-tuned InstructBLIP, but only 37.52% entity F1 (MiniGPT-v2) and 40.54% state detection F1 (GPT-4o)."
+  },
+  "why": "A precise measurement of the gap between recognizing things and knowing the state of the world, which is what guidance depends on.",
+  "confidence": "high",
+  "tags": [
+   "assembly",
+   "VLM",
+   "benchmark",
+   "state detection"
+  ]
+ },
+ {
+  "id": "videollm-online",
+  "short": "VideoLLM-online",
+  "title": "VideoLLM-online: Online Video Large Language Model for Streaming Video",
+  "year": 2024,
+  "date": "2024-06",
+  "venue": "CVPR 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Joya Chen",
+   "Zhaoyang Lv",
+   "Shiwei Wu",
+   "Kevin Qinghong Lin",
+   "Chenan Song",
+   "Mike Zheng Shou"
+  ],
+  "n_authors": 10,
+  "institutions": [
+   "National University of Singapore",
+   "Meta"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2406.11816",
+   "page": "https://showlab.github.io/videollm-online"
+  },
+  "tldr": "A video LLM that decides at each frame whether to speak, rather than being handed a clip and a question after the fact.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "data",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "represent",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "language",
+   "latent"
+  ],
+  "change_channel": [
+   "language"
+  ],
+  "sensing": [
+   "egocentric",
+   "exocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "mixed-initiative",
+  "problem": {
+   "task": "Temporally aligned dialogue inside a continuous video stream.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "video stream",
+      "modality": "video",
+      "tensor": "v_t arriving frame by frame",
+      "chars": "No lookahead; the model must commit at each frame."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "speak-or-wait decision",
+      "modality": "label",
+      "tensor": "d_t ∈ {speak, wait}",
+      "chars": "The part that distinguishes streaming from offline VideoQA."
+     },
+     {
+      "name": "response",
+      "modality": "text",
+      "tensor": "r_t",
+      "chars": "Emitted only when d_t = speak."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Offline temporal annotations converted into streaming dialogue format by a data generation scheme.",
+    "note": "The LIVE objective does language modeling over a continuous stream rather than over a clip."
+   }
+  },
+  "method": {
+   "intuition": "Treating video as a predetermined clip is what makes video LLMs useless for assistance. The timing of the utterance has to be part of the model's output.",
+   "family": [
+    "llm",
+    "transformer"
+   ],
+   "backbone": "Llama-2 / Llama-3",
+   "init": "finetune",
+   "components": [
+    "LIVE streaming training objective",
+    "offline-to-streaming data conversion",
+    "optimized inference pipeline"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Ego4D narration streams",
+     "role": "reannotated"
+    },
+    {
+     "name": "offline video benchmarks",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "streaming dialogue quality",
+    "recognition / captioning / forecasting accuracy",
+    "throughput"
+   ],
+   "baselines": [
+    "clip-based video LLMs"
+   ],
+   "headline": "Over 10 FPS streaming dialogue on a 5-minute clip on one A100, with state-of-the-art results on offline benchmarks too."
+  },
+  "why": "The enabling piece for every proactive assistant on this list: without streaming, timing cannot be a decision.",
+  "confidence": "high",
+  "tags": [
+   "streaming",
+   "video LLM",
+   "proactive"
+  ]
+ },
+ {
+  "id": "mica",
+  "short": "MICA",
+  "title": "Grounding Task Assistance with Multimodal Cues from a Single Demonstration",
+  "year": 2025,
+  "date": "2025-05",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Gabriel Sarch",
+   "Balasaravanan Thoravi Kumaravel",
+   "Sahithya Ravi",
+   "Vibhav Vineet",
+   "Andrew D. Wilson"
+  ],
+  "n_authors": 5,
+  "institutions": [
+   "Microsoft Research",
+   "CMU"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2505.01578"
+  },
+  "tldr": "RGB does not record why someone did something. Gaze and speech from one demonstration recover the intent, and gaze alone gets 93% of what speech gives.",
+  "contribution": [
+   "method",
+   "analysis"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted"
+  ],
+  "world_facet": [
+   "procedure",
+   "interaction"
+  ],
+  "representation": [
+   "language",
+   "latent"
+  ],
+  "change_channel": [
+   "language"
+  ],
+  "sensing": [
+   "egocentric",
+   "gaze",
+   "audio"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "industrial"
+  ],
+  "autonomy": "human-in-loop",
+  "problem": {
+   "task": "Answer a learner's questions about a task using a single recorded demonstration as the reference.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "demonstration video",
+      "modality": "video",
+      "tensor": "V_demo",
+      "chars": "One pass, egocentric."
+     },
+     {
+      "name": "gaze",
+      "modality": "gaze",
+      "tensor": "g_{1:T}",
+      "chars": "Implicit intent — where attention went, including to hazards."
+     },
+     {
+      "name": "speech",
+      "modality": "speech",
+      "tensor": "s_{1:T}",
+      "chars": "Explicit intent — what the demonstrator said aloud."
+     },
+     {
+      "name": "learner question",
+      "modality": "text",
+      "tensor": "q",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "answer",
+      "modality": "text",
+      "tensor": "a",
+      "chars": "Grounded in retrieved keyframes and captions."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None — retrieval and prompting over the extracted sub-task structure.",
+    "note": "Questions come from real chat-assisted task replication sessions rather than being written for the benchmark."
+   }
+  },
+  "method": {
+   "intuition": "A frame tells you what happened. Gaze and speech tell you why, and that is what a learner is actually asking about.",
+   "family": [
+    "vlm",
+    "llm",
+    "rag"
+   ],
+   "backbone": "VLM + multimodal retrieval",
+   "init": "prompt-only",
+   "components": [
+    "gaze- and speech-driven sub-task segmentation",
+    "keyframe and caption extraction",
+    "multimodal contextual grounding for QA"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "real-time chat-assisted task replication sessions",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "answer quality"
+   ],
+   "baselines": [
+    "frame-based retrieval without gaze or speech"
+   ],
+   "headline": "Gaze alone reaches 93% of speech-level performance, and the two combined are best. Which cue helps depends on the task type."
+  },
+  "why": "Argues that human-assistance systems lose their information at the sensing axis rather than at the model.",
+  "confidence": "high",
+  "tags": [
+   "gaze",
+   "task assistance",
+   "multimodal"
+  ]
+ }
+]

@@ -1,0 +1,1969 @@
+[
+ {
+  "id": "saycan",
+  "short": "SayCan",
+  "title": "Do As I Can, Not As I Say: Grounding Language in Robotic Affordances",
+  "year": 2022,
+  "date": "2022-04",
+  "venue": "CoRL 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Michael Ahn",
+   "Anthony Brohan",
+   "Noah Brown",
+   "Yevgen Chebotar",
+   "Karol Hausman",
+   "Brian Ichter"
+  ],
+  "n_authors": 45,
+  "institutions": [
+   "Google",
+   "Everyday Robots"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2204.01691",
+   "page": "https://say-can.github.io/"
+  },
+  "tldr": "An LLM knows how to clean a spill but not whether this robot can. Multiply the language score by a learned value function and you get a plan the body can execute.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "language"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Execute a long-horizon natural-language instruction by selecting a sequence of learned skills.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "High-level and temporally extended: \"I spilled my drink, can you help?\""
+     },
+     {
+      "name": "observation",
+      "modality": "image",
+      "tensor": "o_t",
+      "chars": "Robot camera, used by the value functions."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "next skill",
+      "modality": "text",
+      "tensor": "π_t",
+      "chars": "Argmax of p_LLM(skill | ℓ) × p_affordance(success | o_t, skill)."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Skill policies and their value functions trained separately. The LLM is frozen.",
+    "note": "The value function is the grounding — it is what keeps the plan inside what the body can currently do."
+   }
+  },
+  "method": {
+   "intuition": "A language model supplies what is useful and a value function supplies what is possible. Neither alone yields an executable plan.",
+   "family": [
+    "llm",
+    "rl"
+   ],
+   "backbone": "PaLM + learned skill value functions",
+   "init": "frozen-foundation",
+   "components": [
+    "skill scoring by LLM likelihood",
+    "affordance scoring by value function",
+    "iterative replanning after each skill"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "real kitchen and office tasks on a mobile manipulator",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "plan success",
+    "execution success"
+   ],
+   "baselines": [
+    "LLM planning without affordance grounding"
+   ],
+   "headline": "Long-horizon abstract instructions completed on a real robot, with affordance grounding shown to be necessary rather than helpful."
+  },
+  "why": "The paper that established language as the interface layer between semantic knowledge and physical capability.",
+  "confidence": "high",
+  "tags": [
+   "LLM",
+   "planning",
+   "affordance"
+  ]
+ },
+ {
+  "id": "inner-monologue",
+  "short": "Inner Monologue",
+  "title": "Inner Monologue: Embodied Reasoning through Planning with Language Models",
+  "year": 2022,
+  "date": "2022-07",
+  "venue": "CoRL 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Wenlong Huang",
+   "Fei Xia",
+   "Ted Xiao",
+   "Harris Chan",
+   "Jacky Liang",
+   "Pete Florence"
+  ],
+  "n_authors": 17,
+  "institutions": [
+   "Google",
+   "Stanford University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2207.05608",
+   "page": "https://innermonologue.github.io"
+  },
+  "tldr": "Feed the outcome back to the planner as text: success detection, scene description, a person's correction. Closed-loop replanning falls out with no extra training.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "decide",
+   "act",
+   "verify",
+   "adapt"
+  ],
+  "embodiment": [
+   "robot",
+   "human+robot"
+  ],
+  "human_role": [
+   "collaborator"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "language"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "mixed-initiative",
+  "problem": {
+   "task": "Closed-loop language planning where environment and human feedback re-enter the prompt.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": ""
+     },
+     {
+      "name": "feedback",
+      "modality": "text",
+      "tensor": "f_t",
+      "chars": "Success detector output, scene description, or a person saying \"no, the other one\" — all as text."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "next skill",
+      "modality": "text",
+      "tensor": "π_t",
+      "chars": "Replanned after every observation."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None — the LLM is frozen and everything happens in the prompt.",
+    "note": "Turning heterogeneous feedback into a single text channel is the trick that makes closed-loop control prompt-shaped."
+   }
+  },
+  "method": {
+   "intuition": "If every kind of feedback is rendered as language, the planner needs no new machinery to close the loop. It just keeps reading.",
+   "family": [
+    "llm"
+   ],
+   "backbone": "frozen LLM + perception modules",
+   "init": "prompt-only",
+   "components": [
+    "success detection feedback",
+    "passive scene description",
+    "active human interaction",
+    "text-formatted inner monologue"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "simulated tabletop rearrangement",
+     "role": "synthetic"
+    },
+    {
+     "name": "real tabletop and kitchen mobile manipulation",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "instruction completion rate"
+   ],
+   "baselines": [
+    "open-loop LLM planning"
+   ],
+   "headline": "Closed-loop language feedback significantly improves high-level instruction completion in three domains, including real-world long-horizon mobile manipulation."
+  },
+  "why": "The reference implementation of closing the loop through language — the pattern most agent systems on this list inherit.",
+  "confidence": "high",
+  "tags": [
+   "closed loop",
+   "LLM",
+   "feedback"
+  ]
+ },
+ {
+  "id": "code-as-policies",
+  "short": "Code as Policies",
+  "title": "Code as Policies: Language Model Programs for Embodied Control",
+  "year": 2022,
+  "date": "2022-09",
+  "venue": "ICRA 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Jacky Liang",
+   "Wenlong Huang",
+   "Fei Xia",
+   "Peng Xu",
+   "Karol Hausman",
+   "Andy Zeng"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "Google"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2209.07753"
+  },
+  "tldr": "The policy is a Python program the LLM writes, so control flow, arithmetic and third-party libraries come for free.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "scene",
+   "procedure"
+  ],
+  "representation": [
+   "program",
+   "language"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Turn a natural-language command into executable robot policy code.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "command",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "Includes vague terms — \"faster\", \"a bit to the left\"."
+     },
+     {
+      "name": "API surface",
+      "modality": "program",
+      "tensor": "perception + control primitives",
+      "chars": "Object detectors and control APIs, exposed as callable functions."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "policy program",
+      "modality": "program",
+      "tensor": "P",
+      "chars": "Python: loops, conditionals, NumPy and Shapely calls, waypoints."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Few-shot prompting only.",
+    "note": "Hierarchical code-gen — recursively defining undefined functions — is what lets one prompt cover a long tail of commands."
+   }
+  },
+  "method": {
+   "intuition": "Robot policies already look like programs, so the natural output format for a code-trained LLM is the policy itself rather than a plan to be interpreted.",
+   "family": [
+    "llm",
+    "prompting"
+   ],
+   "backbone": "code-completion LLM",
+   "init": "prompt-only",
+   "components": [
+    "language model programs",
+    "hierarchical code generation",
+    "perception and control APIs as first-class functions"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "multiple real robot platforms and tabletop tasks",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "command success rate",
+    "generalization to novel instructions"
+   ],
+   "baselines": [
+    "natural-language plan decoding"
+   ],
+   "headline": "Spatial-geometric reasoning, generalization to unseen instructions, and precise values assigned to vague terms from context."
+  },
+  "why": "The symbolic branch of robot decision-making: the plan is a program, so it can be inspected, composed and debugged.",
+  "confidence": "high",
+  "tags": [
+   "LLM",
+   "program synthesis",
+   "control"
+  ]
+ },
+ {
+  "id": "voxposer",
+  "short": "VoxPoser",
+  "title": "VoxPoser: Composable 3D Value Maps for Robotic Manipulation with Language Models",
+  "year": 2023,
+  "date": "2023-07",
+  "venue": "CoRL 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Wenlong Huang",
+   "Chen Wang",
+   "Ruohan Zhang",
+   "Yunzhu Li",
+   "Jiajun Wu",
+   "Li Fei-Fei"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "Stanford University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2307.05973",
+   "page": "https://voxposer.github.io"
+  },
+  "tldr": "Have the LLM write code that paints affordance and constraint into a 3D voxel grid, then plan a dense trajectory through it — no motion primitives.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "decide",
+   "act",
+   "adapt"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "object-state",
+   "interaction"
+  ],
+  "representation": [
+   "geometry",
+   "program",
+   "language"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "depth-3d"
+  ],
+  "regime": "interactive",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Zero-shot synthesis of dense 6-DoF end-effector trajectories from open-set language over open-set objects.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "Free-form, open vocabulary."
+     },
+     {
+      "name": "RGB-D observation",
+      "modality": "rgbd",
+      "tensor": "I ∈ R^{H×W×4}",
+      "chars": "Grounded through a VLM into the voxel grid."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "6-DoF waypoint sequence",
+      "modality": "trajectory",
+      "tensor": "τ ∈ SE(3)^K",
+      "chars": "Dense, replanned under perturbation."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None for the base system. An optional online dynamics model is fit from experience for contact-rich scenes.",
+    "note": "The value map is the interface: language decides what it contains, planning consumes it."
+   }
+  },
+  "method": {
+   "intuition": "LLMs can name affordances and constraints but not act on them. Writing them into a 3D field turns semantics into an objective a planner can optimize.",
+   "family": [
+    "llm",
+    "classical"
+   ],
+   "backbone": "LLM code generation + VLM grounding + model-based planner",
+   "init": "prompt-only",
+   "components": [
+    "composable 3D value maps",
+    "LLM-written value map code",
+    "VLM grounding",
+    "closed-loop MPC",
+    "online dynamics learning"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "simulated and real everyday manipulation tasks",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "zero-shot task success",
+    "robustness to dynamic perturbation"
+   ],
+   "baselines": [
+    "primitive-based LLM planners"
+   ],
+   "headline": "A large study across simulation and real robots on open-set instructions and objects, with trajectories that hold up under perturbation during execution."
+  },
+  "why": "The clearest bridge between the modeling arc and the change arc: the world representation is literally the planning objective.",
+  "confidence": "high",
+  "tags": [
+   "LLM",
+   "3D",
+   "manipulation",
+   "zero-shot"
+  ]
+ },
+ {
+  "id": "diffusion-policy",
+  "short": "Diffusion Policy",
+  "title": "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion",
+  "year": 2023,
+  "date": "2023-03",
+  "venue": "RSS 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Cheng Chi",
+   "Zhenjia Xu",
+   "Siyuan Feng",
+   "Eric Cousineau",
+   "Yilun Du",
+   "Shuran Song"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "Columbia University",
+   "Toyota Research Institute",
+   "MIT"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2303.04137",
+   "page": "https://diffusion-policy.cs.columbia.edu"
+  },
+  "tldr": "Human demonstrations are multimodal, because there are several right ways to do a task. A denoising diffusion policy keeps that where a regression head averages it away.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "data",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "object-state"
+  ],
+  "representation": [
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Visuomotor imitation: observations to a chunk of future actions.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "observation history",
+      "modality": "image",
+      "tensor": "o_{t-h:t}",
+      "chars": "A short window of camera frames plus proprioception."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action chunk",
+      "modality": "trajectory",
+      "tensor": "a_{t:t+T_a} ∈ R^{T_a×d}",
+      "chars": "Denoised over K Langevin steps; executed under receding horizon control."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Behavior cloning from human teleoperated demonstrations.",
+    "note": "Predicting a chunk rather than a single action is what gives temporal consistency. The diffusion head is what preserves multimodality."
+   }
+  },
+  "method": {
+   "intuition": "Learn the gradient of the action distribution rather than its mean, and the policy stops collapsing between valid strategies.",
+   "family": [
+    "diffusion",
+    "transformer"
+   ],
+   "backbone": "CNN or time-series diffusion transformer",
+   "init": "scratch",
+   "components": [
+    "conditional denoising over action sequences",
+    "receding horizon control",
+    "visual conditioning",
+    "time-series diffusion transformer"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "12 tasks across 4 manipulation benchmarks",
+     "role": "existing"
+    },
+    {
+     "name": "real robot tasks",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate"
+   ],
+   "baselines": [
+    "LSTM-GMM",
+    "IBC",
+    "BET"
+   ],
+   "headline": "Average 46.9% improvement over prior state-of-the-art across 12 tasks and 4 benchmarks."
+  },
+  "why": "The action representation that reset robot imitation learning, and the head that most later VLAs adopted.",
+  "confidence": "high",
+  "tags": [
+   "imitation",
+   "diffusion",
+   "manipulation"
+  ]
+ },
+ {
+  "id": "act-aloha",
+  "short": "ACT / ALOHA",
+  "title": "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware",
+  "year": 2023,
+  "date": "2023-04",
+  "venue": "RSS 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Tony Z. Zhao",
+   "Vikash Kumar",
+   "Sergey Levine",
+   "Chelsea Finn"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "Stanford University",
+   "UC Berkeley",
+   "Meta"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2304.13705",
+   "page": "https://tonyzhaozh.github.io/aloha/"
+  },
+  "tldr": "Action chunking absorbs compounding error, which is why low-cost imprecise hardware can slot a battery with ten minutes of demonstrations.",
+  "contribution": [
+   "method",
+   "system"
+  ],
+  "openness": [
+   "code",
+   "data"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot",
+   "human+robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "interaction"
+  ],
+  "representation": [
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "End-to-end bimanual imitation learning from teleoperated demonstrations on low-cost arms.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "multi-camera images + joint positions",
+      "modality": "image",
+      "tensor": "(I^{1..4}, q) ",
+      "chars": "No depth, no calibration, no force sensing."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action chunk",
+      "modality": "action",
+      "tensor": "a_{t:t+k} ∈ R^{k×14}",
+      "chars": "14-DoF bimanual joint targets, temporally ensembled across overlapping chunks."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Behavior cloning from about 10 minutes of demonstrations per task, collected through a custom teleoperation rig.",
+    "note": "The CVAE latent absorbs demonstrator non-stationarity, which is the other half of why so little data suffices."
+   }
+  },
+  "method": {
+   "intuition": "Errors compound because the policy re-decides every timestep. Committing to a chunk of actions cuts the effective horizon by an order of magnitude.",
+   "family": [
+    "transformer",
+    "imitation"
+   ],
+   "backbone": "transformer CVAE",
+   "init": "scratch",
+   "components": [
+    "action chunking",
+    "temporal ensembling",
+    "CVAE over demonstration style",
+    "low-cost bimanual teleoperation hardware"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "6 real fine-manipulation tasks",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate"
+   ],
+   "baselines": [
+    "BC-ConvMLP",
+    "BeT",
+    "RT-1",
+    "VINN"
+   ],
+   "headline": "80–90% success on tasks like opening a translucent condiment cup and slotting a battery, from 10 minutes of demonstrations each."
+  },
+  "why": "Made dexterous imitation reproducible outside well-funded labs, which is why so much of the field's data now exists.",
+  "confidence": "high",
+  "tags": [
+   "imitation",
+   "bimanual",
+   "hardware"
+  ]
+ },
+ {
+  "id": "rt-2",
+  "short": "RT-2",
+  "title": "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control",
+  "year": 2023,
+  "date": "2023-07",
+  "venue": "CoRL 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Anthony Brohan",
+   "Noah Brown",
+   "Justice Carbajal",
+   "Yevgen Chebotar",
+   "Xi Chen",
+   "Karol Hausman"
+  ],
+  "n_authors": 54,
+  "institutions": [
+   "Google DeepMind"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2307.15818",
+   "page": "https://robotics-transformer.github.io/"
+  },
+  "tldr": "Write actions as text tokens and co-train a VLM on robot trajectories and web VQA, and web semantics leak into the gripper.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "object-state",
+   "procedure"
+  ],
+  "representation": [
+   "tokens",
+   "language"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "End-to-end language-conditioned manipulation from a vision-language backbone.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "o_t ∈ R^{H×W×3}",
+      "chars": "Single robot camera."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "May reference concepts absent from all robot data."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action tokens",
+      "modality": "tokens",
+      "tensor": "a_t discretized into text tokens",
+      "chars": "7-DoF end-effector delta plus gripper, emitted as a string."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Co-fine-tuning on robot trajectories and internet-scale vision-language tasks, in one token stream.",
+    "note": "The recipe is the contribution: one format for both data sources means no architectural bridge is needed."
+   }
+  },
+  "method": {
+   "intuition": "If actions are text, then robot control is just another vision-language task, and web pretraining stops being a separate stage.",
+   "family": [
+    "vlm",
+    "transformer"
+   ],
+   "backbone": "PaLI-X / PaLM-E",
+   "init": "finetune",
+   "components": [
+    "action-as-text tokenization",
+    "co-fine-tuning on web and robot data",
+    "chain-of-thought variant"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "robot demonstration data",
+     "role": "existing"
+    },
+    {
+     "name": "web VQA corpora",
+     "role": "existing"
+    },
+    {
+     "name": "6k real evaluation trials",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "success on seen and unseen objects, backgrounds, instructions"
+   ],
+   "baselines": [
+    "RT-1",
+    "VC-1",
+    "R3M"
+   ],
+   "headline": "Large gains on unseen objects and on commands absent from robot training data, including rudimentary reasoning chains."
+  },
+  "why": "The origin of the VLA category and the reason \"pretrain on the web, act in the world\" became the default recipe.",
+  "confidence": "high",
+  "tags": [
+   "VLA",
+   "manipulation",
+   "web knowledge"
+  ]
+ },
+ {
+  "id": "openvla",
+  "short": "OpenVLA",
+  "title": "OpenVLA: An Open-Source Vision-Language-Action Model",
+  "year": 2024,
+  "date": "2024-06",
+  "venue": "CoRL 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Moo Jin Kim",
+   "Karl Pertsch",
+   "Siddharth Karamcheti",
+   "Ted Xiao",
+   "Ashwin Balakrishna",
+   "Chelsea Finn"
+  ],
+  "n_authors": 18,
+  "institutions": [
+   "Stanford University",
+   "UC Berkeley",
+   "Toyota Research Institute",
+   "Google DeepMind",
+   "MIT"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2406.09246",
+   "page": "https://openvla.github.io/",
+   "code": "https://github.com/openvla/openvla"
+  },
+  "tldr": "7B open VLA on 970k real demonstrations that beats a 55B closed model, plus the fine-tuning recipes that make VLAs actually adoptable.",
+  "contribution": [
+   "method",
+   "system"
+  ],
+  "openness": [
+   "code",
+   "weights",
+   "data"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "object-state",
+   "procedure"
+  ],
+  "representation": [
+   "tokens",
+   "language"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Open generalist manipulation policy, fine-tunable to new robots and tasks.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "o_t",
+      "chars": "Encoded by fused DINOv2 + SigLIP features."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action tokens",
+      "modality": "tokens",
+      "tensor": "a_t",
+      "chars": "Discretized 7-DoF, decoded from the LM head."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "970k real robot demonstrations from the Open X-Embodiment collection.",
+    "note": "The fine-tuning study — LoRA, quantization, compute budgets — is what turned VLAs from a demo into infrastructure."
+   }
+  },
+  "method": {
+   "intuition": "The bottleneck for VLAs was access, not capability: an open model plus an efficient adaptation recipe unblocks everyone else.",
+   "family": [
+    "vlm",
+    "transformer"
+   ],
+   "backbone": "Llama 2 7B + DINOv2 + SigLIP",
+   "init": "finetune",
+   "components": [
+    "fused dual visual encoder",
+    "970k-demonstration training mixture",
+    "parameter-efficient fine-tuning and quantized serving"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Open X-Embodiment",
+     "role": "existing"
+    },
+    {
+     "name": "29 evaluation tasks, multiple embodiments",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "absolute task success rate"
+   ],
+   "baselines": [
+    "RT-2-X (55B)",
+    "Octo",
+    "Diffusion Policy"
+   ],
+   "headline": "+16.5% absolute over RT-2-X with 7× fewer parameters across 29 tasks, and +20.4% over from-scratch Diffusion Policy after fine-tuning."
+  },
+  "why": "The open baseline everything in the VLA line is now measured against.",
+  "confidence": "high",
+  "tags": [
+   "VLA",
+   "open source",
+   "manipulation"
+  ]
+ },
+ {
+  "id": "pi0",
+  "short": "π₀",
+  "title": "π₀: A Vision-Language-Action Flow Model for General Robot Control",
+  "year": 2024,
+  "date": "2024-10",
+  "venue": "RSS 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Kevin Black",
+   "Noah Brown",
+   "Danny Driess",
+   "Adnan Esmail",
+   "Michael Equi",
+   "Chelsea Finn"
+  ],
+  "n_authors": 24,
+  "institutions": [
+   "Physical Intelligence"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2410.24164",
+   "page": "https://physicalintelligence.company/blog/pi0"
+  },
+  "tldr": "Swap discrete action tokens for a flow-matching head on top of a VLM, and one policy folds laundry, clears tables and assembles boxes across single-arm, dual-arm and mobile platforms.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "object-state",
+   "procedure"
+  ],
+  "representation": [
+   "trajectory",
+   "language"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Generalist dexterous control across heterogeneous robot platforms, at high control frequency.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "camera images",
+      "modality": "image",
+      "tensor": "o_t^{1..k}",
+      "chars": "Multiple views depending on the platform."
+     },
+     {
+      "name": "proprioception",
+      "modality": "action",
+      "tensor": "q_t",
+      "chars": ""
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "From a person or from a high-level VLM policy."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "continuous action chunk",
+      "modality": "trajectory",
+      "tensor": "a_{t:t+H} ∈ R^{H×d}",
+      "chars": "Continuous — flow matching, not discretization — at up to 50 Hz."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Pretraining on a large multi-platform dexterous dataset, then task-specific fine-tuning.",
+    "note": "The pretrain-then-specialize split mirrors language models and is the paper's organizing claim."
+   }
+  },
+  "method": {
+   "intuition": "Discretizing actions throws away the precision dexterous tasks need. Flow matching keeps them continuous while inheriting the VLM's semantics.",
+   "family": [
+    "flow-matching",
+    "vlm",
+    "transformer"
+   ],
+   "backbone": "pretrained VLM + action expert",
+   "init": "finetune",
+   "components": [
+    "flow-matching action head",
+    "cross-platform data mixture",
+    "high-frequency chunked control",
+    "post-training for new skills"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "multi-platform dexterous demonstrations",
+     "role": "new"
+    },
+    {
+     "name": "laundry folding, table cleaning, box assembly",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "zero-shot success",
+    "post-fine-tuning success",
+    "instruction following"
+   ],
+   "baselines": [
+    "discrete-token VLAs",
+    "from-scratch policies"
+   ],
+   "headline": "Zero-shot competence after pretraining, language following from people and from a high-level VLM, and new skills acquired by fine-tuning."
+  },
+  "why": "The current reference point for what a robot foundation model looks like, and the flow-matching head is now standard.",
+  "confidence": "high",
+  "tags": [
+   "VLA",
+   "flow matching",
+   "dexterous"
+  ]
+ },
+ {
+  "id": "groot-n1",
+  "short": "GR00T N1",
+  "title": "GR00T N1: An Open Foundation Model for Generalist Humanoid Robots",
+  "year": 2025,
+  "date": "2025-03",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "NVIDIA",
+   "Johan Bjorck",
+   "Fernando Castañeda",
+   "Nikita Cherniadev",
+   "Linxi Fan",
+   "Yuke Zhu"
+  ],
+  "n_authors": 43,
+  "institutions": [
+   "NVIDIA"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2503.14734",
+   "page": "https://developer.nvidia.com/isaac/gr00t"
+  },
+  "tldr": "A slow VLM that reasons and a fast diffusion transformer that moves, trained end-to-end together, fed by robot trajectories plus human video plus synthetic data.",
+  "contribution": [
+   "method",
+   "system"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "object-state"
+  ],
+  "representation": [
+   "trajectory",
+   "language"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "web-video",
+   "sim-render"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Generalist humanoid control across embodiments, language-conditioned.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "images",
+      "modality": "image",
+      "tensor": "o_t",
+      "chars": ""
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "Interpreted by System 2."
+     },
+     {
+      "name": "proprioception",
+      "modality": "action",
+      "tensor": "q_t",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "motor actions",
+      "modality": "action",
+      "tensor": "a_t",
+      "chars": "From System 1, in real time."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Heterogeneous mixture: real robot trajectories, human videos, synthetic generated data. Both systems trained jointly end to end.",
+    "note": "The data mixture is the interesting variable — human video and synthetic data are treated as first-class, not as auxiliary."
+   }
+  },
+  "method": {
+   "intuition": "Semantic interpretation and motor control run at different timescales, so give them different modules but train them as one model so the interface is learned rather than designed.",
+   "family": [
+    "vlm",
+    "diffusion",
+    "transformer"
+   ],
+   "backbone": "VLM (System 2) + diffusion transformer (System 1)",
+   "init": "finetune",
+   "components": [
+    "dual-system architecture",
+    "joint end-to-end training",
+    "heterogeneous data mixture including human video",
+    "cross-embodiment training"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "real robot trajectories + human video + synthetic data",
+     "role": "new"
+    },
+    {
+     "name": "standard simulation benchmarks",
+     "role": "existing"
+    },
+    {
+     "name": "Fourier GR-1 humanoid",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "simulation success across embodiments",
+    "real bimanual task success",
+    "data efficiency"
+   ],
+   "baselines": [
+    "state-of-the-art imitation learning"
+   ],
+   "headline": "Outperforms imitation-learning baselines across multiple embodiments in simulation, and runs language-conditioned bimanual manipulation on a real humanoid with high data efficiency."
+  },
+  "why": "The humanoid end of the embodiment axis, and the most explicit use of human video as robot training data at scale.",
+  "confidence": "high",
+  "tags": [
+   "humanoid",
+   "VLA",
+   "foundation model"
+  ]
+ },
+ {
+  "id": "safe-vla",
+  "short": "SAFE",
+  "title": "SAFE: Multitask Failure Detection for Vision-Language-Action Models",
+  "year": 2025,
+  "date": "2025-06",
+  "venue": "NeurIPS 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Qiao Gu",
+   "Yuanliang Ju",
+   "Shengxiang Sun",
+   "Igor Gilitschenski",
+   "Haruki Nishimura",
+   "Masha Itkina"
+  ],
+  "n_authors": 7,
+  "institutions": [
+   "University of Toronto",
+   "Toyota Research Institute"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.09937",
+   "page": "https://vla-safe.github.io/"
+  },
+  "tldr": "A generalist policy needs a generalist failure detector, and the VLA's own internal features already predict failure well enough to give one scalar.",
+  "contribution": [
+   "method",
+   "analysis"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "verify"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "collaborator"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "alert"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Detect, during execution and on unseen tasks, that a VLA policy is failing.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "VLA internal features",
+      "modality": "latent",
+      "tensor": "h_t ∈ R^{d}",
+      "chars": "Read from inside OpenVLA, π₀ or π₀-FAST while it acts."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "failure likelihood",
+      "modality": "scalar",
+      "tensor": "s_t ∈ [0,1]",
+      "chars": "One scalar, thresholded with conformal prediction to control the alert rate."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Successful and failed rollouts. Evaluated on tasks held out entirely.",
+    "note": "Generalizing across tasks is the actual problem — prior detectors were fit per task."
+   }
+  },
+  "method": {
+   "intuition": "The policy already computes whether things are going well. The information is in its features, so the detector does not need its own perception stack.",
+   "family": [
+    "transformer",
+    "classical"
+   ],
+   "backbone": "lightweight probe on VLA features",
+   "init": "scratch",
+   "components": [
+    "multitask failure detection problem definition",
+    "VLA feature-space analysis",
+    "conformal prediction for timing thresholds",
+    "policy-architecture agnostic"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "simulated and real rollouts of OpenVLA, π₀, π₀-FAST",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "detection accuracy",
+    "accuracy vs. detection-time trade-off"
+   ],
+   "baselines": [
+    "per-task failure detectors",
+    "uncertainty baselines"
+   ],
+   "headline": "State-of-the-art failure detection on unseen tasks with the best accuracy / detection-time trade-off, using conformal prediction for calibrated alerts."
+  },
+  "why": "The robot-side mirror of procedural mistake detection — same loop stage, different embodiment, almost no shared literature.",
+  "confidence": "high",
+  "tags": [
+   "failure detection",
+   "VLA",
+   "verify"
+  ]
+ },
+ {
+  "id": "physobjects",
+  "short": "PhysObjects",
+  "title": "Physically Grounded Vision-Language Models for Robotic Manipulation",
+  "year": 2023,
+  "date": "2023-09",
+  "venue": "ICRA 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Jensen Gao",
+   "Bidipta Sarkar",
+   "Fei Xia",
+   "Ted Xiao",
+   "Jiajun Wu",
+   "Dorsa Sadigh"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "Stanford University",
+   "Google DeepMind",
+   "Princeton University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2309.02561",
+   "page": "https://iliad.stanford.edu/pg-vlm/"
+  },
+  "tldr": "VLMs recognize a wine glass but do not know it is fragile. After 39.6K crowd-sourced and 417K automated physical-concept annotations, a planner that consults one picks it up differently.",
+  "contribution": [
+   "dataset",
+   "method"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "dynamics"
+  ],
+  "representation": [
+   "language",
+   "physics-params"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Predict physical object concepts from images, and use them inside an LLM robotic planner.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "object image",
+      "modality": "image",
+      "tensor": "x ∈ R^{H×W×3}",
+      "chars": "Common household objects."
+     },
+     {
+      "name": "concept query",
+      "modality": "text",
+      "tensor": "q",
+      "chars": "Material, fragility, deformability, mass, transparency — including held-out concepts."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "physical concept prediction",
+      "modality": "label",
+      "tensor": "y",
+      "chars": "Feeds the planner as text."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "PhysObjects: 39.6K crowd-sourced plus 417K automated physical concept annotations.",
+    "note": "The claim being tested is that human priors about physical properties are recoverable from appearance."
+   }
+  },
+  "method": {
+   "intuition": "Physical properties are not visible, but people infer them from appearance reliably, so a VLM can learn that prior from annotations rather than from physics.",
+   "family": [
+    "vlm",
+    "llm"
+   ],
+   "backbone": "VLM fine-tuned on PhysObjects + LLM planner",
+   "init": "finetune",
+   "components": [
+    "object-centric physical concept dataset",
+    "physically grounded VLM",
+    "interactive VLM-LLM planner loop"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "PhysObjects",
+     "role": "new"
+    },
+    {
+     "name": "real robot manipulation tasks",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "concept prediction accuracy including held-out concepts",
+    "planning success",
+    "real robot success rate"
+   ],
+   "baselines": [
+    "planners without a physically grounded VLM"
+   ],
+   "headline": "Better physical concept understanding including generalization to held-out concepts, improved planning, and higher real-robot task success."
+  },
+  "why": "Sits exactly on the course's title: it is the paper about physically grounding a model that otherwise only knows appearance.",
+  "confidence": "high",
+  "tags": [
+   "physical grounding",
+   "VLM",
+   "planning"
+  ]
+ },
+ {
+  "id": "trackvla",
+  "short": "TrackVLA",
+  "title": "TrackVLA: Embodied Visual Tracking in the Wild",
+  "year": 2025,
+  "date": "2025-05",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Shaoan Wang",
+   "Jiazhao Zhang",
+   "Minghan Li",
+   "Jiahang Liu",
+   "Anqi Li",
+   "Kui Wu"
+  ],
+  "n_authors": 10,
+  "institutions": [
+   "Peking University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2505.23189",
+   "page": "https://pku-epic.github.io/TrackVLA-web"
+  },
+  "tldr": "Recognition and planning are usually separate modules that fail separately. Sharing one LLM backbone between a language head and a diffusion trajectory head makes them help each other.",
+  "contribution": [
+   "method",
+   "benchmark"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "object-state",
+   "scene",
+   "agent-body"
+  ],
+  "representation": [
+   "trajectory",
+   "language"
+  ],
+  "change_channel": [
+   "motor-action",
+   "plan"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "egocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Follow a named target through a dynamic, occluding environment using only egocentric vision.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric video",
+      "modality": "video",
+      "tensor": "V_{0:t}",
+      "chars": "Robot-mounted, severe occlusion and scene dynamics."
+     },
+     {
+      "name": "target description",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "recognition",
+      "modality": "label",
+      "tensor": "id_t",
+      "chars": "From the language modeling head."
+     },
+     {
+      "name": "trajectory",
+      "modality": "trajectory",
+      "tensor": "τ_t",
+      "chars": "From an anchor-based diffusion head, at 10 FPS."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "1.7M samples from the purpose-built EVT-Bench, graded by recognition difficulty.",
+    "note": "Real-world evaluation is included, so the sim-to-real claim is not left implicit."
+   }
+  },
+  "method": {
+   "intuition": "Tracking fails when recognition and planning disagree, so give them a shared representation and let the errors correlate instead of cascade.",
+   "family": [
+    "vlm",
+    "diffusion"
+   ],
+   "backbone": "shared LLM + LM head + anchor-based diffusion head",
+   "init": "finetune",
+   "components": [
+    "EVT-Bench (1.7M samples)",
+    "joint recognition-planning training",
+    "anchor-based trajectory diffusion"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "EVT-Bench",
+     "role": "new"
+    },
+    {
+     "name": "public tracking benchmarks",
+     "role": "existing"
+    },
+    {
+     "name": "real-world deployment",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "tracking success",
+    "robustness under occlusion",
+    "inference rate"
+   ],
+   "baselines": [
+    "modular recognition + planning pipelines"
+   ],
+   "headline": "State of the art on public benchmarks zero-shot, holding up under occlusion and scene dynamics in the real world at 10 FPS."
+  },
+  "why": "A good example of a task where perception and action cannot be cleanly separated, which is the loop argument in miniature.",
+  "confidence": "high",
+  "tags": [
+   "VLA",
+   "tracking",
+   "navigation"
+  ]
+ },
+ {
+  "id": "vla-survey",
+  "short": "VLA Survey",
+  "title": "A Survey on Vision-Language-Action Models: An Action Tokenization Perspective",
+  "year": 2025,
+  "date": "2025-07",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Yifan Zhong",
+   "Fengshuo Bai",
+   "Shaofei Cai",
+   "Xuchuan Huang",
+   "Zhang Chen",
+   "Yaodong Yang"
+  ],
+  "n_authors": 14,
+  "institutions": [
+   "Peking University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2507.01925"
+  },
+  "tldr": "Every VLA is the same pipeline with a different action token — language, code, affordance, trajectory, goal state, latent, raw action, or reasoning — and that choice explains most of the differences.",
+  "contribution": [
+   "survey"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "procedure",
+   "agent-body"
+  ],
+  "representation": [
+   "tokens",
+   "language",
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action",
+   "plan"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Survey of vision-language-action models organized by how the action is tokenized.",
+   "inference": {
+    "inputs": [],
+    "outputs": []
+   },
+   "training": {
+    "supervision": "",
+    "note": "70 pages. The taxonomy is the deliverable."
+   }
+  },
+  "method": {
+   "intuition": "Apparent architectural diversity in VLAs collapses once you ask what the action token is, which makes the design space navigable.",
+   "family": [
+    "survey"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "eight action token types",
+    "strengths and limits of each",
+    "open directions"
+   ]
+  },
+  "experiments": {
+   "datasets": [],
+   "metrics": [],
+   "baselines": [],
+   "headline": ""
+  },
+  "why": "The best available map of the robot-embodiment branch, and a taxonomy worth arguing with.",
+  "confidence": "high",
+  "tags": [
+   "survey",
+   "VLA"
+  ]
+ }
+]

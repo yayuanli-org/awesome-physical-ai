@@ -1,0 +1,1656 @@
+[
+ {
+  "id": "birth-death-rose",
+  "short": "Birth and Death of a Rose",
+  "title": "Birth and Death of a Rose",
+  "year": 2024,
+  "date": "2024-12",
+  "venue": "CVPR 2025 (Oral)",
+  "venue_type": "conference",
+  "authors": [
+   "Chen Geng",
+   "Yunzhi Zhang",
+   "Shangzhe Wu",
+   "Jiajun Wu"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "Stanford University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2412.05278",
+   "page": "https://chen-geng.com/rose4d"
+  },
+  "tldr": "An object is a trajectory through geometry, reflectance and texture. A rose blooming and wilting is one object, and this generates the whole trajectory from 2D priors.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "anticipate"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "object-change"
+  ],
+  "representation": [
+   "geometry",
+   "pixels"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "hours",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Generate temporal object intrinsics — geometry, reflectance and texture evolving over an object's lifespan — from 2D priors alone.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "concept",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "A natural phenomenon with a life cycle: a blooming rose, a rusting nail."
+     },
+     {
+      "name": "query",
+      "modality": "scalar",
+      "tensor": "(t, view, lighting)",
+      "chars": "Any time in the lifespan, any camera, any environment map."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "object intrinsics at time t",
+      "modality": "mesh",
+      "tensor": "(G_t, R_t, T_t)",
+      "chars": "Renderable and relightable, not a baked video."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Score distillation from a frozen 2D diffusion model. No 4D ground truth exists for these phenomena.",
+    "note": "Neural Templates for the temporal state are derived automatically from self-supervised image features, which is how consistency across the lifespan is enforced."
+   }
+  },
+  "method": {
+   "intuition": "Time-varying object identity is a missing axis in 3D asset modeling, and 2D generative priors already contain it if you can hold state consistent while distilling.",
+   "family": [
+    "diffusion",
+    "nerf-3dgs"
+   ],
+   "backbone": "score distillation from 2D diffusion",
+   "init": "frozen-foundation",
+   "components": [
+    "temporal object intrinsics formulation",
+    "Neural Templates from SSL features",
+    "temporal-state-guided distillation"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "text prompts for natural phenomena",
+     "role": "synthetic"
+    }
+   ],
+   "metrics": [
+    "view and time consistency",
+    "relighting quality",
+    "human preference"
+   ],
+   "baselines": [
+    "4D generation from video",
+    "per-frame 3D generation"
+   ],
+   "headline": "Controllable rendering of a phenomenon from any viewpoint, any lighting and any point in its lifespan."
+  },
+  "why": "The clean statement of the object-centric premise this list is organised around: objects are defined by how they change.",
+  "confidence": "high",
+  "tags": [
+   "object-centric",
+   "4D",
+   "state change"
+  ]
+ },
+ {
+  "id": "procobject-10k",
+  "short": "ProcObject-10K",
+  "title": "ProcObject-10K: Benchmarking Object-Centric Procedural Understanding in Instructional Videos",
+  "year": 2025,
+  "date": "2025-12",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Wenliang Guo",
+   "Yu Kong"
+  ],
+  "n_authors": 2,
+  "institutions": [
+   "Michigan State University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2512.03479"
+  },
+  "tldr": "Procedural video benchmarks ask what the person did. This one asks what happened to the object, and models turn out to answer without being able to point at the evidence.",
+  "contribution": [
+   "benchmark",
+   "dataset",
+   "method"
+  ],
+  "openness": [
+   "data",
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "verify"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "object-state",
+   "object-change",
+   "procedure"
+  ],
+  "representation": [
+   "language",
+   "pixels"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "exocentric"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Open-ended VideoQA about object preconditions, state evolution, counterfactuals, mistakes and readiness — with temporal grounding of the evidence.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "video clip",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "1,799 clips, both egocentric and exocentric, 137 tasks across 9 domains."
+     },
+     {
+      "name": "question",
+      "modality": "text",
+      "tensor": "q",
+      "chars": "One of five reasoning types, all about the object rather than the action."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "answer",
+      "modality": "text",
+      "tensor": "a",
+      "chars": "Open-ended, not multiple choice."
+     },
+     {
+      "name": "evidence window",
+      "modality": "scalar",
+      "tensor": "(t_s, t_e)",
+      "chars": "The interval the answer rests on — scored separately, which is where models fall apart."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Benchmark plus an object-centric SFT baseline with pseudo object-level supervision.",
+    "note": "Fine-tuning transfers to other grounded VideoQA and embodied planning tasks, so the object supervision is not benchmark-specific."
+   }
+  },
+  "method": {
+   "intuition": "Procedural activity is driven by object state transitions, so a benchmark that never scores object reasoning cannot tell whether a model understands the task or is guessing from language priors.",
+   "family": [
+    "benchmark",
+    "vlm"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "10,522 open-ended QA pairs",
+    "five reasoning types",
+    "joint answer + grounding evaluation",
+    "object-centric SFT baseline"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "ProcObject-10K",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "open-ended answer accuracy",
+    "grounding mIoU"
+   ],
+   "baselines": [
+    "13 leading MLLMs, zero-shot and fine-tuned"
+   ],
+   "headline": "A large answering-grounding gap: plausible answers with grounding mIoU below 45%, which exposes reliance on linguistic priors over object dynamics."
+  },
+  "why": "Turns the object-centric claim into a measurement, and the measurement says current models are not doing it.",
+  "confidence": "high",
+  "tags": [
+   "object-centric",
+   "procedure",
+   "benchmark",
+   "grounding"
+  ]
+ },
+ {
+  "id": "particle-grid-dynamics",
+  "short": "Particle-Grid Neural Dynamics",
+  "title": "Particle-Grid Neural Dynamics for Learning Deformable Object Models from RGB-D Videos",
+  "year": 2025,
+  "date": "2025-06",
+  "venue": "RSS 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Kaifeng Zhang",
+   "Baoyu Li",
+   "Kris Hauser",
+   "Yunzhu Li"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "Columbia University",
+   "UIUC"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.15680",
+   "page": "https://kywind.github.io/pgnd"
+  },
+  "tldr": "A learned digital twin of rope, cloth and paper bags, fit from sparse RGB-D of a robot poking them, good enough to plan with.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "dynamics",
+   "interaction"
+  ],
+  "representation": [
+   "geometry",
+   "physics-params"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action"
+  ],
+  "sensing": [
+   "depth-3d",
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Learn action-conditioned dynamics of deformable objects from sparse-view RGB-D, then plan with the learned model.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "RGB-D",
+      "modality": "rgbd",
+      "tensor": "I ∈ R^{V×H×W×4}",
+      "chars": "Sparse views — 2 to 4 cameras, not a mocap dome."
+     },
+     {
+      "name": "robot action",
+      "modality": "action",
+      "tensor": "a_t",
+      "chars": "End-effector motion applied to the object."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "particle displacement",
+      "modality": "pointcloud",
+      "tensor": "Δp ∈ R^{N×3}",
+      "chars": "Dense per-particle motion; rendered through Gaussian Splatting for visual comparison."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Self-supervised from recorded robot-object interaction videos — no simulator, no material parameters given.",
+    "note": "Category-level generalization to unseen instances comes from the hybrid representation, not from more data."
+   }
+  },
+  "method": {
+   "intuition": "Particles carry shape and grids carry spatial continuity, so a hybrid keeps both dense prediction and stable learning where a pure particle model would drift.",
+   "family": [
+    "gnn",
+    "nerf-3dgs"
+   ],
+   "backbone": "particle-grid neural dynamics network",
+   "init": "scratch",
+   "components": [
+    "particle state + spatial grid features",
+    "Gaussian Splatting renderer for visual supervision",
+    "model-based planning over the learned dynamics"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "robot interaction recordings: ropes, cloths, stuffed animals, paper bags",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "particle prediction error",
+    "rendered video error",
+    "goal-conditioned manipulation success"
+   ],
+   "baselines": [
+    "learning-based simulators",
+    "physics-based simulators"
+   ],
+   "headline": "Outperforms both learned and physics-based simulators, most clearly when camera views are limited, and supports goal-conditioned manipulation."
+  },
+  "why": "Deformables are where explicit physical state stops being optional, and this is the bridge from RGB-D observation to a model you can plan against.",
+  "confidence": "high",
+  "tags": [
+   "deformable",
+   "dynamics",
+   "digital twin"
+  ]
+ },
+ {
+  "id": "force-prompting",
+  "short": "Force Prompting",
+  "title": "Force Prompting: Video Generation Models Can Learn and Generalize Physics-based Control Signals",
+  "year": 2025,
+  "date": "2025-05",
+  "venue": "NeurIPS 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Nate Gillman",
+   "Charles Herrmann",
+   "Michael Freeman",
+   "Daksh Aggarwal",
+   "Deqing Sun",
+   "Chen Sun"
+  ],
+  "n_authors": 7,
+  "institutions": [
+   "Brown University",
+   "Google DeepMind"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2505.19386",
+   "page": "https://force-prompting.github.io/"
+  },
+  "tldr": "Poke a plant or blow wind at a flag by conditioning a video model on a force field. Trained on a handful of Blender scenes, it generalizes to real materials.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "anticipate",
+   "act"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "dynamics",
+   "object-change"
+  ],
+  "representation": [
+   "pixels",
+   "physics-params"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "sim-render",
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "web",
+   "lab-sim"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Physical-force-conditioned video generation.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x₀ ∈ R^{H×W×3}",
+      "chars": "A real photo of a scene with something deformable in it."
+     },
+     {
+      "name": "force prompt",
+      "modality": "force",
+      "tensor": "(p, f) or F ∈ R^{2}",
+      "chars": "Either a localized point force at a pixel, or a global wind vector."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "The scene responding to that force. No 3D asset or simulator at inference."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Paired force-video data synthesized in Blender over a small set of objects.",
+    "note": "The whole result rests on the gap between that narrow synthetic training set and the diverse real inputs it generalizes to."
+   }
+  },
+  "method": {
+   "intuition": "A pretrained video model already contains a motion prior for how materials respond. Force conditioning only has to name the input, not teach the physics.",
+   "family": [
+    "diffusion",
+    "transformer"
+   ],
+   "backbone": "pretrained video diffusion + ControlNet-style conditioning",
+   "init": "finetune",
+   "components": [
+    "point-force and wind-field prompts",
+    "Blender-synthesized paired data",
+    "generalization ablations"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Blender force-video pairs (few object types)",
+     "role": "synthetic"
+    },
+    {
+     "name": "real photographs",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "physical plausibility",
+    "force adherence",
+    "human preference"
+   ],
+   "baselines": [
+    "text- and trajectory-conditioned video generation"
+   ],
+   "headline": "Generalizes across geometries, settings and materials from limited demonstrations of a few objects."
+  },
+  "why": "Tests whether a video model has physics or only appearance, by giving it a control signal that only physics can satisfy.",
+  "confidence": "high",
+  "tags": [
+   "physics",
+   "video generation",
+   "control"
+  ]
+ },
+ {
+  "id": "physx-3d",
+  "short": "PhysX-3D",
+  "title": "PhysX-3D: Physical-Grounded 3D Asset Generation",
+  "year": 2025,
+  "date": "2025-07",
+  "venue": "NeurIPS 2025 (Spotlight)",
+  "venue_type": "conference",
+  "authors": [
+   "Ziang Cao",
+   "Zhaoxi Chen",
+   "Liang Pan",
+   "Ziwei Liu"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "NTU S-Lab"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2507.12465",
+   "page": "https://physx-3d.github.io/"
+  },
+  "tldr": "Generated 3D assets look right and weigh nothing. This annotates scale, material, affordance, kinematics and function, then generates assets that carry them.",
+  "contribution": [
+   "dataset",
+   "method"
+  ],
+  "openness": [
+   "code",
+   "data"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "dynamics"
+  ],
+  "representation": [
+   "geometry",
+   "physics-params",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "sim-render"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Image-to-3D generation that outputs physical properties alongside geometry.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x ∈ R^{H×W×3}",
+      "chars": "Single view of an object."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "3D asset",
+      "modality": "mesh",
+      "tensor": "M",
+      "chars": "Geometry and texture, quality preserved against a non-physical baseline."
+     },
+     {
+      "name": "physical properties",
+      "modality": "label",
+      "tensor": "(scale, material, affordance, kinematics, function)",
+      "chars": "Five dimensions — the ones that decide whether the asset can be simulated or grasped."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "PhysXNet, built by a VLM-assisted human-in-the-loop annotation pipeline over existing 3D assets.",
+    "note": "The pipeline is reusable — it turns any raw 3D corpus into a physics-first one."
+   }
+  },
+  "method": {
+   "intuition": "3D generation is moving from screens to simulators and robots, and a mesh without mass, material or joints cannot cross that line.",
+   "family": [
+    "diffusion",
+    "transformer"
+   ],
+   "backbone": "dual-branch feed-forward generator",
+   "init": "finetune",
+   "components": [
+    "PhysXNet dataset with 5 physical dimensions",
+    "VLM-assisted annotation pipeline",
+    "dual-branch structure/physics generator"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "PhysXNet",
+     "role": "reannotated"
+    }
+   ],
+   "metrics": [
+    "geometry quality",
+    "physical property prediction accuracy"
+   ],
+   "baselines": [
+    "image-to-3D generators without physics"
+   ],
+   "headline": "Plausible physical predictions without degrading native geometry quality."
+  },
+  "why": "Marks where 3D generation stops being graphics and starts being an input to physical AI.",
+  "confidence": "high",
+  "tags": [
+   "3D generation",
+   "physics",
+   "affordance"
+  ]
+ },
+ {
+  "id": "4d-lrm",
+  "short": "4D-LRM",
+  "title": "4D-LRM: Large Space-Time Reconstruction Model From and To Any View at Any Time",
+  "year": 2025,
+  "date": "2025-06",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Ziqiao Ma",
+   "Xuweiyi Chen",
+   "Shoubin Yu",
+   "Sai Bi",
+   "Kai Zhang",
+   "Joyce Chai"
+  ],
+  "n_authors": 13,
+  "institutions": [
+   "University of Michigan",
+   "Adobe Research"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.18890",
+   "page": "https://4dlrm.github.io/"
+  },
+  "tldr": "Feed-forward 4D: posed image tokens in, per-pixel 4D Gaussians out, 24 frames reconstructed in under 1.5 seconds instead of a per-scene optimization.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "object-change"
+  ],
+  "representation": [
+   "geometry"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "multi-view"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Reconstruct a dynamic object from unconstrained views at unconstrained times, and render any new view-time pair.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "posed frames",
+      "modality": "image",
+      "tensor": "{(I_i, π_i, t_i)}",
+      "chars": "A few views at a few timestamps; the camera setup need not be fixed."
+     },
+     {
+      "name": "query",
+      "modality": "scalar",
+      "tensor": "(π*, t*)",
+      "chars": "Any view, any time — including between the observed timestamps."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "4D Gaussians",
+      "modality": "gaussians",
+      "tensor": "G ∈ R^{P×d}",
+      "chars": "Per-pixel primitives, rendered at effectively unbounded frame rate."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Large-scale supervised 4D pretraining on rendered object sequences.",
+    "note": "The claim under test is a scaling claim: does spatiotemporal pretraining generalize the way 3D pretraining did?"
+   }
+  },
+  "method": {
+   "intuition": "Optimization-based 4D is slow and generative 4D is unfaithful. A single feed-forward space-time representation gets both, if it is pretrained at scale.",
+   "family": [
+    "transformer",
+    "nerf-3dgs"
+   ],
+   "backbone": "large reconstruction transformer",
+   "init": "scratch",
+   "components": [
+    "unified space-time tokenization",
+    "per-pixel 4D Gaussian prediction",
+    "single-pass 24-frame reconstruction"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "rendered 4D object sequences",
+     "role": "synthetic"
+    },
+    {
+     "name": "novel-object generalization sets",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "PSNR / SSIM / LPIPS on novel view-time",
+    "runtime"
+   ],
+   "baselines": [
+    "optimization-based 4D",
+    "geometry-based 4D",
+    "generative 4D"
+   ],
+   "headline": "24-frame sequences reconstructed in one forward pass in under 1.5 s on a single A100, generalizing to unseen objects and camera setups."
+  },
+  "why": "Shows the reconstruction side of physical-world modeling following the same scaling recipe as the generative side.",
+  "confidence": "high",
+  "tags": [
+   "4D",
+   "reconstruction",
+   "Gaussians"
+  ]
+ },
+ {
+  "id": "3dgs",
+  "short": "3D Gaussian Splatting",
+  "title": "3D Gaussian Splatting for Real-Time Radiance Field Rendering",
+  "year": 2023,
+  "date": "2023-08",
+  "venue": "SIGGRAPH 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Bernhard Kerbl",
+   "Georgios Kopanas",
+   "Thomas Leimkühler",
+   "George Drettakis"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "Inria",
+   "Université Côte d'Azur",
+   "MPI Informatik"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2308.04079",
+   "page": "https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/"
+  },
+  "tldr": "Explicit anisotropic Gaussians plus a visibility-aware rasterizer make radiance fields real-time, which is why almost every 4D and digital-twin paper after 2023 is built on them.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene"
+  ],
+  "representation": [
+   "geometry"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "multi-view"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Novel-view synthesis of a static scene at real-time rates.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "camera",
+      "modality": "scalar",
+      "tensor": "π ∈ SE(3) × K",
+      "chars": "Any pose in the captured volume."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "Î ∈ R^{H×W×3}",
+      "chars": "1080p at ≥30 fps."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Per-scene optimization against posed photographs, initialized from SfM points.",
+    "note": "Not a learned prior — every scene is fit from scratch, which is exactly what feed-forward successors set out to remove."
+   }
+  },
+  "method": {
+   "intuition": "Volumetric quality does not require querying an MLP in empty space. Put explicit primitives where the scene actually is and rasterize them.",
+   "family": [
+    "nerf-3dgs"
+   ],
+   "backbone": "explicit 3D Gaussians + differentiable rasterizer",
+   "init": "scratch",
+   "components": [
+    "anisotropic 3D Gaussians",
+    "interleaved optimization and density control",
+    "visibility-aware tile rasterizer"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Mip-NeRF360, Tanks&Temples, Deep Blending",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "PSNR / SSIM / LPIPS",
+    "training time",
+    "render fps"
+   ],
+   "baselines": [
+    "Mip-NeRF360",
+    "InstantNGP",
+    "Plenoxels"
+   ],
+   "headline": "State-of-the-art quality with real-time (≥30 fps) 1080p rendering and competitive training time."
+  },
+  "why": "Background: the representation that made 4D capture of physical scenes cheap enough to be routine.",
+  "confidence": "high",
+  "tags": [
+   "3D",
+   "rendering",
+   "foundation"
+  ]
+ },
+ {
+  "id": "nerf",
+  "short": "NeRF",
+  "title": "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis",
+  "year": 2020,
+  "date": "2020-03",
+  "venue": "ECCV 2020 (Oral)",
+  "venue_type": "conference",
+  "authors": [
+   "Ben Mildenhall",
+   "Pratul P. Srinivasan",
+   "Matthew Tancik",
+   "Jonathan T. Barron",
+   "Ravi Ramamoorthi",
+   "Ren Ng"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "UC Berkeley",
+   "Google Research",
+   "UC San Diego"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2003.08934",
+   "page": "http://tancik.com/nerf"
+  },
+  "tldr": "A scene is a function from 5D coordinates to density and colour, fit by differentiable volume rendering — the paper that made implicit 3D the default.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene"
+  ],
+  "representation": [
+   "geometry"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "multi-view"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Novel-view synthesis from a sparse set of posed images.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "ray sample",
+      "modality": "scalar",
+      "tensor": "(x, y, z, θ, φ)",
+      "chars": "5D: position plus viewing direction."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "density and radiance",
+      "modality": "scalar",
+      "tensor": "(σ, c) ∈ R × R^3",
+      "chars": "Composited along rays by classical volume rendering."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Photometric loss against the input images. Camera poses are the only extra input.",
+    "note": "Because volume rendering is differentiable, images alone suffice — no geometry supervision."
+   }
+  },
+  "method": {
+   "intuition": "Store the scene in the weights of a small continuous function rather than a discrete grid, and the resolution limit goes away.",
+   "family": [
+    "nerf-3dgs"
+   ],
+   "backbone": "fully-connected MLP",
+   "init": "scratch",
+   "components": [
+    "5D radiance field",
+    "positional encoding",
+    "hierarchical volume sampling"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "synthetic and real forward-facing scenes",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "PSNR / SSIM / LPIPS"
+   ],
+   "baselines": [
+    "neural volumes",
+    "local light field fusion",
+    "scene representation networks"
+   ],
+   "headline": "Outperformed prior neural rendering on complex geometry and view-dependent appearance."
+  },
+  "why": "Historical anchor for how the field learned to hold 3D scenes in a differentiable form.",
+  "confidence": "high",
+  "tags": [
+   "3D",
+   "rendering",
+   "foundation"
+  ]
+ },
+ {
+  "id": "hot3d",
+  "short": "HOT3D",
+  "title": "HOT3D: Hand and Object Tracking in 3D from Egocentric Multi-View Videos",
+  "year": 2024,
+  "date": "2024-11",
+  "venue": "CVPR 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Prithviraj Banerjee",
+   "Sindi Shkodrani",
+   "Pierre Moulon",
+   "Shreyas Hampali",
+   "Shangchen Han",
+   "Fan Zhang"
+  ],
+  "n_authors": 14,
+  "institutions": [
+   "Meta Reality Labs"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2411.19167"
+  },
+  "tldr": "3.7M egocentric frames with mocap-grade 3D poses for hands and 33 objects, from Project Aria glasses and Quest 3.",
+  "contribution": [
+   "dataset",
+   "benchmark"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "agent-body",
+   "object-state",
+   "interaction"
+  ],
+  "representation": [
+   "geometry"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "multi-view",
+   "gaze",
+   "depth-3d"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Egocentric 3D hand tracking, model-based 6DoF object pose, and 3D lifting of unknown in-hand objects.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric multi-view",
+      "modality": "video",
+      "tensor": "V ∈ R^{C×T×H×W×3}",
+      "chars": "RGB and monochrome streams from Aria or Quest 3."
+     },
+     {
+      "name": "gaze + point cloud",
+      "modality": "gaze",
+      "tensor": "g_t, P_t",
+      "chars": "Synchronized; scene point clouds and camera poses provided."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "hand pose",
+      "modality": "hand-pose",
+      "tensor": "θ ∈ R^{J×3}",
+      "chars": "In both UmeTrack and MANO parameterizations."
+     },
+     {
+      "name": "object pose",
+      "modality": "object-pose",
+      "tensor": "T ∈ SE(3)",
+      "chars": "Against scanned meshes with PBR materials."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Ground truth from an optical marker mocap system, so poses are metric rather than estimated.",
+    "note": "19 subjects, 33 rigid objects, kitchen / office / living-room activities beyond pick-and-place."
+   }
+  },
+  "method": {
+   "intuition": "Multi-view egocentric capture removes the depth ambiguity that makes single-camera hand-object tracking unreliable, and having both a research prototype and a shipped headset makes the benchmark realistic.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "833+ minutes / 3.7M+ images",
+    "Aria and Quest 3 captures",
+    "marker-based ground truth",
+    "scanned object meshes"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "HOT3D",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "hand joint error",
+    "6DoF pose error",
+    "shape reconstruction error"
+   ],
+   "baselines": [
+    "single-view counterparts of each method"
+   ],
+   "headline": "Multi-view methods significantly outperform their single-view counterparts on all three tasks."
+  },
+  "why": "The measurement ground truth for hand-object interaction, from the viewpoint the human-embodiment branch actually uses.",
+  "confidence": "high",
+  "tags": [
+   "egocentric",
+   "hand-object",
+   "dataset",
+   "3D"
+  ]
+ },
+ {
+  "id": "affordance-llm",
+  "short": "AffordanceLLM",
+  "title": "AffordanceLLM: Grounding Affordance from Vision Language Models",
+  "year": 2024,
+  "date": "2024-01",
+  "venue": "CVPR 2024 Workshop",
+  "venue_type": "workshop",
+  "authors": [
+   "Shengyi Qian",
+   "Weifeng Chen",
+   "Min Bai",
+   "Xiong Zhou",
+   "Zhuowen Tu",
+   "Li Erran Li"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "University of Michigan",
+   "AWS AI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2401.06341",
+   "page": "https://jasonqsy.github.io/AffordanceLLM/"
+  },
+  "tldr": "Affordance grounding generalizes when you stop training a segmentation head from scratch and borrow the world knowledge already inside a VLM.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "interaction"
+  ],
+  "representation": [
+   "language",
+   "latent"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "everyday",
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Given an image and an action, segment the region of the object you would touch to do it.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x ∈ R^{H×W×3}",
+      "chars": "In-the-wild internet photos, including unseen objects."
+     },
+     {
+      "name": "action",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "\"cut\", \"hold\", \"sit on\" — may be unseen at training."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "affordance heatmap",
+      "modality": "mask",
+      "tensor": "A ∈ [0,1]^{H×W}",
+      "chars": "Dense, not a box."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Weakly-supervised affordance annotations from AGD20K, with the VLM backbone frozen or lightly tuned.",
+    "note": "The generalization claim is tested by holding out both objects and actions."
+   }
+  },
+  "method": {
+   "intuition": "Affordance needs knowledge about function that is not visible in the pixels, and a pretrained VLM already carries it.",
+   "family": [
+    "vlm"
+   ],
+   "backbone": "LLaVA-style VLM + mask decoder",
+   "init": "frozen-foundation",
+   "components": [
+    "VLM feature grounding",
+    "pseudo-depth conditioning",
+    "dense affordance decoder"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "AGD20K",
+     "role": "existing"
+    },
+    {
+     "name": "random internet images",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "KLD",
+    "SIM",
+    "NSS"
+   ],
+   "baselines": [
+    "prior weakly-supervised affordance grounding"
+   ],
+   "headline": "Large gains on the AGD20K hard split and affordance grounding for objects and actions never seen in training."
+  },
+  "why": "Affordance is the natural join between modeling an object and acting on it, which is why it shows up on both sides of this list.",
+  "confidence": "high",
+  "tags": [
+   "affordance",
+   "VLM",
+   "grounding"
+  ]
+ },
+ {
+  "id": "snow",
+  "short": "SNOW",
+  "title": "SNOW: Spatio-Temporal Scene Understanding with World Knowledge for Open-World Embodied Reasoning",
+  "year": 2025,
+  "date": "2025-12",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Tin Stribor Sohn",
+   "Maximilian Dillitzer",
+   "Jason J. Corso",
+   "Eric Sax"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "University of Michigan",
+   "Karlsruhe Institute of Technology"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2512.16461"
+  },
+  "tldr": "VLMs have semantics without geometry and point clouds have geometry without semantics. SNOW fuses them into a queryable 4D scene graph with no training at all.",
+  "contribution": [
+   "method",
+   "system"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "object-state"
+  ],
+  "representation": [
+   "graph",
+   "geometry",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "depth-3d",
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "minutes",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Build a persistent, queryable 4D scene representation that a VLM can reason over.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "RGB",
+      "modality": "image",
+      "tensor": "I_t ∈ R^{H×W×3}",
+      "chars": "Synchronized with the point cloud."
+     },
+     {
+      "name": "point cloud",
+      "modality": "pointcloud",
+      "tensor": "P_t ∈ R^{N×3}",
+      "chars": "From the robot's depth sensor."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "4D scene graph",
+      "modality": "graph",
+      "tensor": "G_t",
+      "chars": "Object nodes carrying semantic, geometric and temporal attributes, anchored globally by SLAM."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None — training-free and backbone-agnostic.",
+    "note": "Every component is an off-the-shelf model. The contribution is the interface between them."
+   }
+  },
+  "method": {
+   "intuition": "Neither the semantic nor the geometric channel is sufficient alone, and fusing them into a persistent graph is a plumbing problem rather than a learning problem.",
+   "family": [
+    "vlm",
+    "classical"
+   ],
+   "backbone": "VLM + SAM2 + HDBSCAN + SLAM",
+   "init": "prompt-only",
+   "components": [
+    "HDBSCAN object proposals",
+    "SAM2 segmentation",
+    "Spatio-Temporal Tokenized Patch Encoding (STEP)",
+    "incremental 4D scene graph",
+    "SLAM anchoring"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "open-world embodied reasoning benchmarks",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "4D scene understanding accuracy",
+    "spatial grounding"
+   ],
+   "baselines": [
+    "VLM-only",
+    "geometry-only pipelines"
+   ],
+   "headline": "Training-free 4D scene understanding that lets a VLM read spatial structure and temporal dynamics directly off the graph."
+  },
+  "why": "The symbolic-graph answer to world modeling, sitting opposite the latent and pixel answers on the same axis.",
+  "confidence": "high",
+  "tags": [
+   "scene graph",
+   "4D",
+   "training-free"
+  ]
+ },
+ {
+  "id": "mindcube",
+  "short": "MindCube",
+  "title": "MindCube: Spatial Mental Modeling from Limited Views",
+  "year": 2025,
+  "date": "2025-06",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Qineng Wang",
+   "Baiqiao Yin",
+   "Pingyue Zhang",
+   "Jianshu Zhang",
+   "Kangrui Wang",
+   "Manling Li"
+  ],
+  "n_authors": 14,
+  "institutions": [],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.21458"
+  },
+  "tldr": "Ask a VLM about space it cannot see and it guesses. Make it draw a cognitive map first and then reason on the map, and accuracy jumps 20 points.",
+  "contribution": [
+   "benchmark",
+   "method",
+   "analysis"
+  ],
+  "openness": [
+   "data",
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "anticipate"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "object-state"
+  ],
+  "representation": [
+   "language",
+   "graph"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "exocentric",
+   "multi-view"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Answer questions about layout, perspective and what-if motion from a handful of views that do not cover the scene.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "views",
+      "modality": "image",
+      "tensor": "{I₁..I_k}",
+      "chars": "3,268 images; deliberately partial coverage of the space."
+     },
+     {
+      "name": "question",
+      "modality": "text",
+      "tensor": "q",
+      "chars": "21,154 questions over position, orientation and mental simulation."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "cognitive map",
+      "modality": "graph",
+      "tensor": "M",
+      "chars": "Intermediate — an explicit internal layout the model generates before answering."
+     },
+     {
+      "name": "answer",
+      "modality": "text",
+      "tensor": "a",
+      "chars": ""
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Supervised fine-tuning on map-then-reason traces, then reinforcement learning.",
+    "note": "The ablation is the point: unseen intermediate views, language chains and cognitive maps are compared head to head."
+   }
+  },
+  "method": {
+   "intuition": "Humans reason about unseen space by building an internal model first. Making that step explicit and trainable is what closes the gap.",
+   "family": [
+    "vlm",
+    "rl"
+   ],
+   "backbone": "open VLMs",
+   "init": "finetune",
+   "components": [
+    "MindCube benchmark",
+    "map-then-reason training",
+    "RL on top of SFT"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "MindCube",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "QA accuracy"
+   ],
+   "baselines": [
+    "off-the-shelf VLMs",
+    "view-interpolation and CoT variants"
+   ],
+   "headline": "Existing VLMs score near random. Map-then-reason lifts 37.8% to 57.8%, and adding RL reaches 61.3%."
+  },
+  "why": "Locates a specific missing capability — representing space you have not observed — that every embodied system silently assumes.",
+  "confidence": "high",
+  "tags": [
+   "spatial reasoning",
+   "benchmark",
+   "cognitive map"
+  ]
+ }
+]

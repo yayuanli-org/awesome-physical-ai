@@ -1,0 +1,473 @@
+[
+{
+  "id": "freetimegs",
+  "short": "FreeTimeGS",
+  "title": "FreeTimeGS: Free Gaussian Primitives at Anytime and Anywhere for Dynamic Scene Reconstruction",
+  "year": 2025, "date": "2025-06", "venue": "CVPR 2025", "venue_type": "conference",
+  "authors": ["Yifan Wang", "Peishan Yang", "Zhen Xu", "Jiaming Sun", "Zhanhua Zhang", "Xiaowei Zhou"],
+  "n_authors": 9, "institutions": ["Zhejiang University"],
+  "links": { "arxiv": "https://arxiv.org/abs/2506.05348", "page": "https://zju3dv.github.io/freetimegs/" },
+  "tldr": "Let a Gaussian be born at any time and place instead of deforming a canonical one, and complex motion stops breaking 4D reconstruction.",
+  "contribution": ["method"], "openness": ["code"],
+  "arc": ["model"], "closes_loop": false,
+  "loop_stage": ["sense", "represent"],
+  "human_role": ["none"], "embodiment": ["none"],
+  "world_facet": ["scene", "object-change"],
+  "representation": ["geometry"],
+  "change_channel": ["none"],
+  "sensing": ["multi-view"],
+  "regime": "offline", "horizon": "seconds",
+  "domain": ["lab-sim"], "autonomy": "none",
+  "problem": {
+    "task": "Reconstruct a dynamic 3D scene and render novel views at novel times.",
+    "inference": {
+      "inputs": [{ "name": "multi-view video", "modality": "video", "tensor": "{(I_i^t, π_i)}", "chars": "Synchronized rigs; scenes with fast and complex motion." }],
+      "outputs": [{ "name": "4D Gaussians", "modality": "gaussians", "tensor": "G(t)", "chars": "Each primitive carries a lifespan and a motion function, so it moves rather than being warped." }]
+    },
+    "training": { "supervision": "Per-scene photometric optimization.", "note": "Motion functions cut temporal redundancy, which is where the efficiency comes from." }
+  },
+  "method": {
+    "intuition": "Canonical-space deformation fields are hard to optimize when the motion is large, so drop the canonical space and let primitives live where and when the motion actually is.",
+    "family": ["nerf-3dgs"], "backbone": "4D Gaussian primitives with per-primitive motion", "init": "scratch",
+    "components": ["free space-time Gaussian placement", "per-primitive motion function", "temporal redundancy reduction"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "dynamic scene benchmarks", "role": "existing" }],
+    "metrics": ["PSNR / SSIM / LPIPS", "render speed"],
+    "baselines": ["canonical-space deformable 3DGS"],
+    "headline": "Rendering quality above recent methods by a large margin on several dynamic-scene datasets."
+  },
+  "why": "The current answer to capturing a physical scene while it is being changed, which every digital-twin pipeline needs.",
+  "confidence": "high", "tags": ["4D", "Gaussians", "dynamic scene"]
+},
+{
+  "id": "metascenes",
+  "short": "MetaScenes",
+  "title": "MetaScenes: Towards Automated Replica Creation for Real-world 3D Scans",
+  "year": 2025, "date": "2025-05", "venue": "CVPR 2025", "venue_type": "conference",
+  "authors": ["Huangyue Yu", "Baoxiong Jia", "Yixin Chen", "Yandan Yang", "Puhao Li", "Siyuan Huang"],
+  "n_authors": 12, "institutions": ["BIGAI"],
+  "links": { "arxiv": "https://arxiv.org/abs/2505.02388" },
+  "tldr": "Simulatable scenes have been artist-built and therefore scarce. Scan a real room, auto-replace every object with a matched simulatable asset, and the scarcity goes away.",
+  "contribution": ["dataset", "method", "benchmark"], "openness": ["data", "code"],
+  "arc": ["model"], "closes_loop": false,
+  "loop_stage": ["sense", "represent"],
+  "human_role": ["none"], "embodiment": ["sim"],
+  "world_facet": ["scene", "object-state"],
+  "representation": ["geometry", "physics-params"],
+  "change_channel": ["none"],
+  "sensing": ["depth-3d", "sim-render"],
+  "regime": "offline", "horizon": "frame",
+  "domain": ["lab-sim", "everyday"], "autonomy": "none",
+  "problem": {
+    "task": "Turn a real-world 3D scan into an interactive simulatable replica without an artist.",
+    "inference": {
+      "inputs": [{ "name": "3D scan", "modality": "pointcloud", "tensor": "P", "chars": "Real rooms, cluttered and noisy." }],
+      "outputs": [{ "name": "simulatable scene", "modality": "mesh", "tensor": "S", "chars": "15,366 objects across 831 fine-grained categories, each replaced by a matched asset." }]
+    },
+    "training": { "supervision": "Scan2Sim is a multi-modal alignment model trained to pick the right asset for each scanned object.", "note": "The bottleneck it removes is human labour, so the contribution is a pipeline as much as a dataset." }
+  },
+  "method": {
+    "intuition": "Embodied AI needs the diversity of the real world in a form physics can act on, and only automation gets both.",
+    "family": ["transformer", "system"], "backbone": "Scan2Sim multi-modal alignment", "init": "finetune",
+    "components": ["scan-to-asset replacement", "MetaScenes dataset", "scene synthesis benchmark", "vision-and-language navigation transfer benchmark"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "MetaScenes", "role": "new" }, { "name": "VLN transfer benchmark", "role": "remix" }],
+    "metrics": ["asset matching quality", "layout synthesis", "navigation transfer"],
+    "baselines": ["artist-designed scene datasets"],
+    "headline": "Supports more generalizable agent learning and better sim-to-real alignment than artist-built alternatives."
+  },
+  "why": "Bridges the geometry papers above and the simulator papers below: reconstruction is only useful once it is actionable.",
+  "confidence": "high", "tags": ["3D scenes", "simulation", "dataset"]
+},
+{
+  "id": "spatial-memory-wm",
+  "short": "Long-term Spatial Memory",
+  "title": "Video World Models with Long-term Spatial Memory",
+  "year": 2025, "date": "2025-06", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Tong Wu", "Shuai Yang", "Ryan Po", "Yinghao Xu", "Ziwei Liu", "Gordon Wetzstein"],
+  "n_authors": 7, "institutions": ["Stanford University", "CUHK", "NTU"],
+  "links": { "arxiv": "https://arxiv.org/abs/2506.05284", "page": "https://spmem.github.io/" },
+  "tldr": "A video world model forgets the room the moment it leaves it. Give it a geometry-grounded memory to write to and read from, and revisits stay consistent.",
+  "contribution": ["method", "dataset"], "openness": ["none"],
+  "arc": ["model"], "closes_loop": true,
+  "loop_stage": ["represent", "anticipate"],
+  "human_role": ["none"], "embodiment": ["none"],
+  "world_facet": ["scene"],
+  "representation": ["pixels", "geometry"],
+  "change_channel": ["none"],
+  "sensing": ["web-video"],
+  "regime": "streaming", "horizon": "minutes",
+  "domain": ["lab-sim", "web"], "autonomy": "none",
+  "problem": {
+    "task": "Long-horizon action-conditioned video generation that stays consistent when the camera returns somewhere it has been.",
+    "inference": {
+      "inputs": [
+        { "name": "past frames", "modality": "video", "tensor": "V_{0:t}", "chars": "Bounded by the model's context window, which is the failure this addresses." },
+        { "name": "control", "modality": "action", "tensor": "a_t", "chars": "Camera movement or text prompt." },
+        { "name": "spatial memory", "modality": "pointcloud", "tensor": "M", "chars": "Geometry-grounded store of what was generated earlier." }
+      ],
+      "outputs": [{ "name": "next frames", "modality": "video", "tensor": "V_{t+1:T}", "chars": "" }]
+    },
+    "training": { "supervision": "Custom curated datasets built for training and evaluating explicit 3D memory.", "note": "Memory is stored in geometry rather than in tokens, which is why revisits align rather than merely rhyme." }
+  },
+  "method": {
+    "intuition": "Forgetting in world models is a storage problem, not a capacity problem, and geometry is the natural index for a physical scene.",
+    "family": ["diffusion", "transformer"], "backbone": "autoregressive video world model + 3D memory", "init": "finetune",
+    "components": ["geometry-grounded long-term spatial memory", "store and retrieve mechanisms", "purpose-built training and evaluation sets"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "curated long-horizon world-generation sets", "role": "new" }],
+    "metrics": ["scene consistency on revisit", "generation quality", "context length"],
+    "baselines": ["context-window-limited video world models"],
+    "headline": "Better quality, consistency and usable context length than baselines on long-horizon world generation."
+  },
+  "why": "Names the specific reason generative world models cannot yet stand in for a persistent physical environment.",
+  "confidence": "high", "tags": ["world model", "memory", "consistency"]
+},
+{
+  "id": "narrated-videos-3d",
+  "short": "Narrated Videos in 3D",
+  "title": "Reconstructing and grounding narrated instructional videos in 3D",
+  "year": 2021, "date": "2021-09", "venue": "NeurIPS 2021", "venue_type": "conference",
+  "authors": ["Dimitri Zhukov", "Ignacio Rocco", "Ivan Laptev", "Josef Sivic", "Johannes L. Schönberger", "Bugra Tekin"],
+  "n_authors": 7, "institutions": ["Inria", "Czech Technical University", "Microsoft"],
+  "links": { "arxiv": "https://arxiv.org/abs/2109.04409" },
+  "tldr": "Different YouTube videos of the same car engine are different instances of one object. Reconstruct it across videos and the narration lands on a 3D part.",
+  "contribution": ["method"], "openness": ["none"],
+  "arc": ["model"], "closes_loop": false,
+  "loop_stage": ["sense", "represent"],
+  "human_role": ["observed"], "embodiment": ["none"],
+  "world_facet": ["scene", "object-state", "procedure"],
+  "representation": ["geometry", "language"],
+  "change_channel": ["none"],
+  "sensing": ["exocentric", "web-video"],
+  "regime": "offline", "horizon": "minutes",
+  "domain": ["industrial", "web"], "autonomy": "none",
+  "problem": {
+    "task": "Reconstruct an object class in 3D from many unaligned instructional videos, then ground the narration to it.",
+    "inference": {
+      "inputs": [
+        { "name": "instructional videos", "modality": "video", "tensor": "{V_i}", "chars": "Different products, lighting and versions of the same object — the reason instance-level SfM fails." },
+        { "name": "narration", "modality": "text", "tensor": "{n_i}", "chars": "Free speech, wide variation in phrasing." }
+      ],
+      "outputs": [
+        { "name": "3D reconstruction", "modality": "pointcloud", "tensor": "P", "chars": "Aligned across videos through a 3D alignment graph." },
+        { "name": "grounded narration", "modality": "mask", "tensor": "n → region(P)", "chars": "Unsupervised." }
+      ]
+    },
+    "training": { "supervision": "None. Raw videos, no manual annotation.", "note": "Divide-and-conquer: reconstruct per video first, then align the reconstructions." }
+  },
+  "method": {
+    "intuition": "Instructional video is a giant uncalibrated multi-view capture of the world's objects, if you can match across instances rather than across frames.",
+    "family": ["classical", "cnn"], "backbone": "learnt local features + dense flow + SfM", "init": "frozen-foundation",
+    "components": ["cross-instance correspondence estimation", "two-step reconstruction with a 3D alignment graph", "unsupervised language grounding in 3D"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "car maintenance instructional videos", "role": "existing" }],
+    "metrics": ["reconstruction quality", "grounding accuracy"],
+    "baselines": ["instance-level SfM"],
+    "headline": "Reconstructs engines of different car models from raw video with no manual supervision and associates the narration with 3D regions."
+  },
+  "why": "An early and still-underused idea: instructional video is 3D data about the physical world, on top of being a sequence of steps.",
+  "confidence": "high", "tags": ["3D", "instructional video", "grounding"]
+},
+{
+  "id": "phygenbench",
+  "short": "PhyGenBench",
+  "title": "Towards World Simulator: Crafting Physical Commonsense-Based Benchmark for Video Generation",
+  "year": 2024, "date": "2024-10", "venue": "ICLR 2025", "venue_type": "conference",
+  "authors": ["Fanqing Meng", "Jiaqi Liao", "Xinyu Tan", "Wenqi Shao", "Kaipeng Zhang", "Ping Luo"],
+  "n_authors": 10, "institutions": ["Shanghai AI Laboratory", "HKU"],
+  "links": { "arxiv": "https://arxiv.org/abs/2410.05363", "page": "https://phygenbench123.github.io/" },
+  "tldr": "160 prompts across 27 physical laws, plus an automatic grader that agrees with humans, and current text-to-video models fail most of them.",
+  "contribution": ["benchmark", "analysis"], "openness": ["code", "data"],
+  "arc": ["model"], "closes_loop": false,
+  "loop_stage": ["anticipate", "verify"],
+  "human_role": ["evaluator"], "embodiment": ["none"],
+  "world_facet": ["dynamics", "object-change"],
+  "representation": ["pixels"],
+  "change_channel": ["none"],
+  "sensing": ["web-video"],
+  "regime": "offline", "horizon": "seconds",
+  "domain": ["web"], "autonomy": "none",
+  "problem": {
+    "task": "Score whether a generated video obeys physical commonsense.",
+    "inference": {
+      "inputs": [{ "name": "prompt", "modality": "text", "tensor": "ℓ", "chars": "160 prompts covering 27 physical laws in four domains." }],
+      "outputs": [{ "name": "physics correctness score", "modality": "scalar", "tensor": "s", "chars": "From PhyGenEval, a hierarchical VLM and LLM grader calibrated against human judgment." }]
+    },
+    "training": { "supervision": "Evaluation only.", "note": "The grader is the reusable part — a physics score you can run at scale rather than by eye." }
+  },
+  "method": {
+    "intuition": "If video generators are world simulators, intuitive physics is the thing to measure, and nobody was measuring it.",
+    "family": ["benchmark", "vlm", "llm"], "backbone": "", "init": "",
+    "components": ["27 physical laws across four domains", "hierarchical PhyGenEval framework", "human-agreement study"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "PhyGenBench", "role": "new" }],
+    "metrics": ["physical commonsense correctness", "agreement with human raters"],
+    "baselines": ["leading text-to-video models"],
+    "headline": "Current models struggle to obey physical commonsense, and neither scaling the model nor prompt engineering closes the gap."
+  },
+  "why": "The measurement that keeps the generative world-model claim honest.",
+  "confidence": "high", "tags": ["physics", "video generation", "benchmark"]
+},
+{
+  "id": "adaptive-world-models",
+  "short": "Adaptive World Models",
+  "title": "Assessing Adaptive World Models in Machines with Novel Games",
+  "year": 2025, "date": "2025-07", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Lance Ying", "Katherine M. Collins", "Prafull Sharma", "Cedric Colas", "Adrian Weller", "Joshua B. Tenenbaum"],
+  "n_authors": 14, "institutions": ["MIT", "Harvard University", "University of Cambridge"],
+  "links": { "arxiv": "https://arxiv.org/abs/2507.12821" },
+  "tldr": "Current world-model evaluation scores a representation learned from a giant corpus. The human capacity worth measuring is building a new one fast, inside an environment you have never seen.",
+  "contribution": ["analysis", "benchmark"], "openness": ["none"],
+  "arc": ["model"], "closes_loop": true,
+  "loop_stage": ["represent", "adapt"],
+  "human_role": ["none"], "embodiment": ["sim"],
+  "world_facet": ["dynamics", "procedure"],
+  "representation": ["graph", "language"],
+  "change_channel": ["plan"],
+  "sensing": ["sim-render"],
+  "regime": "interactive", "horizon": "minutes",
+  "domain": ["lab-sim"], "autonomy": "autonomous",
+  "problem": {
+    "task": "Evaluate world model induction — how efficiently an agent builds a usable model of a genuinely novel environment.",
+    "inference": {
+      "inputs": [{ "name": "novel game", "modality": "graph", "tensor": "E", "chars": "Deep, continually refreshing novelty in the underlying rules, so memorization cannot help." }],
+      "outputs": [{ "name": "induced model + policy", "modality": "plan", "tensor": "(M̂, π)", "chars": "Scored on efficiency of adaptation rather than final performance." }]
+    },
+    "training": { "supervision": "A position paper with a proposed benchmarking paradigm.", "note": "The desiderata for what counts as a novel game are the operational contribution." }
+  },
+  "method": {
+    "intuition": "Adaptability comes from constructing and refining an internal model quickly, so evaluate the construction rather than the artifact.",
+    "family": ["benchmark"], "backbone": "", "init": "",
+    "components": ["world model induction framing from cognitive science", "novel games benchmarking paradigm", "desiderata for genuine novelty"]
+  },
+  "experiments": { "datasets": [], "metrics": ["adaptation efficiency"], "baselines": [], "headline": "" },
+  "why": "The sharpest available critique of how this list's world-model papers are currently evaluated.",
+  "confidence": "high", "tags": ["world model", "evaluation", "adaptation"]
+},
+{
+  "id": "humoto",
+  "short": "HUMOTO",
+  "title": "HUMOTO: A 4D Dataset of Mocap Human Object Interactions",
+  "year": 2025, "date": "2025-04", "venue": "ICCV 2025", "venue_type": "conference",
+  "authors": ["Jiaxin Lu", "Chun-Hao Paul Huang", "Uttaran Bhattacharya", "Qixing Huang", "Yi Zhou"],
+  "n_authors": 5, "institutions": ["UT Austin", "Adobe Research"],
+  "links": { "arxiv": "https://arxiv.org/abs/2504.10414", "page": "https://jiaxin-lu.github.io/humoto/" },
+  "tldr": "735 mocap sequences of whole-body interaction with 63 modelled objects and 72 articulated parts, scripted by an LLM so the tasks have a purpose rather than a pose list.",
+  "contribution": ["dataset"], "openness": ["data"],
+  "arc": ["model"], "closes_loop": false,
+  "loop_stage": ["sense", "represent"],
+  "human_role": ["observed"], "embodiment": ["human"],
+  "world_facet": ["agent-body", "interaction", "object-state"],
+  "representation": ["geometry", "trajectory"],
+  "change_channel": ["none"],
+  "sensing": ["multi-view", "exocentric"],
+  "regime": "offline", "horizon": "seconds",
+  "domain": ["everyday"], "autonomy": "none",
+  "problem": {
+    "task": "High-fidelity 4D human-object interaction capture for motion generation, vision and robotics.",
+    "inference": {
+      "inputs": [{ "name": "task script", "modality": "text", "tensor": "s", "chars": "Scene-driven, LLM-authored, with natural task progression rather than isolated actions." }],
+      "outputs": [
+        { "name": "full-body motion", "modality": "body-pose", "tensor": "θ ∈ R^{T×J×3}", "chars": "7,875 seconds at 30 fps across 735 sequences." },
+        { "name": "object poses", "modality": "object-pose", "tensor": "T_o ∈ SE(3)", "chars": "63 modelled objects, 72 articulated parts, simultaneous multi-object interaction." }
+      ]
+    },
+    "training": { "supervision": "Marker-based motion capture plus camera, cleaned and verified by professional artists.", "note": "Artist cleanup targets foot sliding and object penetration, which is what makes it usable as physics supervision." }
+  },
+  "method": {
+    "intuition": "Interaction datasets are usually a list of isolated grasps. Scripting complete purposeful tasks keeps the logical flow that makes the motion realistic.",
+    "family": ["dataset"], "backbone": "", "init": "",
+    "components": ["scene-driven LLM scripting pipeline", "mocap plus camera setup handling occlusion", "artist verification pass"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "HUMOTO", "role": "new" }],
+    "metrics": ["capture fidelity", "penetration and sliding rates"],
+    "baselines": ["prior HOI motion datasets"],
+    "headline": "735 sequences with simultaneous multi-object interaction and full-body motion, benchmarked against existing HOI datasets."
+  },
+  "why": "The measurement ground for whole-body interaction, which sits between the hand-object papers and the humanoid ones.",
+  "confidence": "high", "tags": ["HOI", "4D", "mocap", "dataset"]
+},
+{
+  "id": "mask2iv",
+  "short": "Mask2IV",
+  "title": "Mask2IV: Interaction-Centric Video Generation via Mask Trajectories",
+  "year": 2025, "date": "2025-10", "venue": "AAAI 2026", "venue_type": "conference",
+  "authors": ["Gen Li", "Bo Zhao", "Jianfei Yang", "Laura Sevilla-Lara"],
+  "n_authors": 4, "institutions": ["University of Edinburgh", "NTU"],
+  "links": { "arxiv": "https://arxiv.org/abs/2510.03135", "page": "https://reagan1311.github.io/mask2iv" },
+  "tldr": "Mask control makes interaction video better but nobody has dense masks. Predict the actor and object trajectories first, then generate conditioned on those.",
+  "contribution": ["method", "benchmark"], "openness": ["code"],
+  "arc": ["model"], "closes_loop": false,
+  "loop_stage": ["anticipate", "act"],
+  "human_role": ["none"], "embodiment": ["none"],
+  "world_facet": ["interaction", "object-change"],
+  "representation": ["pixels", "trajectory"],
+  "change_channel": ["none"],
+  "sensing": ["exocentric", "web-video"],
+  "regime": "offline", "horizon": "seconds",
+  "domain": ["everyday", "lab-sim"], "autonomy": "none",
+  "problem": {
+    "task": "Generate video of a human or robot interacting with a named object, controllable without dense mask input.",
+    "inference": {
+      "inputs": [
+        { "name": "initial frame", "modality": "image", "tensor": "x₀", "chars": "" },
+        { "name": "control", "modality": "text", "tensor": "target object + action description or position cue", "chars": "Users specify what to interact with and roughly how, not a per-frame mask." }
+      ],
+      "outputs": [{ "name": "interaction video", "modality": "video", "tensor": "V", "chars": "Conditioned on predicted actor and object mask trajectories." }]
+    },
+    "training": { "supervision": "Two stages trained separately: trajectory prediction, then trajectory-conditioned generation.", "note": "Decoupling is what removes the dense-annotation dependency at inference." }
+  },
+  "method": {
+    "intuition": "The mask trajectory is the useful control signal, so predict it rather than asking a user to draw it.",
+    "family": ["diffusion", "transformer"], "backbone": "video diffusion with mask-trajectory conditioning", "init": "finetune",
+    "components": ["actor and object trajectory prediction", "trajectory-conditioned generation", "interaction-centric evaluation protocol"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "human and robot interaction video", "role": "existing" }],
+    "metrics": ["generation quality", "interaction controllability"],
+    "baselines": ["mask-conditioned and text-conditioned interaction video generation"],
+    "headline": "Removes the dense-mask requirement while keeping control over the target object and the motion."
+  },
+  "why": "Interaction video is where robot learning gets its visual priors, so how it is controlled matters downstream.",
+  "confidence": "high", "tags": ["HOI", "video generation", "control"]
+},
+{
+  "id": "ego-hoibench",
+  "short": "Ego-HOIBench",
+  "title": "Egocentric Human-Object Interaction Detection: A New Benchmark and Method",
+  "year": 2025, "date": "2025-06", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Kunyuan Deng", "Yi Wang", "Lap-Pui Chau"],
+  "n_authors": 3, "institutions": ["Hong Kong Polytechnic University"],
+  "links": { "arxiv": "https://arxiv.org/abs/2506.14189" },
+  "tldr": "Third-person HOI detectors collapse from a head-mounted camera, where the hand occludes the object it is holding. 27K annotated egocentric images and a hand-geometry fix.",
+  "contribution": ["dataset", "benchmark", "method"], "openness": ["data"],
+  "arc": ["model"], "closes_loop": false,
+  "loop_stage": ["sense", "represent"],
+  "human_role": ["observed"], "embodiment": ["human"],
+  "world_facet": ["interaction", "object-state", "agent-body"],
+  "representation": ["graph", "geometry"],
+  "change_channel": ["none"],
+  "sensing": ["egocentric"],
+  "regime": "offline", "horizon": "frame",
+  "domain": ["everyday"], "autonomy": "none",
+  "problem": {
+    "task": "Detect hand-verb-object triplets from a first-person image.",
+    "inference": {
+      "inputs": [{ "name": "egocentric image", "modality": "image", "tensor": "x ∈ R^{H×W×3}", "chars": "27K images, 123 interaction categories, single- and two-hand." }],
+      "outputs": [{ "name": "HOI triplets", "modality": "graph", "tensor": "{(hand, verb, object)}", "chars": "Explicit and fine-grained, with boxes." }]
+    },
+    "training": { "supervision": "Manual triplet annotation across diverse daily scenarios.", "note": "HGIR is plug-and-play, so the gain can be attributed to the hand-geometry cue rather than to a new architecture." }
+  },
+  "method": {
+    "intuition": "The egocentric difficulty is hand-object occlusion, and the hand's own pose is the cue that survives it.",
+    "family": ["transformer"], "backbone": "HOI detector + Hand Geometry and Interactivity Refinement", "init": "finetune",
+    "components": ["Ego-HOIBench dataset", "global hand geometric features from pose proposals", "pose-interaction attention"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "Ego-HOIBench", "role": "new" }],
+    "metrics": ["HOI detection mAP"],
+    "baselines": ["third-person HOI detectors"],
+    "headline": "Large performance gaps for third-person detectors on egocentric input, closed substantially by the hand-geometry refinement."
+  },
+  "why": "Quantifies how much of third-person perception simply does not transfer to the viewpoint a wearable actually has.",
+  "confidence": "high", "tags": ["HOI", "egocentric", "benchmark"]
+},
+{
+  "id": "vtv-llm",
+  "short": "VTV-LLM",
+  "title": "Universal Visuo-Tactile Video Understanding for Embodied Interaction",
+  "year": 2025, "date": "2025-05", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Yifan Xie", "Mingyang Li", "Shoujie Li", "Xingting Li", "Guangyu Chen", "Fei Ma"],
+  "n_authors": 8, "institutions": [],
+  "links": { "arxiv": "https://arxiv.org/abs/2505.22566" },
+  "tldr": "Hardness, elasticity and friction are invisible. 150K frames across three tactile sensors, aligned to language, so a model can say what a surface feels like.",
+  "contribution": ["dataset", "method"], "openness": ["none"],
+  "arc": ["model"], "closes_loop": false,
+  "loop_stage": ["sense", "represent"],
+  "human_role": ["none"], "embodiment": ["robot"],
+  "world_facet": ["object-state", "dynamics", "interaction"],
+  "representation": ["language", "latent"],
+  "change_channel": ["none"],
+  "sensing": ["tactile"],
+  "regime": "offline", "horizon": "seconds",
+  "domain": ["lab-sim"], "autonomy": "none",
+  "problem": {
+    "task": "Answer questions about physical attributes from tactile video.",
+    "inference": {
+      "inputs": [
+        { "name": "visuo-tactile video", "modality": "force", "tensor": "T ∈ R^{F×H×W×3}", "chars": "From GelSight Mini, DIGIT or Tac3D — cross-sensor by construction." },
+        { "name": "question", "modality": "text", "tensor": "q", "chars": "" }
+      ],
+      "outputs": [{ "name": "tactile description", "modality": "text", "tensor": "a", "chars": "Grounded in hardness, protrusion, elasticity and friction." }]
+    },
+    "training": { "supervision": "VTV150K: 150,000 frames from 100 objects, annotated with four tactile attributes.", "note": "Three-stage training — representation, cross-modal alignment, then prompt fine-tuning." }
+  },
+  "method": {
+    "intuition": "Vision and language cannot recover the physical attributes that only contact reveals, so the tactile stream has to enter the model rather than sit beside it.",
+    "family": ["vlm", "llm"], "backbone": "multi-modal LLM over tactile video", "init": "finetune",
+    "components": ["VTV150K dataset across three sensors", "visuo-tactile representation stage", "VTV-text alignment", "prompt fine-tuning"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "VTV150K", "role": "new" }],
+    "metrics": ["attribute reasoning accuracy", "cross-sensor generalization"],
+    "baselines": ["vision-language models without tactile input"],
+    "headline": "The first multi-modal LLM for universal visuo-tactile video understanding, spanning three different tactile sensors."
+  },
+  "why": "The one sensing channel on this list that no camera substitutes for, and the axis most of the field still ignores.",
+  "confidence": "medium", "tags": ["tactile", "physical attributes", "dataset"]
+},
+{
+  "id": "ego-r1",
+  "short": "Ego-R1",
+  "title": "Ego-R1: Chain-of-Tool-Thought for Ultra-Long Egocentric Video Reasoning",
+  "year": 2025, "date": "2025-06", "venue": "arXiv", "venue_type": "preprint",
+  "authors": ["Shulin Tian", "Ruiqi Wang", "Hongming Guo", "Penghao Wu", "Yuhao Dong", "Ziwei Liu"],
+  "n_authors": 10, "institutions": ["NTU S-Lab"],
+  "links": { "arxiv": "https://arxiv.org/abs/2506.13654", "page": "https://egolife-ai.github.io/Ego-R1/" },
+  "tldr": "A week of first-person video does not fit in any context window, so train an RL agent to call one retrieval tool per reasoning step instead.",
+  "contribution": ["method", "dataset", "benchmark"], "openness": ["code", "data"],
+  "arc": ["model"], "closes_loop": true,
+  "loop_stage": ["sense", "represent", "decide", "adapt"],
+  "human_role": ["observed"], "embodiment": ["human"],
+  "world_facet": ["procedure", "object-state"],
+  "representation": ["language", "latent"],
+  "change_channel": ["none"],
+  "sensing": ["egocentric"],
+  "regime": "interactive", "horizon": "hours",
+  "domain": ["everyday"], "autonomy": "autonomous",
+  "problem": {
+    "task": "Question answering over egocentric video spanning days to weeks.",
+    "inference": {
+      "inputs": [
+        { "name": "ultra-long egocentric video", "modality": "video", "tensor": "V, |V| ≈ days", "chars": "Week-long recordings; no model ingests this directly." },
+        { "name": "question", "modality": "text", "tensor": "q", "chars": "Human-verified, from hybrid sources." }
+      ],
+      "outputs": [
+        { "name": "tool call sequence", "modality": "program", "tensor": "(τ₁..τ_k)", "chars": "One tool per step — temporal retrieval, multimodal understanding." },
+        { "name": "answer", "modality": "text", "tensor": "a", "chars": "" }
+      ]
+    },
+    "training": { "supervision": "SFT on Ego-CoTT-25K, then RL on Ego-QA-4.4K.", "note": "The agent decides which tool to call, so the context problem becomes a policy problem." }
+  },
+  "method": {
+    "intuition": "Long-context reasoning over a life is retrieval scheduling, and scheduling is something an RL agent can learn.",
+    "family": ["llm", "rl"], "backbone": "pretrained LM agent", "init": "finetune",
+    "components": ["Chain-of-Tool-Thought", "two-stage SFT then RL", "Ego-R1 Data", "week-long Ego-R1 Bench"]
+  },
+  "experiments": {
+    "datasets": [{ "name": "Ego-R1 Data", "role": "new" }, { "name": "Ego-R1 Bench", "role": "new" }],
+    "metrics": ["QA accuracy over week-long video"],
+    "baselines": ["long-context video LLMs"],
+    "headline": "Tool-augmented chain-of-thought handles ultra-long egocentric reasoning where direct long-context models do not."
+  },
+  "why": "Pushes the temporal horizon of this list from a clip to a life, which is the scale a wearable assistant actually operates at.",
+  "confidence": "high", "tags": ["long video", "egocentric", "agent", "RL"]
+}
+]

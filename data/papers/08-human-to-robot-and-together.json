@@ -1,0 +1,1704 @@
+[
+ {
+  "id": "vrb",
+  "short": "VRB",
+  "title": "Affordances from Human Videos as a Versatile Representation for Robotics",
+  "year": 2023,
+  "date": "2023-04",
+  "venue": "CVPR 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Shikhar Bahl",
+   "Russell Mendonca",
+   "Lili Chen",
+   "Unnat Jain",
+   "Deepak Pathak"
+  ],
+  "n_authors": 5,
+  "institutions": [
+   "CMU"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2304.08488",
+   "page": "https://robo-affordances.github.io/"
+  },
+  "tldr": "Predict where and how a human would interact from internet video, and that single affordance map slots into imitation, exploration, goal-conditioned learning and RL alike.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "interaction",
+   "object-state",
+   "scene"
+  ],
+  "representation": [
+   "trajectory",
+   "latent"
+  ],
+  "change_channel": [
+   "motor-action",
+   "plan"
+  ],
+  "sensing": [
+   "web-video",
+   "robot-onboard",
+   "egocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "web"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Learn a visual affordance model from human video and use it as the interface to four different robot learning paradigms.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "scene image",
+      "modality": "image",
+      "tensor": "x ∈ R^{H×W×3}",
+      "chars": "From the robot's camera, in unmodified real environments."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "contact point",
+      "modality": "mask",
+      "tensor": "c ∈ R^{2}",
+      "chars": "Where a human would touch."
+     },
+     {
+      "name": "post-contact trajectory",
+      "modality": "trajectory",
+      "tensor": "τ ∈ R^{k×2}",
+      "chars": "How the interaction would proceed, which is the half a contact point alone leaves out."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Human hand trajectories extracted from internet videos of people acting in environments.",
+    "note": "Environment-centric rather than hand-centric framing is what makes the output usable by a robot with different kinematics."
+   }
+  },
+  "method": {
+   "intuition": "Human video cannot be imitated joint-for-joint, but the where-and-how of interaction transfers, and that is enough to seed four kinds of robot learning.",
+   "family": [
+    "cnn",
+    "imitation",
+    "rl"
+   ],
+   "backbone": "affordance prediction network",
+   "init": "finetune",
+   "components": [
+    "contact point and post-contact trajectory prediction",
+    "integration with offline imitation, exploration, goal-conditioned learning and RL"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "internet human interaction video",
+     "role": "existing"
+    },
+    {
+     "name": "4 real environments, 10+ tasks, 2 platforms",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success",
+    "sample efficiency"
+   ],
+   "baselines": [
+    "visual representation pretraining (R3M, MVP)",
+    "no-affordance variants"
+   ],
+   "headline": "Effective across 4 real-world environments, over 10 tasks and 2 robot platforms operating in the wild."
+  },
+  "why": "The cleanest formulation of what transfers from human video to robot action: the affordance rather than the motion.",
+  "confidence": "high",
+  "tags": [
+   "affordance",
+   "human video",
+   "transfer"
+  ]
+ },
+ {
+  "id": "being-h0",
+  "short": "Being-H0",
+  "title": "Being-H0: Vision-Language-Action Pretraining from Large-Scale Human Videos",
+  "year": 2025,
+  "date": "2025-07",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Hao Luo",
+   "Yicheng Feng",
+   "Wanpeng Zhang",
+   "Sipeng Zheng",
+   "Ye Wang",
+   "Haoqi Yuan"
+  ],
+  "n_authors": 10,
+  "institutions": [
+   "Peking University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2507.15597"
+  },
+  "tldr": "Treat the human hand as the foundation manipulator: tokenize hand motion at part level to millimetre accuracy and pretrain a VLA on web video before it ever sees a robot.",
+  "contribution": [
+   "method",
+   "dataset"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot",
+   "human"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "interaction"
+  ],
+  "representation": [
+   "tokens",
+   "trajectory",
+   "language"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "web-video",
+   "egocentric",
+   "imu-wearable"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "web"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Dexterous VLA pretraining on human hand motion, then adaptation to robot hands.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "o_t",
+      "chars": ""
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "hand motion tokens",
+      "modality": "tokens",
+      "tensor": "m_{1:K}",
+      "chars": "Part-level tokenization reconstructing hand trajectories to millimetre accuracy; retargeted to robot hands after post-training."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Physical instruction tuning: large-scale VLA pretraining on human video, physical space alignment for 3D, then robot post-training.",
+    "note": "The curation pipeline unifies motion capture, VR and RGB-only sources into millions of motion-based instruction instances."
+   }
+  },
+  "method": {
+   "intuition": "The scale and diversity bottleneck in robot learning disappears if the manipulator you pretrain on is the one already filmed a billion times.",
+   "family": [
+    "vlm",
+    "transformer"
+   ],
+   "backbone": "VLM with motion token vocabulary",
+   "init": "finetune",
+   "components": [
+    "part-level hand motion tokenization",
+    "physical instruction tuning",
+    "heterogeneous data curation pipeline",
+    "robot post-training"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "curated human hand motion corpus (millions of instances)",
+     "role": "new"
+    },
+    {
+     "name": "real robot manipulation",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "hand motion generation quality",
+    "instruction following",
+    "real robot success"
+   ],
+   "baselines": [
+    "VLAs pretrained on synthetic or teleoperated data"
+   ],
+   "headline": "Scales with model and data size, with gains on real-world robotic manipulation carried over from human-video pretraining."
+  },
+  "why": "The strongest version of the argument that the human-embodiment and robot-embodiment branches share a training corpus.",
+  "confidence": "high",
+  "tags": [
+   "human video",
+   "VLA",
+   "hand motion"
+  ]
+ },
+ {
+  "id": "egovla",
+  "short": "EgoVLA",
+  "title": "EgoVLA: Learning Vision-Language-Action Models from Egocentric Human Videos",
+  "year": 2025,
+  "date": "2025-07",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Ruihan Yang",
+   "Qinxi Yu",
+   "Yecheng Wu",
+   "Rui Yan",
+   "Borui Li",
+   "Xiaolong Wang"
+  ],
+  "n_authors": 15,
+  "institutions": [
+   "UC San Diego"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2507.12440",
+   "page": "https://rchalyang.github.io/EgoVLA"
+  },
+  "tldr": "Predict human wrist and hand actions from egocentric video, then IK-retarget to a humanoid — robot hardware only enters at fine-tuning time.",
+  "contribution": [
+   "method",
+   "benchmark"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot",
+   "human"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "interaction"
+  ],
+  "representation": [
+   "trajectory",
+   "language"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "egocentric",
+   "sim-render"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Train a VLA on human egocentric video, retarget to a bimanual humanoid, fine-tune on a few robot demonstrations.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "egocentric frames",
+      "modality": "video",
+      "tensor": "V_{t-h:t}",
+      "chars": "First-person, diverse scenes and tasks — the reason for using human data."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "wrist + hand action",
+      "modality": "hand-pose",
+      "tensor": "a_t",
+      "chars": "Human action space; converted to robot joints by inverse kinematics and retargeting."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Human egocentric video for pretraining, a small set of robot demonstrations for fine-tuning.",
+    "note": "A purpose-built simulation benchmark supplies the bimanual evaluation the human data cannot."
+   }
+  },
+  "method": {
+   "intuition": "Robot hardware caps how much data you can collect, so put the hardware only at the end of the pipeline and let human video carry the scale.",
+   "family": [
+    "vlm",
+    "transformer"
+   ],
+   "backbone": "VLA over human action space",
+   "init": "finetune",
+   "components": [
+    "human wrist and hand action prediction",
+    "IK and retargeting to robot",
+    "Ego Humanoid Manipulation Benchmark",
+    "human-data ablations"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "egocentric human video corpora",
+     "role": "existing"
+    },
+    {
+     "name": "Ego Humanoid Manipulation Benchmark",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "bimanual task success"
+   ],
+   "baselines": [
+    "robot-data-only training",
+    "no-human-pretraining ablation"
+   ],
+   "headline": "Significant improvements over baselines, with ablations isolating how much the human data contributes."
+  },
+  "why": "The most direct pipeline from the egocentric datasets in this list to a robot policy.",
+  "confidence": "high",
+  "tags": [
+   "egocentric",
+   "VLA",
+   "retargeting"
+  ]
+ },
+ {
+  "id": "dexumi",
+  "short": "DexUMI",
+  "title": "DexUMI: Using Human Hand as the Universal Manipulation Interface for Dexterous Manipulation",
+  "year": 2025,
+  "date": "2025-05",
+  "venue": "RSS 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Mengda Xu",
+   "Han Zhang",
+   "Yifan Hou",
+   "Zhenjia Xu",
+   "Linxi Fan",
+   "Shuran Song"
+  ],
+  "n_authors": 7,
+  "institutions": [
+   "Stanford University",
+   "Columbia University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2505.21864"
+  },
+  "tldr": "Close the embodiment gap physically with a hand exoskeleton and visually by inpainting the robot hand over the human one. The human demonstration is then already robot data.",
+  "contribution": [
+   "method",
+   "system"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "act"
+  ],
+  "embodiment": [
+   "human+robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "interaction"
+  ],
+  "representation": [
+   "trajectory",
+   "pixels"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "egocentric",
+   "tactile"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Collect dexterous demonstrations with a human hand and train a policy for a robot hand directly on them.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "wrist-camera video",
+      "modality": "video",
+      "tensor": "V",
+      "chars": "Recorded during human demonstration; the human hand is replaced by an inpainted robot hand."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "robot hand action",
+      "modality": "action",
+      "tensor": "a_t",
+      "chars": "Directly executable — the exoskeleton constrained the human motion to be feasible."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Behavior cloning on the adapted demonstrations.",
+    "note": "Two gaps are closed by two different means: kinematics by hardware, appearance by inpainting."
+   }
+  },
+  "method": {
+   "intuition": "Remove the human-robot embodiment gap instead of learning to bridge it: physically with an exoskeleton, visually with inpainting.",
+   "family": [
+    "imitation",
+    "diffusion"
+   ],
+   "backbone": "visuomotor policy over inpainted observations",
+   "init": "scratch",
+   "components": [
+    "wearable hand exoskeleton with haptic feedback",
+    "high-fidelity robot hand inpainting",
+    "policy learning on two robot hand platforms"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "human demonstrations via exoskeleton",
+     "role": "new"
+    },
+    {
+     "name": "two dexterous hand platforms",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate"
+   ],
+   "baselines": [
+    "teleoperation-collected data"
+   ],
+   "headline": "86% average task success across real-world experiments on two different dexterous hand platforms."
+  },
+  "why": "The human hand as an interface rather than as a source of imitation — an underrated third option between teleoperation and video.",
+  "confidence": "high",
+  "tags": [
+   "human+robot",
+   "dexterous",
+   "data collection"
+  ]
+ },
+ {
+  "id": "twist",
+  "short": "TWIST",
+  "title": "TWIST: Teleoperated Whole-Body Imitation System",
+  "year": 2025,
+  "date": "2025-05",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Yanjie Ze",
+   "Zixuan Chen",
+   "João Pedro Araújo",
+   "Zi-ang Cao",
+   "Xue Bin Peng",
+   "C. Karen Liu"
+  ],
+  "n_authors": 7,
+  "institutions": [
+   "Stanford University",
+   "Simon Fraser University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2505.02833",
+   "page": "https://humanoid-teleop.github.io"
+  },
+  "tldr": "One controller for the whole humanoid body driven by a person's motion, so locomotion and manipulation stop being separate systems.",
+  "contribution": [
+   "system",
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "act"
+  ],
+  "embodiment": [
+   "human+robot"
+  ],
+  "human_role": [
+   "collaborator",
+   "evaluator"
+  ],
+  "world_facet": [
+   "agent-body"
+  ],
+  "representation": [
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "imu-wearable",
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "human-in-loop",
+  "problem": {
+   "task": "Real-time whole-body humanoid teleoperation by motion imitation.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "human motion",
+      "modality": "body-pose",
+      "tensor": "θ_t ∈ R^{J×3}",
+      "chars": "Retargeted to the humanoid's kinematics; the operator's body is the interface."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "whole-body joint targets",
+      "modality": "action",
+      "tensor": "q_t",
+      "chars": "One unified network for locomotion, manipulation and expressive motion."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "RL plus behavior cloning against retargeted mocap reference clips.",
+    "note": "Privileged future motion frames and real-world mocap both measurably improve tracking, which is the analysis the paper contributes."
+   }
+  },
+  "method": {
+   "intuition": "Human motion is the most natural interface for a humanoid because the degrees of freedom already correspond, if the controller can track them robustly enough.",
+   "family": [
+    "rl",
+    "imitation"
+   ],
+   "backbone": "single whole-body controller network",
+   "init": "scratch",
+   "components": [
+    "motion retargeting pipeline",
+    "RL + BC controller",
+    "privileged future frames during training",
+    "real MoCap data"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "human motion capture",
+     "role": "existing"
+    },
+    {
+     "name": "real humanoid deployment",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "motion tracking accuracy",
+    "skill coverage"
+   ],
+   "baselines": [
+    "locomotion-only and manipulation-only controllers"
+   ],
+   "headline": "Coordinated whole-body skills — whole-body manipulation, legged manipulation, locomotion and expressive movement — from one unified controller."
+  },
+  "why": "The human-and-robot pairing at its tightest: the person is the policy and the robot is the body.",
+  "confidence": "high",
+  "tags": [
+   "teleoperation",
+   "humanoid",
+   "whole-body"
+  ]
+ },
+ {
+  "id": "t2p-pose-forecasting",
+  "short": "Trajectory2Pose",
+  "title": "Multi-agent Long-term 3D Human Pose Forecasting via Interaction-aware Trajectory Conditioning",
+  "year": 2024,
+  "date": "2024-04",
+  "venue": "CVPR 2024 (Highlight)",
+  "venue_type": "conference",
+  "authors": [
+   "Jaewoo Jeong",
+   "Daehee Park",
+   "Kuk-Jin Yoon"
+  ],
+  "n_authors": 3,
+  "institutions": [
+   "KAIST"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2404.05218",
+   "code": "https://github.com/Jaewoo97/T2P"
+  },
+  "tldr": "Forecast where everyone is going first, then condition each body's pose on its own trajectory mode. Coarse-to-fine is what makes 6 s horizons and 5+ agents tractable.",
+  "contribution": [
+   "method",
+   "dataset"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "anticipate"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "agent-body",
+   "interaction"
+  ],
+  "representation": [
+   "trajectory",
+   "graph"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "exocentric",
+   "multi-view"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Long-term multi-agent 3D human pose forecasting.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "past 3D poses",
+      "modality": "body-pose",
+      "tensor": "X ∈ R^{N×T_p×J×3}",
+      "chars": "N agents (5+), observed history."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "global trajectories",
+      "modality": "trajectory",
+      "tensor": "τ ∈ R^{N×M×T_f×3}",
+      "chars": "M multimodal futures per agent."
+     },
+     {
+      "name": "local poses",
+      "modality": "body-pose",
+      "tensor": "Y ∈ R^{N×M×T_f×J×3}",
+      "chars": "Conditioned on each trajectory mode; horizons beyond 6 s."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Supervised forecasting. A new long-horizon multi-agent set is built from real images and 2D annotations to make 6 s and 5+ agents evaluable at all.",
+    "note": "The dataset gap is the reason long-horizon multi-agent forecasting was under-measured."
+   }
+  },
+  "method": {
+   "intuition": "Pose and trajectory are coupled, because where you are going shapes how you move. So forecast the coarse trajectory first and let it condition the fine pose.",
+   "family": [
+    "transformer",
+    "gnn"
+   ],
+   "backbone": "graph-based interaction module + coarse-to-fine forecaster",
+   "init": "scratch",
+   "components": [
+    "multimodal global trajectory forecasting",
+    "trajectory-conditioned local pose forecasting",
+    "agent-wise interaction graph",
+    "new long-term multi-agent dataset"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "new long-term multi-agent set",
+     "role": "new"
+    },
+    {
+     "name": "existing pose forecasting benchmarks",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "MPJPE / APD over long horizons"
+   ],
+   "baselines": [
+    "single-agent and short-horizon forecasters"
+   ],
+   "headline": "State-of-the-art prediction on both the new complex dataset and simpler existing ones."
+  },
+  "why": "The perception layer a robot needs before it can share a workspace with people — forecasting is what makes collaboration safe.",
+  "confidence": "high",
+  "tags": [
+   "pose forecasting",
+   "multi-agent",
+   "anticipation"
+  ]
+ },
+ {
+  "id": "spot-on",
+  "short": "Spot-On",
+  "title": "Spot-On: A Mixed Reality Interface for Multi-Robot Cooperation",
+  "year": 2025,
+  "date": "2025-05",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Tim Engelbracht",
+   "Petar Lukovic",
+   "Tjark Behrens",
+   "Kai Lascheit",
+   "René Zurbrügg",
+   "Marc Pollefeys"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "ETH Zurich"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2505.22539"
+  },
+  "tldr": "Mixed reality as the control surface for a team of quadrupeds working on drawers, doors and light switches in a real building.",
+  "contribution": [
+   "system"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "human+robot"
+  ],
+  "human_role": [
+   "collaborator",
+   "evaluator"
+  ],
+  "world_facet": [
+   "scene",
+   "object-state"
+  ],
+  "representation": [
+   "geometry",
+   "language"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action",
+   "visual-guidance"
+  ],
+  "sensing": [
+   "egocentric",
+   "robot-onboard",
+   "depth-3d"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "industrial"
+  ],
+  "autonomy": "mixed-initiative",
+  "problem": {
+   "task": "Let one person direct multiple legged robots through semantically diverse environments from a mixed-reality interface.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "user selection in MR",
+      "modality": "graph",
+      "tensor": "target object / task",
+      "chars": "Pointed at directly in the room rather than typed."
+     },
+     {
+      "name": "robot state and scene",
+      "modality": "pointcloud",
+      "tensor": "s_t",
+      "chars": "Shared between robots and the headset."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "robot task assignment",
+      "modality": "plan",
+      "tensor": "π",
+      "chars": "Includes articulated objects — drawers, swing doors — and building infrastructure like light switches."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None — a systems contribution evaluated by user study.",
+    "note": "The interesting part is which decisions stay with the person and which go to the robots."
+   }
+  },
+  "method": {
+   "intuition": "Coordinating several robots in a real building is an interface problem before it is a planning problem.",
+   "family": [
+    "system"
+   ],
+   "backbone": "MR headset + multi-robot stack",
+   "init": "",
+   "components": [
+    "MR task specification interface",
+    "multi-quadruped coordination",
+    "articulated-object interaction",
+    "user study"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "user study",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "usability ratings",
+    "task completion"
+   ],
+   "baselines": [
+    "conventional multi-robot control interfaces"
+   ],
+   "headline": "Participants rated design and usability \"good\" or \"very good\" in almost all cases."
+  },
+  "why": "The human-and-robot branch as an interaction problem, which is where most of it actually lives.",
+  "confidence": "high",
+  "tags": [
+   "mixed reality",
+   "multi-robot",
+   "HRI"
+  ]
+ },
+ {
+  "id": "reality-proxy",
+  "short": "Reality Proxy",
+  "title": "Reality Proxy: Fluid Interactions with Real-World Objects in MR via Abstract Representations",
+  "year": 2025,
+  "date": "2025-07",
+  "venue": "UIST 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Xiaoan Liu",
+   "Difan Jia",
+   "Xianhao Carton Liu",
+   "Mar Gonzalez-Franco",
+   "Chen Zhu-Tian"
+  ],
+  "n_authors": 5,
+  "institutions": [
+   "Microsoft Research"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2507.17248"
+  },
+  "tldr": "Selecting a physical object in MR is hard because physics gets in the way. Hand the user an AI-enriched abstract proxy and filtering, grouping and multi-select become easy.",
+  "contribution": [
+   "system"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "act"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "assisted",
+   "collaborator",
+   "evaluator"
+  ],
+  "world_facet": [
+   "object-state",
+   "scene"
+  ],
+  "representation": [
+   "graph",
+   "language"
+  ],
+  "change_channel": [
+   "visual-guidance"
+  ],
+  "sensing": [
+   "egocentric",
+   "depth-3d"
+  ],
+  "regime": "interactive",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "industrial"
+  ],
+  "autonomy": "human-in-loop",
+  "problem": {
+   "task": "Select and manipulate real-world objects in mixed reality when they are crowded, distant or occluded.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "scene",
+      "modality": "video",
+      "tensor": "V_live",
+      "chars": "MR passthrough of a real environment."
+     },
+     {
+      "name": "user gesture",
+      "modality": "action",
+      "tensor": "g",
+      "chars": "Standard gestures — no new vocabulary introduced."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "proxy interaction",
+      "modality": "graph",
+      "tensor": "selection over abstract proxies",
+      "chars": "Proxies carry AI-derived semantic attributes and hierarchical spatial relationships."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None — an interaction technique evaluated by expert review.",
+    "note": "Decoupling interaction from physical constraints is the general move. The AI enrichment is what makes the proxies more than icons."
+   }
+  },
+  "method": {
+   "intuition": "Interaction difficulty comes from acting on physical objects under their physical constraints. Shift the target to a representation and the constraints go away.",
+   "family": [
+    "system",
+    "vlm"
+   ],
+   "backbone": "MR system + VLM scene enrichment",
+   "init": "prompt-only",
+   "components": [
+    "object proxies",
+    "AI-derived semantic attributes",
+    "hierarchical spatial grouping",
+    "skimming, filtering, nested navigation, multi-select"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "office retrieval, large-scale navigation, multi-drone control scenarios",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "expert evaluation of utility and usability"
+   ],
+   "baselines": [
+    "direct physical-object interaction in MR"
+   ],
+   "headline": "Enables interactions that are cumbersome or impossible with direct manipulation, without new gestures or menus."
+  },
+  "why": "A reminder that the interface between a person and the physical world is itself a representation choice.",
+  "confidence": "high",
+  "tags": [
+   "mixed reality",
+   "interaction",
+   "abstraction"
+  ]
+ },
+ {
+  "id": "react",
+  "short": "ReAct",
+  "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+  "year": 2022,
+  "date": "2022-10",
+  "venue": "ICLR 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Shunyu Yao",
+   "Jeffrey Zhao",
+   "Dian Yu",
+   "Nan Du",
+   "Izhak Shafran",
+   "Karthik Narasimhan",
+   "Yuan Cao"
+  ],
+  "n_authors": 7,
+  "institutions": [
+   "Princeton University",
+   "Google"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2210.03629",
+   "page": "https://react-lm.github.io/"
+  },
+  "tldr": "Interleave a thought and an action in the same token stream, feed the observation back in, repeat. The loop pattern almost every embodied agent now uses.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "decide",
+   "act",
+   "verify",
+   "adapt"
+  ],
+  "embodiment": [
+   "none",
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "procedure"
+  ],
+  "representation": [
+   "language"
+  ],
+  "change_channel": [
+   "plan"
+  ],
+  "sensing": [
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "lab-sim",
+   "web"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Interleaved reasoning and acting in a text-based environment loop.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "task",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": ""
+     },
+     {
+      "name": "observation",
+      "modality": "text",
+      "tensor": "o_t",
+      "chars": "Returned by the environment after each action and appended to the context."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "thought",
+      "modality": "text",
+      "tensor": "τ_t",
+      "chars": "Free-form reasoning that updates the plan without touching the world."
+     },
+     {
+      "name": "action",
+      "modality": "text",
+      "tensor": "a_t",
+      "chars": "An API or environment call."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Few-shot prompting. No training.",
+    "note": "Reasoning-only hallucinates because nothing corrects it. Acting-only cannot revise because it never reflects. The interleaving is the whole contribution."
+   }
+  },
+  "method": {
+   "intuition": "Thinking without acting drifts from reality and acting without thinking cannot recover from a mistake, so alternate them in one stream.",
+   "family": [
+    "llm",
+    "prompting"
+   ],
+   "backbone": "PaLM-540B / GPT-3",
+   "init": "prompt-only",
+   "components": [
+    "thought-action-observation loop",
+    "external tool calls",
+    "trajectory as prompt context"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "HotpotQA, FEVER (with a Wikipedia API)",
+     "role": "existing"
+    },
+    {
+     "name": "ALFWorld, WebShop",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "exact match",
+    "success rate"
+   ],
+   "baselines": [
+    "chain-of-thought only",
+    "act-only"
+   ],
+   "headline": "+34% absolute success on ALFWorld and +10% on WebShop over imitation and reinforcement learning baselines, with fewer hallucinations than reasoning-only prompting."
+  },
+  "why": "The loop this list is organized around, written down in its most compressed form, and the reason to ask why physical loops rarely look this clean.",
+  "confidence": "high",
+  "tags": [
+   "agent",
+   "closed loop",
+   "LLM"
+  ]
+ },
+ {
+  "id": "vesta",
+  "short": "Vesta",
+  "title": "Vesta: A Generalist Embodied Reasoning Model",
+  "year": 2026,
+  "date": "2026-06",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Johan Bjorck",
+   "Zhiqi Li",
+   "Yunze Man",
+   "Jing Wang",
+   "An-Chieh Cheng",
+   "Jan Kautz"
+  ],
+  "n_authors": 32,
+  "institutions": [
+   "NVIDIA"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2606.20905"
+  },
+  "tldr": "One model for localization, spatial reasoning, navigation and long-horizon planning beats an oracle ensemble that picks the best specialist for every category.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "language",
+   "latent"
+  ],
+  "change_channel": [
+   "plan"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "egocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Unified embodied reasoning: grounding, navigation, embodied QA and long-horizon planning in one model.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "observation stream",
+      "modality": "video",
+      "tensor": "V_{0:t}",
+      "chars": "Open-world; long episodes."
+     },
+     {
+      "name": "memory",
+      "modality": "text",
+      "tensor": "M_t",
+      "chars": "Retained history frames interleaved with a running text log of finished subtasks — no learned memory module."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "reasoned decision",
+      "modality": "text",
+      "tensor": "d_t",
+      "chars": "Grounding, navigation target or next subtask."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Curated SFT corpus mixing grounding, navigation, embodied QA and real-robot data.",
+    "note": "The memory harness is deliberately simple, which strengthens the claim that the corpus is doing the work."
+   }
+  },
+  "method": {
+   "intuition": "A stack of specialists behind a planner pays latency for every hop and lets one bad output cascade. A single generalist removes both failure modes, if the data mixture is right.",
+   "family": [
+    "vlm",
+    "llm"
+   ],
+   "backbone": "multimodal foundation model",
+   "init": "finetune",
+   "components": [
+    "curated multi-capability SFT corpus",
+    "interleaved frame + text-log memory harness"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "curated embodied corpus",
+     "role": "new"
+    },
+    {
+     "name": "diverse embodied benchmarks",
+     "role": "existing"
+    },
+    {
+     "name": "bimanual real robot",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "benchmark accuracy",
+    "real task success"
+   ],
+   "baselines": [
+    "per-task SOTA specialists",
+    "oracle per-category ensemble"
+   ],
+   "headline": "Beats individual SOTA baselines by >20% on average and an oracle ensemble by >10%, with >35% higher success on memory-heavy long-horizon real robot tasks."
+  },
+  "why": "The current strongest evidence that the specialist-stack architecture of embodied AI is being replaced by one model.",
+  "confidence": "medium",
+  "tags": [
+   "generalist",
+   "embodied reasoning",
+   "memory"
+  ]
+ },
+ {
+  "id": "behavior-1k",
+  "short": "BEHAVIOR-1K",
+  "title": "BEHAVIOR-1K: A Human-Centered, Embodied AI Benchmark with 1,000 Everyday Activities and Realistic Simulation",
+  "year": 2024,
+  "date": "2024-03",
+  "venue": "CoRL 2022 / journal version",
+  "venue_type": "conference",
+  "authors": [
+   "Chengshu Li",
+   "Ruohan Zhang",
+   "Josiah Wong",
+   "Cem Gokmen",
+   "Sanjana Srivastava",
+   "Roberto Martín-Martín"
+  ],
+  "n_authors": 35,
+  "institutions": [
+   "Stanford University",
+   "UT Austin"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2403.09227",
+   "page": "https://behavior.stanford.edu"
+  },
+  "tldr": "The task list came from asking people what they actually want a robot to do, and the simulator handles the rigid bodies, deformables and liquids those answers imply.",
+  "contribution": [
+   "benchmark",
+   "system",
+   "dataset"
+  ],
+  "openness": [
+   "code",
+   "data"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act",
+   "verify"
+  ],
+  "embodiment": [
+   "robot",
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "object-change",
+   "scene",
+   "dynamics",
+   "procedure"
+  ],
+  "representation": [
+   "physics-params",
+   "geometry",
+   "graph"
+  ],
+  "change_channel": [
+   "motor-action",
+   "plan"
+  ],
+  "sensing": [
+   "sim-render",
+   "robot-onboard"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Long-horizon everyday household activities in realistic simulation, with sim-to-real calibration.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "simulated observation",
+      "modality": "rgbd",
+      "tensor": "o_t",
+      "chars": "From OMNIGIBSON, with rigid bodies, deformables and liquids."
+     },
+     {
+      "name": "activity definition",
+      "modality": "graph",
+      "tensor": "logical goal state",
+      "chars": "Defined over object physical and semantic properties, not over trajectories."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "robot actions",
+      "modality": "action",
+      "tensor": "a_t",
+      "chars": ""
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Benchmark, not a method.",
+    "note": "Defining success as a logical goal state rather than a trajectory is what lets 1,000 activities be scored consistently."
+   }
+  },
+  "method": {
+   "intuition": "Benchmarks drift toward what is easy to simulate. Grounding the task list in a survey of what people want keeps it pointed at reality.",
+   "family": [
+    "benchmark",
+    "system"
+   ],
+   "backbone": "OMNIGIBSON simulator",
+   "init": "",
+   "components": [
+    "1,000 activities from a human survey",
+    "50 scenes, 9,000+ annotated objects",
+    "rigid, deformable and fluid simulation",
+    "sim-to-real transfer study"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "BEHAVIOR-1K",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "activity success rate",
+    "sim-to-real gap"
+   ],
+   "baselines": [
+    "state-of-the-art robot learning solutions"
+   ],
+   "headline": "Activities are long-horizon and manipulation-heavy enough to remain unsolved by current methods. An initial mobile-manipulator sim-to-real transfer study calibrates the gap."
+  },
+  "why": "Anchors the change arc in what people actually want changed, which is the question the whole field is downstream of.",
+  "confidence": "high",
+  "tags": [
+   "benchmark",
+   "simulation",
+   "everyday tasks"
+  ]
+ },
+ {
+  "id": "robocasa",
+  "short": "RoboCasa",
+  "title": "RoboCasa: Large-Scale Simulation of Everyday Tasks for Generalist Robots",
+  "year": 2024,
+  "date": "2024-06",
+  "venue": "RSS 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Soroush Nasiriany",
+   "Abhiram Maddukuri",
+   "Lance Zhang",
+   "Adeet Parikh",
+   "Aaron Lo",
+   "Yuke Zhu"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "UT Austin",
+   "NVIDIA"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2406.02523",
+   "page": "https://robocasa.ai/"
+  },
+  "tldr": "Uses generative models to populate the simulator — text-to-3D objects, text-to-image textures, LLM-composed tasks — so scale comes from generation rather than collection.",
+  "contribution": [
+   "benchmark",
+   "system",
+   "dataset"
+  ],
+  "openness": [
+   "code",
+   "data"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot",
+   "sim"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "scene",
+   "object-state",
+   "procedure"
+  ],
+  "representation": [
+   "geometry",
+   "physics-params"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Large-scale simulated kitchen manipulation for training and evaluating generalist policies.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "simulated observation",
+      "modality": "image",
+      "tensor": "o_t",
+      "chars": "Kitchen scenes, 150+ object categories, interactable furniture and appliances."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "manipulation action",
+      "modality": "action",
+      "tensor": "a_t",
+      "chars": ""
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Human demonstrations plus automated trajectory generation that multiplies them.",
+    "note": "The scaling study on synthetic data is the result most often cited from this paper."
+   }
+  },
+  "method": {
+   "intuition": "Robot data is scarce because environments are scarce, and generative models can manufacture environments faster than people can build them.",
+   "family": [
+    "benchmark",
+    "system"
+   ],
+   "backbone": "MuJoCo-based simulation framework",
+   "init": "",
+   "components": [
+    "thousands of generated 3D assets across 150+ categories",
+    "generative textures and scene variation",
+    "LLM-composed composite tasks",
+    "automated demonstration augmentation"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "RoboCasa (100 tasks)",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "imitation learning success vs. dataset size"
+   ],
+   "baselines": [
+    "human-demonstration-only training"
+   ],
+   "headline": "A clear scaling trend from synthetically generated robot data, with evidence of transfer to real-world tasks."
+  },
+  "why": "The other answer to the data bottleneck: generate the world instead of recording it.",
+  "confidence": "high",
+  "tags": [
+   "simulation",
+   "data scaling",
+   "benchmark"
+  ]
+ }
+]

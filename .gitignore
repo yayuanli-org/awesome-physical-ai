@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# review.html is regenerable working scaffolding — `python3 build.py` remakes it,
+# and committing it would duplicate 400 KB of the deliverable on every data change.
+review.html
+
+# per-reviewer markup on a draft, written by serve.py at runtime
+*.comments.json

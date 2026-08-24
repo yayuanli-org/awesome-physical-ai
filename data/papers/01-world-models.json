@@ -1,0 +1,1727 @@
+[
+ {
+  "id": "v-jepa-2",
+  "short": "V-JEPA 2",
+  "title": "V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning",
+  "year": 2025,
+  "date": "2025-06",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Mido Assran",
+   "Adrien Bardes",
+   "David Fan",
+   "Quentin Garrido",
+   "Nicolas Ballas",
+   "Michael Rabbat",
+   "Yann LeCun"
+  ],
+  "n_authors": 30,
+  "institutions": [
+   "Meta FAIR"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.09985",
+   "code": "https://github.com/facebookresearch/vjepa2"
+  },
+  "tldr": "Predicting masked video in latent space at internet scale, then bolting on 62 hours of unlabeled robot video, is enough to plan real pick-and-place zero-shot.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "dynamics",
+   "object-change"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action"
+  ],
+  "sensing": [
+   "web-video",
+   "robot-onboard"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "web",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Action-free video representation learning, then action-conditioned latent prediction for planning.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "64 frames at 256px for the encoder; robot arm views for the AC head."
+     },
+     {
+      "name": "goal image",
+      "modality": "image",
+      "tensor": "g ∈ R^{H×W×3}",
+      "chars": "Planning only: a photo of the desired end state."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "latent state",
+      "modality": "latent",
+      "tensor": "z ∈ R^{N×d}",
+      "chars": "Patch-level embeddings used for probing, VQA, anticipation."
+     },
+     {
+      "name": "end-effector action",
+      "modality": "action",
+      "tensor": "a ∈ R^{7}",
+      "chars": "Planning only: chosen by CEM over rolled-out latents, replanned each step."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Self-supervised masked latent prediction — no labels, no actions. A second stage adds action conditioning from unlabeled robot video.",
+    "note": "Stage 1 sees 1M+ hours of internet video and never sees an action. Stage 2 sees <62 h of Droid video with actions and freezes the encoder."
+   }
+  },
+  "method": {
+   "intuition": "Predicting pixels wastes capacity on detail that does not matter for acting, so predict the representation instead and let the encoder decide what is worth keeping.",
+   "family": [
+    "ssl",
+    "transformer"
+   ],
+   "backbone": "ViT-g (1B) encoder + predictor",
+   "init": "scratch",
+   "components": [
+    "masked joint-embedding prediction",
+    "3D RoPE",
+    "progressive resolution schedule",
+    "action-conditioned predictor (V-JEPA 2-AC)",
+    "CEM planner with image goals"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Internet video (1M+ hours)",
+     "role": "existing"
+    },
+    {
+     "name": "Something-Something v2",
+     "role": "existing"
+    },
+    {
+     "name": "EPIC-KITCHENS-100",
+     "role": "existing"
+    },
+    {
+     "name": "Droid",
+     "role": "existing"
+    },
+    {
+     "name": "Franka arms, two unseen labs",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "top-1 accuracy",
+    "recall@5",
+    "VQA accuracy",
+    "task success rate"
+   ],
+   "baselines": [
+    "task-specific video models",
+    "prior VLM video encoders"
+   ],
+   "headline": "77.3 top-1 on SSv2 and 39.7 recall@5 on EK100 anticipation. Picks and places on Franka arms in two labs it never saw data from."
+  },
+  "why": "The clearest single statement that a world model can be learned by observation alone and still reach into the physical world.",
+  "confidence": "high",
+  "tags": [
+   "JEPA",
+   "world model",
+   "planning"
+  ]
+ },
+ {
+  "id": "genie",
+  "short": "Genie",
+  "title": "Genie: Generative Interactive Environments",
+  "year": 2024,
+  "date": "2024-02",
+  "venue": "ICML 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Jake Bruce",
+   "Michael Dennis",
+   "Ashley Edwards",
+   "Jack Parker-Holder",
+   "Yuge Shi",
+   "Tim Rocktäschel"
+  ],
+  "n_authors": 25,
+  "institutions": [
+   "Google DeepMind"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2402.15391"
+  },
+  "tldr": "Latent actions can be recovered from unlabeled internet video, which turns any video corpus into a controllable environment.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "act"
+  ],
+  "embodiment": [
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "object-change",
+   "dynamics"
+  ],
+  "representation": [
+   "pixels",
+   "tokens"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "interactive",
+  "horizon": "seconds",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Unsupervised learning of an action-controllable video world model from action-free video.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "prompt frame",
+      "modality": "image",
+      "tensor": "x₀ ∈ R^{H×W×3}",
+      "chars": "Text-to-image output, a photograph, or a hand sketch."
+     },
+     {
+      "name": "latent action",
+      "modality": "action",
+      "tensor": "a_t ∈ {1..8}",
+      "chars": "One of 8 discrete codes, chosen by the user per frame."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "next frame",
+      "modality": "image",
+      "tensor": "x_{t+1} ∈ R^{H×W×3}",
+      "chars": "Autoregressive, frame by frame — the environment is the rollout."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Fully unsupervised on 200k+ hours of 2D platformer video. No action labels anywhere.",
+    "note": "The latent action model is trained inside the reconstruction objective, so the action vocabulary is discovered, not given."
+   }
+  },
+  "method": {
+   "intuition": "If a model must explain the next frame from the previous frame plus a tiny bottleneck, the bottleneck is forced to become the action.",
+   "family": [
+    "transformer",
+    "vq"
+   ],
+   "backbone": "ST-transformer, 11B params",
+   "init": "scratch",
+   "components": [
+    "spatiotemporal video tokenizer",
+    "latent action model with an 8-code VQ bottleneck",
+    "autoregressive dynamics model"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "2D platformer video (200k+ h, filtered)",
+     "role": "new"
+    },
+    {
+     "name": "RT-1 robot video",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "FVD",
+    "latent-action controllability (Δ_PSNR)"
+   ],
+   "baselines": [
+    "unconditional video models",
+    "action-conditioned world models with ground-truth actions"
+   ],
+   "headline": "Frame-level controllability from unlabeled video. The learned latent actions transfer well enough to imitate behaviour from unseen videos."
+  },
+  "why": "Reframes the data problem in physical AI: the bottleneck was never video, it was action labels, and this shows they can be inferred.",
+  "confidence": "high",
+  "tags": [
+   "world model",
+   "latent action",
+   "video generation"
+  ]
+ },
+ {
+  "id": "cosmos",
+  "short": "Cosmos",
+  "title": "Cosmos World Foundation Model Platform for Physical AI",
+  "year": 2025,
+  "date": "2025-01",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "NVIDIA"
+  ],
+  "n_authors": 79,
+  "institutions": [
+   "NVIDIA"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2501.03575",
+   "code": "https://github.com/nvidia-cosmos/cosmos-predict1"
+  },
+  "tldr": "Ships the whole stack — curation pipeline, tokenizers, pretrained world models — on the premise that a physical AI system needs a digital twin of the world before it touches the real one.",
+  "contribution": [
+   "method",
+   "system"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "anticipate"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "dynamics",
+   "object-change"
+  ],
+  "representation": [
+   "pixels",
+   "tokens"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video",
+   "robot-onboard"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "web",
+   "lab-sim"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "General-purpose video world model, meant to be post-trained into a task-specific one.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "conditioning",
+      "modality": "video",
+      "tensor": "V_{0:t} ∈ R^{t×H×W×3}",
+      "chars": "Past frames, or a single image, or text."
+     },
+     {
+      "name": "control",
+      "modality": "action",
+      "tensor": "a ∈ R^{d}",
+      "chars": "Optional, added in post-training: robot actions, camera pose, or trajectory."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "future video",
+      "modality": "video",
+      "tensor": "V_{t+1:T}",
+      "chars": "Continuation that is meant to obey physics rather than only look good."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Next-token / denoising on a curated 20M-hour-scale video corpus. Post-training adds control signals.",
+    "note": "The curation pipeline is the part most likely to be reused — deduplication, shot detection, quality and motion filtering."
+   }
+  },
+  "method": {
+   "intuition": "Treat the world model as a foundation model: pretrain broadly, then post-train into driving, manipulation, or humanoid variants rather than training each from scratch.",
+   "family": [
+    "diffusion",
+    "transformer",
+    "vq"
+   ],
+   "backbone": "Diffusion and autoregressive variants, 4B–14B",
+   "init": "scratch",
+   "components": [
+    "video curation pipeline",
+    "continuous and discrete video tokenizers",
+    "diffusion WFM",
+    "autoregressive WFM",
+    "guardrails"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "~20M hours curated video",
+     "role": "new"
+    },
+    {
+     "name": "Bridge, robot and AV corpora",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "3D consistency",
+    "physics alignment",
+    "downstream policy success"
+   ],
+   "baselines": [
+    "open video generators"
+   ],
+   "headline": "Open-weight world models with post-training recipes for camera control, robotic manipulation and autonomous driving."
+  },
+  "why": "The paper that made \"physical AI\" a named product category, and the reference for what a world-model pipeline contains end to end.",
+  "confidence": "high",
+  "tags": [
+   "world model",
+   "foundation model",
+   "physical AI"
+  ]
+ },
+ {
+  "id": "dino-world",
+  "short": "DINO-world",
+  "title": "Back to the Features: DINO as a Foundation for Video World Models",
+  "year": 2025,
+  "date": "2025-07",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Federico Baldassarre",
+   "Marc Szafraniec",
+   "Basile Terver",
+   "Vasil Khalidov",
+   "Francisco Massa",
+   "Yann LeCun"
+  ],
+  "n_authors": 9,
+  "institutions": [
+   "Meta FAIR"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2507.19468"
+  },
+  "tldr": "Freeze DINOv2 and train only a future predictor on top: a strong video world model without learning a visual encoder at all.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "decide"
+  ],
+  "embodiment": [
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "dynamics"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "plan"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "web",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Predict future frames in a frozen self-supervised feature space; optionally condition on actions and plan.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "past features",
+      "modality": "latent",
+      "tensor": "z_{0:t} ∈ R^{t×N×d}",
+      "chars": "DINOv2 patch tokens, encoder frozen."
+     },
+     {
+      "name": "action",
+      "modality": "action",
+      "tensor": "a_t ∈ R^{d_a}",
+      "chars": "Only in the fine-tuned action-conditioned variant."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "future features",
+      "modality": "latent",
+      "tensor": "ẑ_{t+1:T}",
+      "chars": "Decoded with light heads into segmentation or depth for evaluation."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Future-feature regression on large-scale uncurated video. Encoder never updated.",
+    "note": "Action conditioning is a small fine-tune on observation-action trajectories."
+   }
+  },
+  "method": {
+   "intuition": "A good frozen encoder already supplies a space worth predicting in, which leaves the dynamics as the hard part of a world model.",
+   "family": [
+    "ssl",
+    "transformer"
+   ],
+   "backbone": "DINOv2 (frozen) + causal transformer predictor",
+   "init": "frozen-foundation",
+   "components": [
+    "frozen DINOv2 encoder",
+    "cross-attention future predictor",
+    "action-conditioned fine-tune",
+    "latent-space trajectory search"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "large uncurated video mix",
+     "role": "existing"
+    },
+    {
+     "name": "intuitive-physics probes",
+     "role": "existing"
+    },
+    {
+     "name": "simulated control suites",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "segmentation and depth forecasting",
+    "intuitive physics accuracy",
+    "planning success"
+   ],
+   "baselines": [
+    "pixel-space video predictors",
+    "learned-encoder world models"
+   ],
+   "headline": "Beats prior video-prediction models on forecasting benchmarks and plans by simulating candidate trajectories in latent space."
+  },
+  "why": "Isolates the variable: how much of a world model's power comes from the representation versus the dynamics head.",
+  "confidence": "high",
+  "tags": [
+   "world model",
+   "frozen encoder",
+   "latent"
+  ]
+ },
+ {
+  "id": "causal-jepa",
+  "short": "C-JEPA",
+  "title": "Causal-JEPA: Learning World Models through Object-Level Latent Masking",
+  "year": 2026,
+  "date": "2026-02",
+  "venue": "ICML 2026",
+  "venue_type": "conference",
+  "authors": [
+   "Heejeong Nam",
+   "Quentin Le Lidec",
+   "Lucas Maes",
+   "Yann LeCun",
+   "Randall Balestriero"
+  ],
+  "n_authors": 5,
+  "institutions": [],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2602.11389",
+   "code": "https://github.com/galilai-group/cjepa",
+   "page": "https://hazel-heejeong-nam.github.io/cjepa/"
+  },
+  "tldr": "Mask whole objects instead of image patches, and the model has to learn how objects affect each other rather than inpainting texture.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "decide"
+  ],
+  "embodiment": [
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "object-change",
+   "interaction"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "plan"
+  ],
+  "sensing": [
+   "sim-render"
+  ],
+  "regime": "offline",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Object-centric latent world modeling, evaluated by counterfactual VQA and by planning efficiency.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "frame",
+      "modality": "image",
+      "tensor": "x ∈ R^{H×W×3}",
+      "chars": "Scenes with several interacting objects."
+     },
+     {
+      "name": "object slots",
+      "modality": "latent",
+      "tensor": "s ∈ R^{K×d}",
+      "chars": "K object-level latents, a small fraction of the patch-token count."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "predicted object latents",
+      "modality": "latent",
+      "tensor": "ŝ_masked ∈ R^{m×d}",
+      "chars": "Masked objects inferred from the surrounding objects."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Self-supervised: predict masked object latents from unmasked ones.",
+    "note": "Masking at object granularity is what creates the counterfactual query — the model cannot fall back on local texture."
+   }
+  },
+  "method": {
+   "intuition": "Object-centric slots alone do not force a model to learn interaction. Hiding a whole object and demanding its state from context does.",
+   "family": [
+    "ssl",
+    "object-centric"
+   ],
+   "backbone": "JEPA-style predictor over slot latents",
+   "init": "scratch",
+   "components": [
+    "object-level latent masking",
+    "structured partial observability",
+    "formal observability analysis"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "object-interaction VQA suites",
+     "role": "existing"
+    },
+    {
+     "name": "agent control tasks",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "counterfactual VQA accuracy",
+    "planning success vs. latent budget"
+   ],
+   "baselines": [
+    "patch-masked JEPA with the same architecture",
+    "patch-based world models"
+   ],
+   "headline": "About +20 points absolute on counterfactual reasoning over the same architecture without object-level masking, and comparable planning using 1% of the latent features."
+  },
+  "why": "The object-centric argument stated at its sharpest: the granularity of the masking objective is the inductive bias.",
+  "confidence": "high",
+  "tags": [
+   "object-centric",
+   "JEPA",
+   "counterfactual"
+  ]
+ },
+ {
+  "id": "object-concepts-motion",
+  "short": "Object Concepts from Motion",
+  "title": "Object Concepts Emerge from Motion",
+  "year": 2025,
+  "date": "2025-05",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Haoqian Liang",
+   "Xiaohui Wang",
+   "Zhichao Li",
+   "Ya Yang",
+   "Naiyan Wang"
+  ],
+  "n_authors": 5,
+  "institutions": [],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2505.21635"
+  },
+  "tldr": "Motion boundaries are free instance labels: cluster optical flow into pseudo-masks and train a contrastive encoder that learns objecthood without a single annotation.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Unsupervised object-centric representation learning from raw video.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x ∈ R^{H×W×3}",
+      "chars": "Single frame at test time; no flow needed."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "dense features",
+      "modality": "latent",
+      "tensor": "f ∈ R^{H'×W'×d}",
+      "chars": "Instance-aware features probed for depth, 3D detection, occupancy."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None. Pseudo instance masks come from off-the-shelf optical flow plus clustering.",
+    "note": "No camera calibration required, which is what makes it scale to unstructured video."
+   }
+  },
+  "method": {
+   "intuition": "Infants learn objecthood by watching things move together. Motion boundaries are the same signal, and they are already computable.",
+   "family": [
+    "ssl",
+    "contrastive"
+   ],
+   "backbone": "ViT",
+   "init": "scratch",
+   "components": [
+    "optical-flow instance proposals",
+    "clustering into pseudo-masks",
+    "instance-level contrastive objective"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "unstructured driving and scene video",
+     "role": "existing"
+    },
+    {
+     "name": "monocular depth benchmarks",
+     "role": "existing"
+    },
+    {
+     "name": "3D detection / occupancy benchmarks",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "depth error",
+    "3D detection AP",
+    "occupancy IoU"
+   ],
+   "baselines": [
+    "supervised pretraining",
+    "prior self-supervised encoders"
+   ],
+   "headline": "Outperforms supervised and self-supervised baselines on all three probes and transfers to unseen scenes."
+  },
+  "why": "Argues that vision foundation models skip a level of abstraction — the instance — and that motion is the cheapest way to recover it.",
+  "confidence": "high",
+  "tags": [
+   "object-centric",
+   "self-supervised",
+   "motion"
+  ]
+ },
+ {
+  "id": "pointworld",
+  "short": "PointWorld",
+  "title": "PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation",
+  "year": 2026,
+  "date": "2026-01",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Wenlong Huang",
+   "Yu-Wei Chao",
+   "Arsalan Mousavian",
+   "Ming-Yu Liu",
+   "Dieter Fox",
+   "Kaichun Mo"
+  ],
+  "n_authors": 7,
+  "institutions": [
+   "NVIDIA"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2601.03782"
+  },
+  "tldr": "Put state and action in the same 3D space as point flow, and one world model serves a Franka and a bimanual humanoid without an embodiment-specific action head.",
+  "contribution": [
+   "method",
+   "analysis"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "object-change",
+   "dynamics"
+  ],
+  "representation": [
+   "geometry",
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action",
+   "plan"
+  ],
+  "sensing": [
+   "depth-3d",
+   "robot-onboard",
+   "sim-render"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Action-conditioned 3D forecasting: given RGB-D and a command, predict where every point goes.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "RGB-D",
+      "modality": "rgbd",
+      "tensor": "I ∈ R^{H×W×4}",
+      "chars": "One or a few views; open-world scenes, not a fixed rig."
+     },
+     {
+      "name": "action sequence",
+      "modality": "action",
+      "tensor": "a_{1:K}",
+      "chars": "Low-level robot commands, re-expressed as 3D point flow of the robot geometry."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "3D point flow",
+      "modality": "flow",
+      "tensor": "Δp ∈ R^{H×W×3}",
+      "chars": "Per-pixel displacement in 3D, at 0.1 s inference, consumed by MPC."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Supervised point-flow forecasting on ~2M real and simulated manipulation trajectories (~500 h).",
+    "note": "Because actions are geometry, a single-arm Franka and a bimanual humanoid share one action space."
+   }
+  },
+  "method": {
+   "intuition": "Embodiment-specific action spaces are what stop world models from pooling data. Express the action as motion of the robot's own geometry and the barrier disappears.",
+   "family": [
+    "transformer",
+    "diffusion"
+   ],
+   "backbone": "large 3D flow forecaster",
+   "init": "scratch",
+   "components": [
+    "unified 3D point-flow state-action space",
+    "cross-embodiment data mixture",
+    "MPC integration at 0.1 s"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "~2M real + sim manipulation trajectories",
+     "role": "new"
+    },
+    {
+     "name": "Franka rigid-body tasks",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "flow prediction error",
+    "real-world task success"
+   ],
+   "baselines": [
+    "2D video world models",
+    "embodiment-specific action-space models"
+   ],
+   "headline": "One pre-trained checkpoint drives a real Franka through rigid-body manipulation at real-time (0.1 s) inference, with an ablation study over backbones, action representations and data mixtures."
+  },
+  "why": "The cleanest counter-argument to pixel-space world models: geometry is the shared coordinate system across embodiments.",
+  "confidence": "medium",
+  "tags": [
+   "3D world model",
+   "point flow",
+   "cross-embodiment"
+  ]
+ },
+ {
+  "id": "peva",
+  "short": "PEVA",
+  "title": "Whole-Body Conditioned Egocentric Video Prediction",
+  "year": 2025,
+  "date": "2025-06",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Yutong Bai",
+   "Danny Tran",
+   "Amir Bar",
+   "Yann LeCun",
+   "Trevor Darrell",
+   "Jitendra Malik"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "UC Berkeley",
+   "Meta FAIR",
+   "NYU"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.21552",
+   "page": "https://dannytran123.github.io/PEVA"
+  },
+  "tldr": "Condition egocentric video prediction on 3D body pose instead of a robot action vector, and the world model's action space becomes the human body.",
+  "contribution": [
+   "method",
+   "benchmark"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent",
+   "anticipate"
+  ],
+  "embodiment": [
+   "human"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "agent-body",
+   "scene",
+   "object-change"
+  ],
+  "representation": [
+   "pixels"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "egocentric",
+   "imu-wearable"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Given past egocentric video and a whole-body action, predict the next egocentric frames.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "past video",
+      "modality": "video",
+      "tensor": "V_{0:t} ∈ R^{t×H×W×3}",
+      "chars": "First-person view from a head-mounted camera."
+     },
+     {
+      "name": "body action",
+      "modality": "body-pose",
+      "tensor": "a_t ∈ R^{J×3}",
+      "chars": "Relative 3D joint positions, structured by the kinematic hierarchy — not a 7-DoF gripper vector."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "future egocentric frames",
+      "modality": "video",
+      "tensor": "V̂_{t+1:T}",
+      "chars": "Autoregressive; evaluated at increasing horizons."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Paired egocentric video and body pose from Nymeria.",
+    "note": "Pose comes from real motion capture in the wild, which is what makes the action space physically meaningful."
+   }
+  },
+  "method": {
+   "intuition": "For a human-embodied world model the action is the body, so structure the conditioning by the joint hierarchy rather than flattening it.",
+   "family": [
+    "diffusion",
+    "transformer"
+   ],
+   "backbone": "autoregressive conditional diffusion transformer",
+   "init": "scratch",
+   "components": [
+    "hierarchical body-pose conditioning",
+    "autoregressive rollout",
+    "graded evaluation protocol by horizon and difficulty"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Nymeria",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "perceptual and pixel similarity at multiple horizons",
+    "atomic-action controllability"
+   ],
+   "baselines": [
+    "unconditioned and weakly-conditioned video prediction"
+   ],
+   "headline": "A hierarchical evaluation protocol of increasingly hard prediction and control tasks. Body-conditioned prediction holds up where unconditioned prediction drifts."
+  },
+  "why": "The human-embodiment counterpart to robot world models: same machinery, but the action space is a person.",
+  "confidence": "high",
+  "tags": [
+   "egocentric",
+   "world model",
+   "body pose"
+  ]
+ },
+ {
+  "id": "genie-envisioner",
+  "short": "Genie Envisioner",
+  "title": "Genie Envisioner: A Unified World Foundation Platform for Robotic Manipulation",
+  "year": 2025,
+  "date": "2025-08",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Yue Liao",
+   "Pengfei Zhou",
+   "Siyuan Huang",
+   "Donglin Yang",
+   "Shengcong Chen",
+   "Yuxin Jiang"
+  ],
+  "n_authors": 14,
+  "institutions": [],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2508.05635",
+   "page": "https://genie-envisioner.github.io/"
+  },
+  "tldr": "One video-generative latent serves three roles at once: the policy, the simulator it is evaluated in, and the benchmark that scores it.",
+  "contribution": [
+   "method",
+   "system",
+   "benchmark"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "decide",
+   "act",
+   "verify"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "scene",
+   "object-change",
+   "interaction"
+  ],
+  "representation": [
+   "pixels",
+   "latent",
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Instruction-conditioned video world model, with an action decoder and a neural simulator built on the same latent.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "observation",
+      "modality": "video",
+      "tensor": "V_{0:t}",
+      "chars": "Multi-view robot camera streams."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "Free-form task command."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "future latent rollout",
+      "modality": "latent",
+      "tensor": "z_{t+1:T}",
+      "chars": "GE-Base — the shared world state."
+     },
+     {
+      "name": "action trajectory",
+      "modality": "trajectory",
+      "tensor": "a_{1:K}",
+      "chars": "GE-Act — a light flow-matching decoder off the same latent."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Large-scale instruction-conditioned robot video, then a small decoder fit for each embodiment.",
+    "note": "GE-Sim reuses the same model action-conditioned, so evaluation rollouts and policy rollouts share one dynamics model."
+   }
+  },
+  "method": {
+   "intuition": "If a video model already contains the dynamics, then policy, simulator and evaluator are three read-outs of one latent, not three systems.",
+   "family": [
+    "diffusion",
+    "flow-matching",
+    "transformer"
+   ],
+   "backbone": "instruction-conditioned video diffusion",
+   "init": "scratch",
+   "components": [
+    "GE-Base world model",
+    "GE-Act flow-matching action decoder",
+    "GE-Sim action-conditioned neural simulator",
+    "EWMBench evaluation suite"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "large-scale real robot manipulation video",
+     "role": "new"
+    },
+    {
+     "name": "EWMBench",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "visual fidelity",
+    "physical consistency",
+    "instruction-action alignment",
+    "task success"
+   ],
+   "baselines": [
+    "standard VLA policies",
+    "video-generation world models"
+   ],
+   "headline": "One platform covering policy learning, closed-loop simulation and benchmarking, transferring across embodiments with a lightweight decoder."
+  },
+  "why": "Makes the loop literal: the same model predicts the world, acts in it, and grades the result.",
+  "confidence": "medium",
+  "tags": [
+   "world model",
+   "manipulation",
+   "neural simulator"
+  ]
+ },
+ {
+  "id": "worldprediction",
+  "short": "WorldPrediction",
+  "title": "WorldPrediction: A Benchmark for High-level World Modeling and Long-horizon Procedural Planning",
+  "year": 2025,
+  "date": "2025-06",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Delong Chen",
+   "Willy Chung",
+   "Yejin Bang",
+   "Ziwei Ji",
+   "Pascale Fung"
+  ],
+  "n_authors": 5,
+  "institutions": [
+   "HKUST"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.04363"
+  },
+  "tldr": "Tests world models at the level of semantic actions rather than pixels, and blocks the usual shortcut by giving distractors that are the same action filmed elsewhere.",
+  "contribution": [
+   "benchmark"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "anticipate",
+   "decide"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-change"
+  ],
+  "representation": [
+   "pixels",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "exocentric",
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Discriminate the correct action (WM) or the correctly ordered action sequence (PP) between an initial and a final world state.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "initial state",
+      "modality": "image",
+      "tensor": "s₀",
+      "chars": "Visual observation of the world before."
+     },
+     {
+      "name": "final state",
+      "modality": "image",
+      "tensor": "s_T",
+      "chars": "Visual observation of the world after."
+     },
+     {
+      "name": "candidates",
+      "modality": "video",
+      "tensor": "{c₁..c_k}",
+      "chars": "Includes action equivalents — the same action in a different context — so background continuity cannot be exploited."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "choice",
+      "modality": "label",
+      "tensor": "ŷ ∈ {1..k}",
+      "chars": "Discriminative, so generative and non-generative models can be compared on one scale."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Evaluation only.",
+    "note": "Grounded in a partially observable semi-MDP formalism, which is what lets the two subtasks share a scale."
+   }
+  },
+  "method": {
+   "intuition": "Most world-model benchmarks reward low-level pixel continuity. Abstract actions are where planning actually lives, so score those instead.",
+   "family": [
+    "benchmark"
+   ],
+   "backbone": "",
+   "init": "",
+   "components": [
+    "WorldPrediction-WM (single action)",
+    "WorldPrediction-PP (action ordering)",
+    "action-equivalent distractors"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "WorldPrediction",
+     "role": "new"
+    }
+   ],
+   "metrics": [
+    "accuracy against counterfactual distractors"
+   ],
+   "baselines": [
+    "video generation models",
+    "VLMs",
+    "procedural planners"
+   ],
+   "headline": "A discriminative setup that puts generative world models and planners on the same axis at semantic rather than pixel granularity."
+  },
+  "why": "Names the gap between low-level world modeling and the temporal abstraction that procedural tasks actually need.",
+  "confidence": "high",
+  "tags": [
+   "benchmark",
+   "world model",
+   "procedure"
+  ]
+ },
+ {
+  "id": "dinov2",
+  "short": "DINOv2",
+  "title": "DINOv2: Learning Robust Visual Features without Supervision",
+  "year": 2023,
+  "date": "2023-04",
+  "venue": "TMLR 2024",
+  "venue_type": "journal",
+  "authors": [
+   "Maxime Oquab",
+   "Timothée Darcet",
+   "Théo Moutakanni",
+   "Huy Vo",
+   "Marc Szafraniec",
+   "Piotr Bojanowski"
+  ],
+  "n_authors": 26,
+  "institutions": [
+   "Meta AI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2304.07193",
+   "code": "https://github.com/facebookresearch/dinov2"
+  },
+  "tldr": "Curated data plus scale makes self-supervised features that work off the shelf, which is why half the world models on this list start by freezing it.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "General-purpose visual features usable without fine-tuning.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x ∈ R^{H×W×3}",
+      "chars": "Any natural image."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "features",
+      "modality": "latent",
+      "tensor": "(cls, patches) ∈ R^{(1+N)×d}",
+      "chars": "Patch tokens carry dense correspondence, which is why they work for geometry probes."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Self-distillation with no labels, on an automatically curated 142M-image set (LVD-142M).",
+    "note": "The curation pipeline — retrieval from an uncurated pool against a curated seed — is as much the contribution as the objective."
+   }
+  },
+  "method": {
+   "intuition": "Self-supervision was not the bottleneck. Data curation was.",
+   "family": [
+    "ssl",
+    "transformer"
+   ],
+   "backbone": "ViT-g/14, distilled to ViT-S/B/L",
+   "init": "scratch",
+   "components": [
+    "automatic data curation pipeline",
+    "iBOT + DINO objectives",
+    "training stabilization at scale",
+    "distillation to small models"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "LVD-142M",
+     "role": "new"
+    },
+    {
+     "name": "ImageNet, depth, segmentation, retrieval benchmarks",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "linear-probe accuracy",
+    "dense prediction quality"
+   ],
+   "baselines": [
+    "OpenCLIP",
+    "prior SSL methods"
+   ],
+   "headline": "Surpasses OpenCLIP on most image- and pixel-level benchmarks without any fine-tuning."
+  },
+  "why": "Sits under a large fraction of this list. Background reading rather than a physical AI paper in itself.",
+  "confidence": "high",
+  "tags": [
+   "foundation",
+   "self-supervised"
+  ]
+ },
+ {
+  "id": "sam2",
+  "short": "SAM 2",
+  "title": "SAM 2: Segment Anything in Images and Videos",
+  "year": 2024,
+  "date": "2024-08",
+  "venue": "ICLR 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Nikhila Ravi",
+   "Valentin Gabeur",
+   "Yuan-Ting Hu",
+   "Ronghang Hu",
+   "Chaitanya Ryali",
+   "Christoph Feichtenhofer"
+  ],
+  "n_authors": 18,
+  "institutions": [
+   "Meta AI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2408.00714",
+   "code": "https://github.com/facebookresearch/sam2"
+  },
+  "tldr": "Streaming memory turns promptable segmentation into object tracking, which is the cheapest way to get object identity across time.",
+  "contribution": [
+   "method",
+   "dataset"
+  ],
+  "openness": [
+   "code",
+   "weights",
+   "data"
+  ],
+  "arc": [
+   "model"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "object-state"
+  ],
+  "representation": [
+   "latent",
+   "trajectory"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video",
+   "exocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Promptable visual segmentation in video: a click on one frame yields a mask on every frame.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "video",
+      "modality": "video",
+      "tensor": "V ∈ R^{T×H×W×3}",
+      "chars": "Processed frame by frame with a memory bank, so it runs online."
+     },
+     {
+      "name": "prompt",
+      "modality": "bbox",
+      "tensor": "point / box / mask",
+      "chars": "On any frame, at any time; corrections can be added mid-stream."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "masklet",
+      "modality": "mask",
+      "tensor": "M ∈ {0,1}^{T×H×W}",
+      "chars": "One object tracked through occlusion and re-appearance."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Supervised on SA-V, itself built by a model-in-the-loop data engine with human annotators.",
+    "note": "The data engine is the mechanism: better model → faster annotation → more data → better model."
+   }
+  },
+  "method": {
+   "intuition": "Video segmentation is image segmentation plus memory, and the memory can be a plain streaming bank rather than a specialised tracker.",
+   "family": [
+    "transformer"
+   ],
+   "backbone": "Hiera image encoder + memory attention",
+   "init": "scratch",
+   "components": [
+    "streaming memory bank",
+    "mask decoder with occlusion head",
+    "interactive data engine",
+    "SA-V dataset"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "SA-V",
+     "role": "new"
+    },
+    {
+     "name": "video object segmentation benchmarks",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "J&F",
+    "interaction count",
+    "throughput"
+   ],
+   "baselines": [
+    "SAM + tracker pipelines",
+    "specialised VOS models"
+   ],
+   "headline": "Better video accuracy with 3× fewer interactions, and 6× faster than SAM on images."
+  },
+  "why": "The practical answer to \"how do I get object identity over time\" that most object-centric pipelines on this list quietly depend on.",
+  "confidence": "high",
+  "tags": [
+   "segmentation",
+   "object-centric",
+   "data engine"
+  ]
+ }
+]

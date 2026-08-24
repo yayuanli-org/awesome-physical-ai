@@ -1,0 +1,879 @@
+{
+  "version": "0.1",
+  "updated": "2026-08-24",
+  "thesis": {
+    "line": "Physical AI studies how the physical world gets changed in the age of AI.",
+    "body": "Changing the world takes two moves. First model it: build a representation faithful enough to act on. Then change it: push a decision into the world through an embodiment — a human wearing glasses, a robot arm, or the two together. Acting changes the world, which changes what has to be modeled, so the two moves close into a loop. Every axis below is a column on that loop. The sections here are filters over those columns rather than folders."
+  },
+  "views": [
+    {
+      "id": "model",
+      "name": "Modeling the physical world",
+      "blurb": "Build a representation of the world faithful enough to act on. The world is objects and the changes they undergo, so the two questions that separate these papers are which facet of it you represent and in what form you hold it.",
+      "filter": {
+        "arc": [
+          "model"
+        ]
+      },
+      "groups": [
+        {
+          "id": "g-object",
+          "name": "Objects: identity, state, and change",
+          "sub": "Objects turn up in almost every group below. These are the papers where the object representation itself is the contribution.",
+          "filter": {
+            "world_facet": [
+              "object-state",
+              "object-change"
+            ]
+          },
+          "pri": 8
+        },
+        {
+          "id": "g-latent",
+          "name": "Latent predictive world models",
+          "sub": "Predict the next state in a learned embedding. Skip the pixels that do not matter for acting.",
+          "filter": {
+            "representation": [
+              "latent"
+            ],
+            "world_facet": [
+              "dynamics",
+              "object-change"
+            ]
+          },
+          "pri": 1
+        },
+        {
+          "id": "g-gen",
+          "name": "Generative world models",
+          "sub": "The state is a frame and prediction is generation, so the model is also a simulator you can look at.",
+          "filter": {
+            "representation": [
+              "pixels"
+            ],
+            "world_facet": [
+              "dynamics",
+              "scene",
+              "object-change"
+            ]
+          },
+          "pri": 2
+        },
+        {
+          "id": "g-dyn",
+          "name": "Physics, materials, deformation",
+          "sub": "Forces, mass, friction, cloth and rope. What happens next without anyone asking.",
+          "filter": {
+            "world_facet": [
+              "dynamics"
+            ]
+          },
+          "pri": 3
+        },
+        {
+          "id": "g-inter",
+          "name": "Hands, bodies, and contact",
+          "sub": "Where a body meets an object: grasp, contact, affordance, human-object interaction.",
+          "filter": {
+            "world_facet": [
+              "agent-body",
+              "interaction"
+            ]
+          },
+          "pri": 6
+        },
+        {
+          "id": "g-scene",
+          "name": "Scenes, 3D and 4D",
+          "sub": "Geometry and layout — the stage everything else happens on.",
+          "filter": {
+            "world_facet": [
+              "scene"
+            ]
+          },
+          "pri": 7
+        },
+        {
+          "id": "g-corpora",
+          "name": "Egocentric corpora: the raw material",
+          "sub": "The recordings the human-embodiment half of this field is built out of. Read the collection protocol as closely as the headline hours.",
+          "filter": {
+            "contribution": [
+              "dataset"
+            ],
+            "sensing": [
+              "egocentric"
+            ]
+          },
+          "pri": 4
+        },
+        {
+          "id": "g-proc",
+          "name": "Procedure and task structure",
+          "sub": "Time above the frame: steps, goals, orderings, task graphs. Where a minute of video becomes a plan.",
+          "filter": {
+            "world_facet": [
+              "procedure"
+            ]
+          },
+          "pri": 5
+        }
+      ]
+    },
+    {
+      "id": "change",
+      "name": "Changing the physical world",
+      "blurb": "A decision becomes a change in atoms only through an embodiment. Who carries it — a guided person, a robot, or both — decides the channel, the failure modes and the evaluation, which is why the two literatures barely cite each other.",
+      "filter": {
+        "arc": [
+          "change"
+        ]
+      },
+      "groups": [
+        {
+          "id": "g-both",
+          "name": "Human and robot together",
+          "sub": "Shared autonomy, teleoperation, handover, mixed-reality interfaces. Both sides touch the same task.",
+          "filter": {
+            "embodiment": [
+              "human+robot"
+            ]
+          },
+          "pri": 1
+        },
+        {
+          "id": "g-verify",
+          "name": "Checking the human's work",
+          "sub": "Did the intended change actually happen? Mistake detection is the verify stage of a human-embodied loop, and the largest cluster on this list.",
+          "filter": {
+            "embodiment": [
+              "human"
+            ],
+            "loop_stage": [
+              "verify"
+            ]
+          },
+          "pri": 2
+        },
+        {
+          "id": "g-human",
+          "name": "Guiding the human",
+          "sub": "The person moves the atoms and the system perceives, decides, and tells or shows. Glasses, AR, coaching, task assistants.",
+          "filter": {
+            "embodiment": [
+              "human"
+            ],
+            "human_role": [
+              "assisted"
+            ]
+          },
+          "pri": 3
+        },
+        {
+          "id": "g-transfer",
+          "name": "Human video becomes robot action",
+          "sub": "Human footage is the cheapest embodiment data there is. These papers turn a person's hands into a policy.",
+          "filter": {
+            "human_role": [
+              "demonstrator"
+            ],
+            "sensing": [
+              "egocentric",
+              "web-video"
+            ]
+          },
+          "pri": 4
+        },
+        {
+          "id": "g-robot",
+          "name": "Robot as the embodiment",
+          "sub": "The policy emits torques or waypoints. Vision-language-action models, manipulation, humanoids, planners.",
+          "filter": {
+            "embodiment": [
+              "robot"
+            ]
+          },
+          "pri": 5
+        },
+        {
+          "id": "g-virtual",
+          "name": "Acting without a body yet",
+          "sub": "The action is a call, a plan or a latent move. Includes the agent loops the embodied ones borrowed from.",
+          "filter": {
+            "embodiment": [
+              "none",
+              "sim"
+            ]
+          },
+          "pri": 6
+        }
+      ]
+    },
+    {
+      "id": "loop",
+      "name": "Closing the loop",
+      "blurb": "A cross-section rather than a third topic. These papers consume the effect of their own action at run time, which is where modeling and changing stop being separable. Every paper here already appeared above.",
+      "filter": {
+        "closes_loop": true
+      },
+      "groups": [
+        {
+          "id": "g-loop-human",
+          "name": "Loops closed around a person",
+          "sub": "Observe, decide, tell the person, watch what they do about it.",
+          "filter": {
+            "embodiment": [
+              "human",
+              "human+robot"
+            ]
+          },
+          "pri": 1
+        },
+        {
+          "id": "g-loop-robot",
+          "name": "Loops closed around a robot",
+          "sub": "Observe, act, check whether the world moved the way the model said it would.",
+          "filter": {
+            "embodiment": [
+              "robot"
+            ]
+          },
+          "pri": 2
+        },
+        {
+          "id": "g-loop-none",
+          "name": "Loops with nothing actuated",
+          "sub": "The loop exists inside the model or inside a simulator.",
+          "filter": {
+            "embodiment": [
+              "none",
+              "sim"
+            ]
+          },
+          "pri": 3
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "key": "arc",
+      "label": "Arc",
+      "kind": "multi",
+      "axis": "topic",
+      "facet": true,
+      "help": "The two moves of physical AI. A paper can do both.",
+      "vocab": [
+        {
+          "v": "model",
+          "label": "Model the world",
+          "help": "Contributes a representation, an understanding, or a prediction of the physical world."
+        },
+        {
+          "v": "change",
+          "label": "Change the world",
+          "help": "Contributes something that moves atoms — a policy, a guidance signal, an intervention."
+        }
+      ]
+    },
+    {
+      "key": "loop_stage",
+      "label": "Loop stage",
+      "kind": "multi",
+      "axis": "topic",
+      "facet": true,
+      "help": "Where in perceive → decide → act → check the contribution sits. Multi-select, because most systems span a few.",
+      "vocab": [
+        {
+          "v": "sense",
+          "label": "Sense",
+          "help": "Turn sensors into observations."
+        },
+        {
+          "v": "represent",
+          "label": "Represent",
+          "help": "Turn observations into a state you can act on."
+        },
+        {
+          "v": "anticipate",
+          "label": "Anticipate",
+          "help": "Predict what the world does next."
+        },
+        {
+          "v": "decide",
+          "label": "Decide",
+          "help": "Choose the next step or plan."
+        },
+        {
+          "v": "act",
+          "label": "Act",
+          "help": "Emit the action — motor command, instruction, or overlay."
+        },
+        {
+          "v": "verify",
+          "label": "Verify",
+          "help": "Check whether the intended change actually happened."
+        },
+        {
+          "v": "adapt",
+          "label": "Adapt",
+          "help": "Change the policy or the model from the outcome."
+        }
+      ]
+    },
+    {
+      "key": "closes_loop",
+      "label": "Closes the loop",
+      "kind": "bool",
+      "axis": "topic",
+      "facet": true,
+      "help": "The system feeds its own effect back as input at run time. A one-shot predictor does not. A re-planning agent does."
+    },
+    {
+      "key": "embodiment",
+      "label": "Embodiment",
+      "kind": "multi",
+      "axis": "topic",
+      "facet": true,
+      "help": "Who or what actually moves the atoms.",
+      "vocab": [
+        {
+          "v": "none",
+          "label": "None",
+          "help": "Nothing is actuated. The paper models the world or would-be actions without a body."
+        },
+        {
+          "v": "human",
+          "label": "Human",
+          "help": "A person is the actuator; the AI observes and guides. Wearables, AR, coaching."
+        },
+        {
+          "v": "robot",
+          "label": "Robot",
+          "help": "Arm, mobile base, humanoid, or dexterous hand."
+        },
+        {
+          "v": "human+robot",
+          "label": "Human+Robot",
+          "help": "Both act on the same physical task — collaboration, handover, teleoperation."
+        },
+        {
+          "v": "sim",
+          "label": "Simulated",
+          "help": "The body exists only in simulation."
+        }
+      ]
+    },
+    {
+      "key": "human_role",
+      "label": "Human role",
+      "kind": "multi",
+      "axis": "topic",
+      "facet": true,
+      "help": "What the human is to the system. Separate from embodiment: a person can be data without being an actuator, and can be both the one guided and the one judging.",
+      "vocab": [
+        {
+          "v": "none",
+          "label": "Absent"
+        },
+        {
+          "v": "observed",
+          "label": "Observed",
+          "help": "The human is a source of data, not a participant."
+        },
+        {
+          "v": "assisted",
+          "label": "Assisted",
+          "help": "The human is the one being guided."
+        },
+        {
+          "v": "demonstrator",
+          "label": "Demonstrator",
+          "help": "The human's behavior is the supervision signal."
+        },
+        {
+          "v": "collaborator",
+          "label": "Collaborator",
+          "help": "The human and the system act on the same task."
+        },
+        {
+          "v": "evaluator",
+          "label": "Evaluator",
+          "help": "The human judges the output — user study, preference."
+        }
+      ]
+    },
+    {
+      "key": "world_facet",
+      "label": "What is modeled",
+      "kind": "multi",
+      "axis": "topic",
+      "facet": true,
+      "help": "The physical world is objects, the bodies that touch them, and the changes that follow. This picks which of those the paper represents.",
+      "vocab": [
+        {
+          "v": "object-state",
+          "label": "Object state",
+          "help": "Identity, pose, parts, articulation, attributes, affordance."
+        },
+        {
+          "v": "object-change",
+          "label": "Object change",
+          "help": "The transition — what an action does to an object."
+        },
+        {
+          "v": "agent-body",
+          "label": "Agent body",
+          "help": "Hands, human body, robot kinematics as physical objects."
+        },
+        {
+          "v": "interaction",
+          "label": "Interaction",
+          "help": "Contact, grasp, hand-object, human-scene."
+        },
+        {
+          "v": "scene",
+          "label": "Scene",
+          "help": "Layout, geometry, 3D/4D reconstruction, maps."
+        },
+        {
+          "v": "dynamics",
+          "label": "Dynamics",
+          "help": "Forces, materials, deformation, intuitive physics."
+        },
+        {
+          "v": "procedure",
+          "label": "Procedure",
+          "help": "Steps, goals, orderings, task graphs — time above the frame."
+        }
+      ]
+    },
+    {
+      "key": "representation",
+      "label": "Representation",
+      "kind": "multi",
+      "axis": "topic",
+      "facet": true,
+      "help": "The form the world is held in. The single sharpest divider in this field: pixels vs. latents vs. explicit geometry vs. symbols.",
+      "vocab": [
+        {
+          "v": "pixels",
+          "label": "Pixels",
+          "help": "The state is an image or video; prediction is generation."
+        },
+        {
+          "v": "latent",
+          "label": "Latent",
+          "help": "Prediction happens in a learned embedding — JEPA and kin."
+        },
+        {
+          "v": "geometry",
+          "label": "3D/4D geometry",
+          "help": "Mesh, point cloud, radiance field, Gaussians, depth, 6DoF pose."
+        },
+        {
+          "v": "language",
+          "label": "Language",
+          "help": "State and plan are written in words; an LLM does the reasoning."
+        },
+        {
+          "v": "graph",
+          "label": "Graph/symbol",
+          "help": "Scene graph, task graph, PDDL, automaton."
+        },
+        {
+          "v": "program",
+          "label": "Program/code",
+          "help": "The policy or the plan is executable code, usually written by an LLM."
+        },
+        {
+          "v": "trajectory",
+          "label": "Trajectory/flow",
+          "help": "Tracks, optical flow, point flow, waypoints, action chunks."
+        },
+        {
+          "v": "tokens",
+          "label": "Discrete tokens",
+          "help": "Quantized state or action tokens in an autoregressive model."
+        },
+        {
+          "v": "physics-params",
+          "label": "Physics params",
+          "help": "Explicit mass, friction, material, force — or a simulator."
+        }
+      ]
+    },
+    {
+      "key": "change_channel",
+      "label": "Change channel",
+      "kind": "multi",
+      "axis": "topic",
+      "facet": true,
+      "help": "How the decision reaches the world. The human branch and the robot branch differ mostly here.",
+      "vocab": [
+        {
+          "v": "none",
+          "label": "—",
+          "help": "Nothing is emitted into the world."
+        },
+        {
+          "v": "language",
+          "label": "Language",
+          "help": "Tell the human, in words or speech."
+        },
+        {
+          "v": "visual-guidance",
+          "label": "Visual guidance",
+          "help": "Show it: AR overlay, generated image or video, highlight."
+        },
+        {
+          "v": "motor-action",
+          "label": "Motor action",
+          "help": "A policy emits joint commands, end-effector deltas, torques."
+        },
+        {
+          "v": "plan",
+          "label": "Plan",
+          "help": "A step sequence or trajectory handed to a controller or a person."
+        },
+        {
+          "v": "alert",
+          "label": "Alert/intervene",
+          "help": "Flag a mistake, warn, stop, ask for help."
+        },
+        {
+          "v": "fabrication",
+          "label": "Fabrication",
+          "help": "The output is matter — printed, morphed, built."
+        }
+      ]
+    },
+    {
+      "key": "sensing",
+      "label": "Sensing",
+      "kind": "multi",
+      "axis": "topic",
+      "facet": true,
+      "help": "Where the observations come from. Egocentric and exocentric carry different information, so viewpoint changes what is learnable at all.",
+      "vocab": [
+        {
+          "v": "egocentric",
+          "label": "Egocentric"
+        },
+        {
+          "v": "exocentric",
+          "label": "Exocentric"
+        },
+        {
+          "v": "multi-view",
+          "label": "Multi-view"
+        },
+        {
+          "v": "robot-onboard",
+          "label": "Robot onboard"
+        },
+        {
+          "v": "depth-3d",
+          "label": "Depth / 3D"
+        },
+        {
+          "v": "gaze",
+          "label": "Eye gaze"
+        },
+        {
+          "v": "imu-wearable",
+          "label": "IMU / wearable"
+        },
+        {
+          "v": "audio",
+          "label": "Audio / speech"
+        },
+        {
+          "v": "tactile",
+          "label": "Tactile / force"
+        },
+        {
+          "v": "sim-render",
+          "label": "Simulator"
+        },
+        {
+          "v": "web-video",
+          "label": "Web video"
+        }
+      ]
+    },
+    {
+      "key": "regime",
+      "label": "Regime",
+      "kind": "single",
+      "axis": "topic",
+      "facet": true,
+      "help": "Whether the method may look at the whole clip. Online is a different problem from offline, with its own failure modes.",
+      "vocab": [
+        {
+          "v": "offline",
+          "label": "Offline",
+          "help": "Full sequence available at inference."
+        },
+        {
+          "v": "streaming",
+          "label": "Streaming",
+          "help": "Causal — decides from the past only, as frames arrive."
+        },
+        {
+          "v": "interactive",
+          "label": "Interactive",
+          "help": "A person or an environment responds inside the loop."
+        }
+      ]
+    },
+    {
+      "key": "horizon",
+      "label": "Horizon",
+      "kind": "single",
+      "axis": "topic",
+      "facet": true,
+      "help": "Time span the output commits to.",
+      "vocab": [
+        {
+          "v": "frame",
+          "label": "Single frame"
+        },
+        {
+          "v": "seconds",
+          "label": "Seconds"
+        },
+        {
+          "v": "minutes",
+          "label": "Minutes"
+        },
+        {
+          "v": "hours",
+          "label": "Hours"
+        }
+      ]
+    },
+    {
+      "key": "domain",
+      "label": "Domain",
+      "kind": "multi",
+      "axis": "topic",
+      "facet": true,
+      "help": "Everyday to professional is the axis that decides what a mistake costs.",
+      "vocab": [
+        {
+          "v": "everyday",
+          "label": "Everyday",
+          "help": "Cooking, home assembly, chores."
+        },
+        {
+          "v": "industrial",
+          "label": "Industrial",
+          "help": "Factory assembly, maintenance, inspection."
+        },
+        {
+          "v": "clinical",
+          "label": "Clinical",
+          "help": "Surgery, ultrasound, bedside care."
+        },
+        {
+          "v": "skill",
+          "label": "Skill/sport",
+          "help": "Music, dance, sports, craft — where proficiency is the label."
+        },
+        {
+          "v": "lab-sim",
+          "label": "Lab / sim",
+          "help": "Benchmark tabletop, simulator, controlled rig."
+        },
+        {
+          "v": "web",
+          "label": "Web-scale",
+          "help": "Uncurated internet video or images."
+        }
+      ]
+    },
+    {
+      "key": "autonomy",
+      "label": "Autonomy",
+      "kind": "single",
+      "axis": "topic",
+      "facet": true,
+      "vocab": [
+        {
+          "v": "none",
+          "label": "—"
+        },
+        {
+          "v": "human-in-loop",
+          "label": "Human in the loop",
+          "help": "The system acts only when asked."
+        },
+        {
+          "v": "mixed-initiative",
+          "label": "Mixed initiative",
+          "help": "Both sides may start an exchange."
+        },
+        {
+          "v": "autonomous",
+          "label": "Autonomous",
+          "help": "The system acts without being prompted."
+        }
+      ]
+    },
+    {
+      "key": "contribution",
+      "label": "Contribution",
+      "kind": "multi",
+      "axis": "meta",
+      "facet": true,
+      "help": "What the paper actually adds. A paper can be more than one.",
+      "vocab": [
+        {
+          "v": "method",
+          "label": "Method"
+        },
+        {
+          "v": "dataset",
+          "label": "Dataset"
+        },
+        {
+          "v": "benchmark",
+          "label": "Benchmark"
+        },
+        {
+          "v": "system",
+          "label": "System"
+        },
+        {
+          "v": "analysis",
+          "label": "Analysis"
+        },
+        {
+          "v": "survey",
+          "label": "Survey"
+        }
+      ]
+    },
+    {
+      "key": "openness",
+      "label": "Released",
+      "kind": "multi",
+      "axis": "meta",
+      "facet": true,
+      "vocab": [
+        {
+          "v": "code",
+          "label": "Code"
+        },
+        {
+          "v": "data",
+          "label": "Data"
+        },
+        {
+          "v": "weights",
+          "label": "Weights"
+        },
+        {
+          "v": "none",
+          "label": "Nothing"
+        }
+      ]
+    },
+    {
+      "key": "venue",
+      "label": "Venue",
+      "kind": "single",
+      "axis": "meta",
+      "facet": true
+    },
+    {
+      "key": "year",
+      "label": "Year",
+      "kind": "single",
+      "axis": "meta",
+      "facet": true
+    },
+    {
+      "key": "institutions",
+      "label": "Institution",
+      "kind": "multi",
+      "axis": "meta",
+      "facet": true
+    }
+  ],
+  "modalities": [
+    "video",
+    "image",
+    "rgbd",
+    "pointcloud",
+    "mesh",
+    "gaussians",
+    "text",
+    "speech",
+    "gaze",
+    "imu",
+    "body-pose",
+    "hand-pose",
+    "object-pose",
+    "mask",
+    "bbox",
+    "action",
+    "trajectory",
+    "flow",
+    "force",
+    "graph",
+    "program",
+    "label",
+    "scalar",
+    "latent",
+    "tokens",
+    "plan"
+  ],
+  "reading_protocol": {
+    "note": "A paper is read in the order it is written, minus the parts that are about other papers. Introduction is a compressed abstract and related work is a map of the field, so both are skipped. What is left is the problem setting, the method, and the experiments — and each of those has a shape.",
+    "steps": [
+      {
+        "id": "problem",
+        "name": "Problem setting",
+        "body": "Write down the function the paper computes, at inference time, before reading how. Every input and every output gets a modality, a tensor shape, and one line on what the content actually is. Do the same for training when it differs — most of the interesting design choices hide in that difference."
+      },
+      {
+        "id": "method",
+        "name": "Method",
+        "body": "One or two sentences of intuition — the claim the architecture is an argument for. Then the components. A data engine counts as a method."
+      },
+      {
+        "id": "experiments",
+        "name": "Experiments",
+        "body": "Datasets and what was done to them (used as-is, re-annotated, remixed, synthesized), metrics, baselines, and one headline number. What the paper did to its data is often the real contribution."
+      }
+    ]
+  },
+  "data_roles": [
+    {
+      "v": "existing",
+      "label": "Used as-is"
+    },
+    {
+      "v": "reannotated",
+      "label": "Re-annotated"
+    },
+    {
+      "v": "remix",
+      "label": "Re-split / remixed"
+    },
+    {
+      "v": "new",
+      "label": "Newly collected"
+    },
+    {
+      "v": "synthetic",
+      "label": "Synthesized"
+    },
+    {
+      "v": "real-robot",
+      "label": "Real-robot rollouts"
+    }
+  ]
+}
