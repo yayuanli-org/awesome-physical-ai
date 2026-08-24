@@ -1,0 +1,70 @@
+# CLAUDE.md
+
+## Overview
+
+`awesome-physical-ai` — a paper database for physical AI, rendered as one
+self-contained HTML page. Draft deliverable for **ROB 599, Physically-Grounded AI
+Agents** (UMich, Fall 2026), built to outlive the course as a public reference.
+The data is the product; the page is a view over it.
+
+## Entry point — `python3 build.py`
+
+```
+data/schema.json + data/papers/*.json ─┐
+                                       ├─→ build.py ─┬─→ index.html   (deliverable)
+src/template.html + src/comment-*.{css,js} ─────────┴─→ review.html   (+ comment layer)
+```
+
+- `python3 build.py` — write both pages
+- `python3 build.py --check` — validate and report only, write nothing
+- `python3 .claude/skills/dev-test/tests/test_database.py` — the full test surface
+- `open index.html` — the deliverable; no server, no network, no dependencies
+- `python3 serve.py` then open `review.html` — mark the draft up in the browser
+- No lint or format script. Python is stdlib-only.
+
+## Universal gotchas
+
+- **Never edit `index.html` or `review.html`.** Both are generated from one template.
+  Edit `data/` or `src/` and rebuild, or your change is gone on the next build.
+- **Review scaffolding never reaches the deliverable.** The comment layer is inlined
+  into `review.html` only; `index.html` gets the three `__PHYSAI_REVIEW_*` placeholders
+  stripped. A test enforces it.
+- **Sections are filters over columns, never folders.** A paper that models the world
+  and changes it carries both `arc` values and appears in both arcs. There is no
+  "which section does this go in" question — only "which column values are true".
+- **Group display order ≠ group assignment order.** Framework groups carry a `pri`
+  field; the array order is editorial, `pri` decides which group claims a paper first.
+  Reordering the array without checking `pri` silently rebalances every bucket.
+- **Prose voice is enforced by a test**, not by taste. No semicolons welding two
+  clauses, no "not just X but Y", no blacklist words. See `dev-handbook/conventions.md`.
+- **`review.html` needs `serve.py`, not `file://`.** Comments only persist to disk
+  over http. Opened from a filesystem the layer falls back to `localStorage`.
+
+## Folder map
+
+```
+teaching_umich_physical_ai/
+├── index.html            — built artifact, the deliverable (never hand-edit)
+├── review.html           — built artifact, same page + comment layer, for markup
+├── build.py              — inlines data into the template, emits both pages
+├── serve.py              — localhost static server + comment write-back for review.html
+├── README.md             — user-facing: what it is, how to add a paper
+├── data/
+│   ├── schema.json       — the taxonomy: columns, vocabularies, views, protocol
+│   └── papers/*.json     — the database, split into topical chunks [→ dev-handbook]
+├── src/
+│   ├── template.html     — page shell: CSS, JS, and the four placeholders
+│   ├── comment-layer.*   — vendored review layer, review.html only [→ dev-handbook]
+│   └── comment-bridge.js — ours: reconciles the layer with this page's tabs
+└── .claude/skills/
+    ├── dev-handbook/     — logical: structure, conventions, rationale, flows
+    ├── dev-journal/      — chronological: past, present, future
+    └── dev-test/         — the validation surface
+```
+
+## Skills
+
+- `.claude/skills/dev-handbook/` — how the schema works, why it is shaped this way,
+  conventions for adding a paper, the full file tree
+- `.claude/skills/dev-journal/` — what shipped, current focus, what is next
+- `.claude/skills/dev-test/` — schema, coverage, and prose-voice validation
