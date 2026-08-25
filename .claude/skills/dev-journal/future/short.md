@@ -1,10 +1,9 @@
 # Next session (P0, P1)
 
-- **[P1] Push to GitHub as `awesome-physical-ai`.** Held deliberately on 2026-08-24;
-  the repo is local with two commits on `main` and no remote. One-liner when wanted:
-  `gh repo create yayuanli/awesome-physical-ai --private --source=. --remote=origin --push`.
-  Before going public it also needs a LICENSE and a decision on whether `index.html`
-  renders via GitHub Pages or stays a downloadable file.
+- **[P1] Add a LICENSE.** The page is public with no license on it, which leaves anyone
+  who wants to reuse the taxonomy or the JSON guessing. The data and the code want
+  different answers — CC BY for `data/`, MIT for `build.py` and the template, is the
+  usual split for a curated list.
 - **[P1] Second numeric audit over the 27 papers added in the gap-filling pass.**
   The first audit covered the original 83. Recipe is in `../../dev-handbook/dev-setup.md`.
 - **[P1] Verify or drop the guessed institutions.** Several entries carry an

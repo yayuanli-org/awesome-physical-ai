@@ -55,6 +55,14 @@ verbatim, which published `build.py`, `CLAUDE.md` and all of `.claude/`. It now 
 only what `emit_site` writes, so a new file in the repo is private until it is added
 there on purpose.
 
+**The repo is private, the site is public.** A private repo can publish a public Pages
+site on this org's plan, so the dev files are unreadable on github.com while the page
+is not. Two consequences for the workflow. Actions minutes are billed rather than free,
+and every job that checks out code needs `contents: read` spelled out in its own
+`permissions:` block, because a job-level block replaces the workflow-level one instead
+of merging with it. The `deploy` job failed with `Repository not found` for exactly
+that reason the first time the repo went private.
+
 **`data/` is published deliberately.** `_site/data/schema.json` and
 `_site/data/papers/*.json` ship beside the page so the database is fetchable without
 scraping the HTML. Those URLs are a public interface now. Renaming a chunk file breaks

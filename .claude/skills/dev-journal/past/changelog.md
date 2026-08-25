@@ -5,6 +5,35 @@ curated layer that says what a change *meant*.
 
 ---
 
+## [2026-08-24 17:55 PDT] Publish the page, privately maintained
+
+The page is live at https://yayuanli-org.github.io/awesome-physical-ai/. The repo is
+private and the site is public, which the org plan allows, so `.claude/`, `CLAUDE.md`
+and this journal stay unreadable on github.com while the page is readable by anyone.
+Nobody outside can fork or open a pull request, which was the trade accepted.
+
+Three things changed to get there, in order of how much they matter.
+
+**Pages deploys an artifact, not the branch.** Serving `main` verbatim published
+`build.py`, `serve.py`, `CLAUDE.md` and every file under `.claude/` at the site root.
+`build.py --site DIR` now writes the page plus `data/` and nothing else, and
+`.github/workflows/pages.yml` deploys that directory. `test_site_artifact_is_minimal`
+pins the file list, so a new file in the repo is private until `emit_site` is told
+otherwise.
+
+**`index.html` is no longer committed.** 360 KB of generated markup buried every paper
+addition under a whole-file diff and went stale behind anyone who forgot to rebuild.
+CI builds it on each push. The offline copy moved to tagged releases, which
+`.github/workflows/release.yml` cuts on a `v*` tag.
+
+**Pull requests validate without deploying.** Same build, same 23 checks. A malformed
+paper entry fails review rather than reaching the page.
+
+One bug worth remembering, because it only appears on a private repo: a job-level
+`permissions:` block replaces the workflow-level one instead of merging, so `deploy`
+was running without `contents: read`. A public repo checks out anonymously and hid it.
+The first run after going private failed with `Repository not found`.
+
 ## [2026-08-24 11:30 PDT] Bootstrap the `.claude` scaffold and the test surface
 
 Added `CLAUDE.md`, `dev-handbook/`, `dev-journal/`, `dev-test/`. The handbook captures

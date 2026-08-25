@@ -30,11 +30,23 @@ src/template.html + src/comment-*.{css,js} ─────────┴─→ 
 Push to main and CI builds, tests and deploys. Open a pull request and CI runs the
 same tests without deploying. Nothing is published by hand.
 
+**The repo is private and the site is public.** The org plan allows a private repo to
+publish a public Pages site, which is what keeps `.claude/`, `CLAUDE.md` and the
+journal off github.com while the page stays readable by anyone. Outsiders cannot fork
+or open a pull request, by choice — suggestions arrive as issues or email.
+
 ## Universal gotchas
 
 - **Never edit `index.html` or `review.html`.** Both are generated from one template
   and neither is committed. Edit `data/` or `src/` and rebuild, or your change is gone
   on the next build. A fresh clone has no page until `python3 build.py` runs.
+- **A job-level `permissions:` block in a workflow replaces the workflow-level one, it
+  does not merge.** The `deploy` job needs its own `contents: read` or checkout fails
+  with `Repository not found`. A public repo checks out anonymously and hides this, so
+  the failure only appears once the repo is private.
+- **Actions minutes are billed now that the repo is private.** Public repos run free.
+  Each push costs about a minute of runner time, which is why the workflow does not
+  fan out over a matrix.
 - **The public site is what `--site` writes, not the repo tree.** GitHub Pages deploys
   the `_site/` artifact, so adding a file to the repo does not publish it and `.claude/`
   stays private-by-omission. To publish something new, add it to `emit_site` in
