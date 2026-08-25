@@ -34,7 +34,12 @@ jobs:
     needs: validate
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    # A job-level permissions block replaces the workflow-level one instead of
+    # merging with it, so contents: read has to be repeated here. Without it
+    # checkout fails with "Repository not found" — on a private repo only, which
+    # is why a public repo hides this.
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
