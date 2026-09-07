@@ -75,7 +75,7 @@ md('<h1><span class="kicker">ROB 599 · Lecture 2 · Fall 2026</span>'
    'Physical AI: where the field stands, and how to join the conversation</h1>')
 
 md('<p class="lede"><b>Physical AI studies how the physical world gets changed in the age of '
-   'AI.</b> Lecture 1 introduced the course, and every lecture after this one is a debate. This one '
+   'AI.</b> This is the first lecture with notes, and every lecture after it is a debate. This one '
    'puts everyone on the same page first: what the field is, why it exists, where it stands in '
    'September 2026, and how to read a paper well enough to argue about it.</p>')
 
