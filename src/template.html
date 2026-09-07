@@ -253,11 +253,14 @@ ul.tight li{margin:2px 0}
 }
 
 /* ---------- comment layer ---------- */
-/* comment-layer.css ships light-only tokens and a handful of hardcoded white
-   surfaces. Retune both to this page's palette, in both themes. */
+/* comment-layer.css ships light-only tokens and a few hardcoded surfaces. Retune
+   both to this page's palette, in both themes. Marker tokens (--cmt-mark,
+   --cmt-mark-rest, --cmt-ring) drive the dot that sits on each anchor's left edge. */
 :root{
   --cmt-font:var(--sans);
   --cmt-accent:#eda0c6; --cmt-highlight:rgba(237,160,198,.34); --cmt-highlight-strong:rgba(226,120,175,.62);
+  --cmt-mark:#84848f; --cmt-mark-rest:.45; --cmt-ring:rgba(255,255,255,.75);
+  --cmt-anchor-bg:rgba(164,56,110,.06); --cmt-anchor-edge:rgba(164,56,110,.42);
   --cmt-ai:#3a51a8; --cmt-ai-bg:#e9ecf7;
   --cmt-ink:#17171b; --cmt-muted:#84848f; --cmt-line:#e5e5e0; --cmt-card:#ffffff;
   --cmt-shadow:0 1px 2px rgba(20,20,30,.06),0 10px 30px rgba(20,20,30,.13);
@@ -268,6 +271,8 @@ ul.tight li{margin:2px 0}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --cmt-accent:#ffafd7; --cmt-highlight:rgba(255,175,215,.20); --cmt-highlight-strong:rgba(255,175,215,.46);
+    --cmt-mark:#9a9aa6; --cmt-mark-rest:.5; --cmt-ring:rgba(14,14,17,.75);
+    --cmt-anchor-bg:rgba(255,175,215,.08); --cmt-anchor-edge:rgba(255,175,215,.42);
     --cmt-ai:#93a9ff; --cmt-ai-bg:#16192a;
     --cmt-ink:#ececef; --cmt-muted:#8b8b96; --cmt-line:#2b2b33; --cmt-card:#16161a;
     --cmt-shadow:0 1px 2px rgba(0,0,0,.4),0 10px 34px rgba(0,0,0,.55);
@@ -278,6 +283,8 @@ ul.tight li{margin:2px 0}
 }
 :root[data-theme="dark"]{
   --cmt-accent:#ffafd7; --cmt-highlight:rgba(255,175,215,.20); --cmt-highlight-strong:rgba(255,175,215,.46);
+  --cmt-mark:#9a9aa6; --cmt-mark-rest:.5; --cmt-ring:rgba(14,14,17,.75);
+  --cmt-anchor-bg:rgba(255,175,215,.08); --cmt-anchor-edge:rgba(255,175,215,.42);
   --cmt-ai:#93a9ff; --cmt-ai-bg:#16192a;
   --cmt-ink:#ececef; --cmt-muted:#8b8b96; --cmt-line:#2b2b33; --cmt-card:#16161a;
   --cmt-shadow:0 1px 2px rgba(0,0,0,.4),0 10px 34px rgba(0,0,0,.55);
@@ -293,9 +300,18 @@ ul.tight li{margin:2px 0}
 .cmt-btn:hover,.cmt-btn.cmt-ghost:hover,.cmt-msg-edit:hover{background:var(--cmt-surface2)}
 .cmt-btn.cmt-primary{background:var(--cmt-primary);color:var(--cmt-primary-ink);border-color:var(--cmt-primary)}
 .cmt-btn.cmt-primary:hover{background:var(--cmt-primary-hover);border-color:var(--cmt-primary-hover)}
-.cmt-pin{border-color:var(--cmt-card)}
-.cmt-pin.cmt-resolved{background:var(--cmt-line);color:var(--cmt-muted)}
 .cmt-drawer,.cmt-pop{background:var(--cmt-card)}
+/* an anchored block wears the page rose, not the layer's amber */
+.cmt-anchored{background:var(--cmt-anchor-bg);box-shadow:inset 2px 0 0 var(--cmt-anchor-edge)}
+.cmt-pin:hover{box-shadow:var(--cmt-shadow)}
+.cmt-pin.cmt-resolved::before{box-shadow:inset 0 0 0 1.5px var(--cmt-line),0 0 0 2px var(--cmt-ring)}
+/* comment mode reads through the page rose; --cmt-accent stays light so the
+   hovered marker can carry dark text on it */
+body.cmt-mode::after{box-shadow:inset 0 0 0 2px var(--rose)}
+/* Markers ride each anchor's left edge in document coordinates, so they scroll with
+   the content. Below the sticky page header (40) and the sticky table head (5) they
+   would otherwise paint straight over both; above ordinary content, which has none. */
+.cmt-marker-layer{z-index:4}
 
 /* the docked panel is fixed to the right edge; header and paper card give it room.
    .shell re-margins itself through the layer's own dock accounting. */
@@ -891,17 +907,25 @@ $('#ver').textContent='v'+S.version+' · '+P.length;
 // comment-bridge.js drives the tabs when a comment sits on a view you are not on
 window.__physai={ views:VIEWS.slice(), view:()=>state.view, setView:setView };
 
+function renderView(v){
+  if(v==='framework') renderFramework();
+  else if(v==='table') renderTable();
+  else renderProtocol();
+}
 function render(){
   renderFacets();
   VIEWS.forEach(v=>{ $('#view-'+v).hidden = (v!==state.view); });
   // the filter rail has nothing to act on while the protocol doc is open
   document.querySelector('aside:not(#panel)').style.display = state.view==='protocol' ? 'none' : '';
   document.querySelector('.shell').style.gridTemplateColumns = state.view==='protocol' ? 'minmax(0,1fr)' : '';
-  if(state.view==='framework') renderFramework();
-  else if(state.view==='table') renderTable();
-  else renderProtocol();
+  renderView(state.view);
 }
 render();
+// Fill the two idle views once, after first paint. A review comment resolves against
+// the live DOM, and one pointing into a view that has never been rendered falls back
+// to matching its text — which lands on the wrong element whenever the same words
+// appear elsewhere, and vocabulary labels appear in the rail, the rows and the table.
+setTimeout(()=>VIEWS.forEach(v=>{ if(v!==state.view) renderView(v); }),0);
 if(location.hash){ const id=location.hash.slice(1); if(P.some(p=>p.id===id)) openPanel(id); }
 })();
 </script>

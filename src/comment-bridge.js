@@ -1,16 +1,15 @@
 /* comment-bridge.js — glue between comment-layer.js and this page's three tabs.
  *
- * The layer assumes a static document. This page is an app: all three views sit in
- * the DOM at once and two of them are hidden, so a comment on a hidden view still
- * resolves but has no layout box, and its pin lands in the top-left corner. Three
- * repairs, all of them read-only with respect to the layer:
+ * The layer assumes one document. This page is an app: all three views sit in the DOM
+ * at once and two of them are hidden, so a comment can point at content that is not on
+ * screen. The layer hides the marker for an anchor with no box, which handles the
+ * pins. What it cannot know is which tab the content is on, so:
  *
- *   1. pins for off-tab comments are hidden,
- *   2. every row in the comments panel says which tab its comment is on,
- *   3. clicking such a row switches to that tab, then opens the thread there.
+ *   1. every row in the comments panel says which tab its comment is on,
+ *   2. clicking such a row switches to that tab, then opens the thread there.
  *
  * Nothing here patches comment-layer.js, so the asset can be re-copied from the
- * skill without losing any of it.
+ * commentable-html skill without losing any of it.
  */
 (function () {
 "use strict";
@@ -21,6 +20,7 @@ var VSEL = Object.keys(TAB).map(function (id) { return "#" + id; }).join(",");
 function q(sel, root) { return (root || document).querySelector(sel); }
 function boxed(n) { return !!(n && n.getClientRects().length); }
 function nodeFor(id) { return q('.shell [data-cmt-thread="' + CSS.escape(id) + '"]'); }
+function pinFor(id) { return q('.cmt-pin[data-cmt-thread="' + CSS.escape(id) + '"]'); }
 
 // Where a thread's target lives: one of the three tabs, or the filter rail, which
 // the app hides on the protocol tab.
@@ -34,46 +34,14 @@ function locate(id) {
 }
 
 function whenReady(cb) {
-  var layer = window.__commentLayer, list = q(".cmt-drawer-list"), pins = q(".cmt-marker-layer");
-  if (layer && list && pins && window.__physai) return cb(layer, list, pins);
+  var layer = window.__commentLayer, list = q(".cmt-drawer-list");
+  if (layer && list && window.__physai) return cb(layer, list);
   setTimeout(function () { whenReady(cb); }, 80);
 }
 
-whenReady(function (layer, list, pins) {
+whenReady(function (layer, list) {
 
-  /* ---- 1. off-tab pins ---------------------------------------------------- */
-  // A tab switch can cost the layer several renders, and each one wipes the open
-  // thread. reveal() therefore waits out the burst: every rebuild of the pin layer
-  // restarts a short timer, and the thread opens once the timer survives it.
-  var pending = null, settle = null;
-  function reveal(id) {
-    var n = nodeFor(id);
-    if (n) n.scrollIntoView({ block: "center", behavior: "smooth" });
-    var pin = q('.cmt-pin[data-cmt-thread="' + CSS.escape(id) + '"]');
-    if (pin) pin.click();
-  }
-  function arm(id) {
-    pending = id;
-    // nothing to wait out if the layer never re-renders
-    setTimeout(function () { if (pending === id) { pending = null; reveal(id); } }, 600);
-  }
-  function sweepPins() {
-    Array.prototype.forEach.call(pins.querySelectorAll(".cmt-pin"), function (pin) {
-      var id = pin.getAttribute("data-cmt-thread");
-      pin.style.display = boxed(nodeFor(id)) ? "" : "none";
-    });
-    if (!pending) return;
-    clearTimeout(settle);
-    settle = setTimeout(function () {
-      var id = pending; pending = null;
-      if (id) reveal(id);
-    }, 120);
-  }
-  // childList only — the style writes above are attribute changes and never re-fire it
-  new MutationObserver(sweepPins).observe(pins, { childList: true });
-  sweepPins();
-
-  /* ---- 2. tab badge on every panel row -------------------------------------
+  /* ---- 1. tab badge on every panel row -------------------------------------
      renderDrawer emits rows in one order: open, then orphaned, then resolved, each
      in store order. threads() hands back the store in that same order, so lining the
      two up gives each row its thread id without touching the layer. */
@@ -91,17 +59,47 @@ whenReady(function (layer, list, pins) {
       var id = seq[i].id;
       row.setAttribute("data-thread", id);
       var at = locate(id), target = row.querySelector(".cmt-item-target");
-      if (!at || !at.name || !target || row.querySelector(".cb-view")) return;
-      var chip = document.createElement("span");
-      chip.className = "cb-view";
-      chip.textContent = at.name;
-      target.appendChild(chip);
+      if (!target) return;
+      var chip = target.querySelector(".cb-view");
+      // Rewrite rather than skip: a thread read before its view was rendered resolves
+      // somewhere else for a moment, and a badge stamped once would keep saying so.
+      if (!at || !at.name) { if (chip) chip.remove(); return; }
+      if (!chip) { chip = document.createElement("span"); chip.className = "cb-view"; target.appendChild(chip); }
+      if (chip.textContent !== at.name) chip.textContent = at.name;
     });
   }
+  // childList only, no subtree: the chips above land inside a row, so they never re-fire this
   new MutationObserver(stamp).observe(list, { childList: true });
   stamp();
 
-  /* ---- 3. clicking an off-tab row switches tabs first ---------------------- */
+  /* ---- 2. clicking an off-tab row switches tabs first ----------------------
+     Switching redraws the whole page and the layer re-places its markers some frames
+     later, so poll for the marker rather than guess a delay. A render landing just
+     after the click closes the thread again, which one retry covers. */
+  function reveal(id, tries) {
+    tries = tries || 0;
+    var node = nodeFor(id), pin = pinFor(id);
+    // The layer re-places its markers on an animation frame, which a busy or
+    // background tab defers, so wait for the marker rather than time the render.
+    if ((!pin || !boxed(node)) && tries < 40) {
+      setTimeout(function () { reveal(id, tries + 1); }, 100);
+      return;
+    }
+    // Instant, not smooth: a smooth scroll is an animation, and the redraw that
+    // follows a tab switch cancels it halfway, leaving the comment off screen.
+    if (node) node.scrollIntoView({ block: "center" });
+    if (!pin) return;
+    open(pin, 0);
+  }
+
+  // A render landing just after the click closes the thread again. Re-open a few times
+  // over half a second, then stop — past that the user has moved on.
+  function open(pin, tries) {
+    pin.click();
+    if (tries > 2) return;
+    setTimeout(function () { if (!q(".cmt-pop")) open(pin, tries + 1); }, 180);
+  }
+
   list.addEventListener("click", function (e) {
     var row = e.target.closest && e.target.closest(".cmt-item");
     if (!row) return;
@@ -115,8 +113,8 @@ whenReady(function (layer, list, pins) {
     if (want === here) return; // already looking at it — let the layer do its thing
     e.preventDefault();
     e.stopPropagation();
-    arm(id);
     window.__physai.setView(want);
+    reveal(id);
   }, true);
 });
 })();

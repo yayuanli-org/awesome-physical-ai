@@ -6,6 +6,12 @@
   --cmt-highlight: rgba(255, 212, 0, 0.30);
   --cmt-highlight-strong: rgba(255, 196, 0, 0.55);
   --cmt-ai: #5b6cff;
+  /* Marker hue. Deliberately neutral, and deliberately translucent at rest: a marker sits ON
+     the content, so it should read as a watermark until you point at it. The accent is kept
+     for states you asked for — hover, comment mode. */
+  --cmt-mark: #8a93a8;
+  --cmt-mark-rest: .45;
+  --cmt-ring: rgba(255, 255, 255, .7);
   --cmt-ai-bg: #eef0ff;
   --cmt-ink: #1f2330;
   --cmt-muted: #6b7280;
@@ -40,14 +46,23 @@ body.cmt-mode .cmt-fab .cmt-dot { background: #1f2330; }
 
 /* Comment mode affordances on content */
 body.cmt-mode { cursor: crosshair; }
+/* Markers are quiet, so the MODE carries the signal: a ring on the viewport while it is on. */
+body.cmt-mode::after {
+  content: ""; position: fixed; inset: 0; z-index: 2147482800; pointer-events: none;
+  box-shadow: inset 0 0 0 2px var(--cmt-accent);
+}
 body.cmt-mode .cmt-hover { outline: 2px solid var(--cmt-accent); outline-offset: 1px; cursor: pointer; }
 
 /* Anchored content */
+/* Element anchor: the mark lives INSIDE the element's own box (an inset shadow costs no layout
+   and covers no neighbour) and the tint is a whisper. A 30%-alpha wash repaints a whole block,
+   which on any page that uses colour to mean something reads as data. */
 .cmt-anchored {
-  background: var(--cmt-highlight);
-  box-shadow: inset 3px 0 0 var(--cmt-accent);
+  background: rgba(224, 168, 0, .09);
+  box-shadow: inset 2px 0 0 rgba(138, 147, 168, .55);
 }
-.cmt-anchored.cmt-resolved { background: transparent; box-shadow: inset 3px 0 0 var(--cmt-line); }
+.cmt-anchored.cmt-resolved { background: transparent; box-shadow: inset 2px 0 0 var(--cmt-line); }
+/* Range anchor keeps the highlighter look — on a span of words you have to see WHICH words. */
 .cmt-highlight {
   background: var(--cmt-highlight); border-radius: 2px;
   box-shadow: 0 1px 0 var(--cmt-highlight-strong); cursor: pointer;
@@ -58,16 +73,39 @@ body.cmt-mode .cmt-hover { outline: 2px solid var(--cmt-accent); outline-offset:
 @keyframes cmt-flash { 0% { outline: 3px solid var(--cmt-accent); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
 .cmt-flash { animation: cmt-flash 1.3s ease; }
 
-/* Gutter marker pins */
+/* Marker dots.
+   The box is 18px so it is a real click target; the ink is a 9px dot at 45%, and the count
+   only appears on hover. A 26px saturated teardrop with a white ring and a 30px shadow was
+   the loudest object on any page it landed on, and it landed ON the page — not beside it. */
 .cmt-marker-layer { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 2147482000; }
 .cmt-pin {
-  position: absolute; width: 26px; height: 26px; border-radius: 50% 50% 50% 2px;
-  background: var(--cmt-accent); color: #1f2330; border: 2px solid #fff;
-  font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: var(--cmt-shadow);
-  display: flex; align-items: center; justify-content: center; transform: translate(0,-2px);
+  position: absolute; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 999px;
+  background: transparent; cursor: pointer; display: block;
+  transition: background .12s ease, box-shadow .12s ease;
+  /* At rest only the 9px ink is hit-testable, so an 18px transparent box does not steal a
+     click from whatever it sits beside. Hovering the ink still sets :hover on the button,
+     which re-arms the full 18px target — Fitts's Law applies to the marker you are already
+     pointing at, not to the one you are scrolling past. */
+  pointer-events: none;
 }
-.cmt-pin.cmt-resolved { background: #c7cdd8; }
-.cmt-pin.cmt-ai-unread { box-shadow: 0 0 0 3px var(--cmt-ai-bg), var(--cmt-shadow); }
+.cmt-pin::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px;
+  margin: -4.5px 0 0 -4.5px; border-radius: 999px; background: var(--cmt-mark);
+  box-shadow: 0 0 0 2px var(--cmt-ring); opacity: var(--cmt-mark-rest);
+  transition: opacity .12s ease;
+  pointer-events: auto;
+}
+.cmt-pin:hover { pointer-events: auto; }
+.cmt-pin .cmt-pin-n {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font: 700 11px/1 var(--cmt-font); color: #1f2330; opacity: 0; transition: opacity .12s ease;
+}
+.cmt-pin:hover { background: var(--cmt-accent); box-shadow: 0 1px 5px rgba(20, 24, 40, .22); }
+.cmt-pin:hover::before { opacity: 0; }
+.cmt-pin:hover .cmt-pin-n { opacity: 1; }
+.cmt-pin.cmt-resolved::before { background: transparent; box-shadow: inset 0 0 0 1.5px #c7cdd8, 0 0 0 2px var(--cmt-ring); }
+/* The one thing worth a colour at rest: an AI reply you have not read. */
+.cmt-pin.cmt-ai-unread::before { background: var(--cmt-ai); }
 
 /* Popover (thread card) */
 .cmt-pop {

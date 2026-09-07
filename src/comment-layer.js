@@ -599,6 +599,7 @@
       '<div class="cmt-row"><button class="cmt-btn cmt-ghost cmt-cancel">Cancel</button><button class="cmt-btn cmt-primary cmt-save">Comment</button></div></div>';
     const draftKey = "new|" + (anchor.elementId || "") + "|" + ((anchor.quote && anchor.quote.exact) || "").slice(0, 40);
     p._draftKey = draftKey;
+    p._anchorNode = range ? null : findElement(anchor);
     ui.pop = p; document.body.appendChild(p); placePop(rect); wireWho(p);
     const ta = p.querySelector("textarea"); ta.value = drafts.get(draftKey) || "";
     if (!p.querySelector(".cmt-who")) ta.focus();   // else wireWho already focused the name field
@@ -635,6 +636,7 @@
       '<button class="cmt-btn cmt-resolve">' + statusLabel + '</button><button class="cmt-btn cmt-primary cmt-reply">Reply</button></div></div>';
     const draftKey = "reply|" + id;
     p._draftKey = draftKey;
+    p._anchorNode = node || null;
     ui.pop = p; document.body.appendChild(p); placePop(rect); wireWho(p);
     const ta = p.querySelector("textarea"); ta.value = drafts.get(draftKey) || "";
     p.querySelector(".cmt-reply").addEventListener("click", async () => {
@@ -701,14 +703,59 @@
     } catch (e) { return null; }
   }
 
+  /* ---------- marker placement ----------
+     Pins are absolutely positioned from live rects, so every scroller has to move them. The
+     window is not always the scroller: drop this layer on an app shell whose single `<main>`
+     scrolls and the markers stay put, ending up hundreds of pixels from the row they belong
+     to. `placed` is the last render's pin↔anchor pairing; a capture-phase scroll listener
+     (the only kind that hears a nested scroller) replays it, rect by rect. */
+  const PIN = 18;
+  let placed = [];
+
+  // Nearest ancestor that actually scrolls — used to hide a pin whose anchor has slid under a
+  // sticky header or out of its pane. Null on an ordinary document, where the window scrolls
+  // and document-coordinate placement is already scroll-invariant.
+  function scrollParent(n) {
+    for (let e = n && n.parentElement; e && e !== document.body; e = e.parentElement) {
+      const c = getComputedStyle(e);
+      if (/(auto|scroll|overlay)/.test(c.overflowY + c.overflow) && e.scrollHeight > e.clientHeight) return e;
+    }
+    return null;
+  }
+
+  function placePin(pin, node, clip) {
+    if (!node || !node.isConnected) { pin.style.display = "none"; return; }
+    const r = node.getBoundingClientRect();
+    if (!r.width && !r.height) { pin.style.display = "none"; return; }
+    const cy = r.top + Math.min(r.height, 22) / 2;
+    if (clip) { const c = clip.getBoundingClientRect(); if (cy < c.top + 2 || cy > c.bottom - 2) { pin.style.display = "none"; return; } }
+    pin.style.display = "";
+    pin.style.top = (window.scrollY + cy - PIN / 2) + "px";
+    // The marker rides the anchor's OWN left edge, inside its padding — never the strip to its
+    // right. That strip is a margin in a prose document and the NEXT COLUMN in a full-bleed
+    // sheet, where `rect.right + 8` parked pins over a table's own cells. Left edge, clamped
+    // to the page edge, occludes nothing at any width, on either kind of page.
+    pin.style.left = Math.max(window.scrollX + 2, window.scrollX + r.left - PIN + 4) + "px";
+  }
+
+  let rafPins = false;
+  function schedulePins() {
+    if (rafPins) return;
+    rafPins = true;
+    requestAnimationFrame(() => {
+      rafPins = false;
+      placed.forEach((x) => placePin(x.pin, x.node, x.clip));
+      if (ui.pop && ui.pop._anchorNode && ui.pop._anchorNode.isConnected) placePop(ui.pop._anchorNode.getBoundingClientRect());
+    });
+  }
+
   function renderAll() {
     closePop();
     if (mo) mo.disconnect(); // our own wrap/unwrap mutations must not retrigger a render
     try {
     _normCache = new Map();
     unwrapInjected();
-    ui.markers.innerHTML = "";
-    const rightDock = document.body.classList.contains("cmt-docked") ? panelW + 12 : 0;
+    ui.markers.innerHTML = ""; placed = [];
     const open = [], resolved = [], orphans = [];
     state.threads.forEach((thread) => {
       if (!thread.messages || !thread.messages.length) return; // degenerate thread — skip
@@ -727,16 +774,15 @@
       // marker pin
       const anchorNode = wrapped || target;
       if (anchorNode) {
-        const rect = anchorNode.getBoundingClientRect();
         const pin = el("button", "cmt-pin" + (isResolved ? " cmt-resolved" : ""));
         const aiLast = thread.messages[thread.messages.length - 1];
         if (isAI(aiLast) && !isResolved) pin.classList.add("cmt-ai-unread");
-        pin.textContent = thread.messages.length;
+        pin.innerHTML = '<span class="cmt-pin-n">' + thread.messages.length + "</span>";
         pin.title = thread.messages.length + (thread.messages.length > 1 ? " messages" : " message") + (aiLast && aiLast.at ? " · " + aiLast.author + (aiLast.agent && aiLast.agent.host ? " @ " + aiLast.agent.host : "") + " · " + fmt(aiLast.at) : "");
         pin.setAttribute("data-cmt-thread", thread.id);
-        pin.style.top = (window.scrollY + rect.top) + "px";
-        const gutter = Math.min(window.scrollX + rect.right + 8, window.scrollX + document.documentElement.clientWidth - rightDock - 34);
-        pin.style.left = gutter + "px";
+        const clip = scrollParent(anchorNode);
+        placePin(pin, anchorNode, clip);
+        placed.push({ pin: pin, node: anchorNode, clip: clip });
         pin.addEventListener("click", (e) => { e.stopPropagation(); openThread(thread.id); });
         ui.markers.appendChild(pin);
       }
@@ -816,6 +862,10 @@
     document.addEventListener("mousemove", onMove, true);
     document.addEventListener("click", onClick, true);
     window.addEventListener("resize", scheduleRender);
+    // Capture phase: a scroll event on a nested pane does not bubble to window, and on an app
+    // shell that pane is the only scroller. Repositioning is rect maths only — the full
+    // renderAll (which rewraps ranges and rebuilds the drawer) stays on mutation and resize.
+    window.addEventListener("scroll", schedulePins, true);
     document.addEventListener("keydown", (e) => {
       // Plain C toggles comment mode (also ⌥C — e.code is layout-independent, so mac's "ç" still matches).
       const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName || "") || e.target.isContentEditable;
