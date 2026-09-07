@@ -5,6 +5,39 @@ curated layer that says what a change *meant*.
 
 ---
 
+## [2026-09-07 13:55 PDT] Review markers sit on the content and survive scrolling
+
+Committed on 2026-09-07, but the edits date from 2026-08-24 around 12:00 PDT and sat
+uncommitted behind the Pages work that same afternoon. Four files, one idea: a review
+comment on this page has to find its target in a three-tab app, and the layer was
+written for a single static document.
+
+**Markers ride the anchor's left edge, not the strip to its right.** The vendored
+layer parked each pin at `rect.right + 8`, a margin on a prose page and the next
+column on a full-bleed table. The pin is now an 18 px dot inside the anchor's own
+padding, translucent at rest, and it shows its message count only on hover. Resolved
+threads are a hollow ring. The page's rose replaces the layer's amber on anchored
+blocks, and comment mode is a rose ring around the viewport rather than louder pins.
+
+**Pins move with whatever scrolls.** Placement is redone on a capture-phase scroll
+listener, which is the only kind that hears a nested pane. A pin whose anchor slid
+under the sticky header is hidden. This is rect maths on an animation frame; the full
+re-render still waits for a mutation or a resize.
+
+**Idle tabs are rendered once at load.** A comment pointing into a tab that has never
+been drawn falls back to text matching, and vocabulary labels appear in the rail, the
+rows and the table alike, so it landed on the wrong element. `template.html` now fills
+the two idle views after first paint. Recorded in `flows/build-pipeline.md`.
+
+**The bridge lost a third of its code.** With the layer hiding pins for boxless
+anchors itself, `comment-bridge.js` no longer sweeps them. What remains is the tab
+badge on each panel row and the click that switches tab, then polls for the marker
+instead of guessing a delay. A smooth scroll was cancelled by the redraw that follows a
+tab switch, so the reveal scrolls instantly.
+
+`src/comment-layer.{css,js}` are now a fork of the skill copy, which moved on
+independently on 2026-08-30. See `future/mid.md`.
+
 ## [2026-08-24 17:55 PDT] Publish the page, privately maintained
 
 The page is live at https://yayuanli-org.github.io/awesome-physical-ai/. The repo is

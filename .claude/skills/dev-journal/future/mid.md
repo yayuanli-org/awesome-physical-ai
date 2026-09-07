@@ -13,3 +13,10 @@
   split if it grows further.
 - **[P2] A "read next" edge between papers.** Several `why` fields already say "read
   next to X". Making that a real column would give the page a reading-path view.
+- **[P2] Re-vendor `src/comment-layer.{css,js}` from the `commentable-html` skill.**
+  The page forked the copy on 2026-08-24 (markers on the anchor's left edge, scroll-aware
+  placement) and the skill moved on independently on 2026-08-30 (comments chip in place
+  of the floating button, comment-mode switch inside the panel, timezone-safe
+  timestamps). Neither side has the other's fixes. Port the marker work upstream first,
+  then re-copy, then re-check `template.html`'s palette overrides against the new class
+  names.

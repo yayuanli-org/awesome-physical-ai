@@ -3,7 +3,7 @@
 Full tree with line counts. CLAUDE.md keeps only the top-level map and points here,
 so this file is what makes that pointer real.
 
-_Generated [2026-08-24 11:31 PDT]. Regenerate with the recipe at the bottom._
+_Generated [2026-08-24 11:31 PDT], `src/` counts refreshed [2026-09-07 13:55 PDT]. Regenerate with the recipe at the bottom._
 
 ```
  lines  path
@@ -45,11 +45,10 @@ _Generated [2026-08-24 11:31 PDT]. Regenerate with the recipe at the bottom._
    909  index.html
   2056  review.html
     84  serve.py
-
-   107  src/comment-bridge.js
-   192  src/comment-layer.css
-   839  src/comment-layer.js
-   909  src/template.html
+   120  src/comment-bridge.js
+   230  src/comment-layer.css
+   889  src/comment-layer.js
+   933  src/template.html
 
  20564  TOTAL across 37 files
 ```
@@ -67,7 +66,7 @@ _Generated [2026-08-24 11:31 PDT]. Regenerate with the recipe at the bottom._
 | `data/schema.json` | The taxonomy. Columns, vocabularies, views, reading protocol. |
 | `data/papers/NN-*.json` | The database. Split by topic; the prefix orders nothing at runtime. |
 | `src/template.html` | The whole client: CSS, markup shell, one IIFE, four placeholders. |
-| `src/comment-layer.{css,js}` | Vendored from the `commentable-html` skill. Upgrade by re-copying. |
+| `src/comment-layer.{css,js}` | Vendored from the `commentable-html` skill, then forked (marker placement, see the journal). Re-copying overwrites the fork. |
 | `src/comment-bridge.js` | Ours. Reconciles the comment layer with this page's tab switching. |
 | `.claude/skills/dev-handbook/` | Logical: what it is and why. |
 | `.claude/skills/dev-journal/` | Chronological: shipped, current, planned. |

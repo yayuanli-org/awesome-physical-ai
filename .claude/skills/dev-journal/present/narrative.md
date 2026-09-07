@@ -29,5 +29,9 @@ from `index.html` and a test keeps it that way.
 - The loop view is honest but passive — it filters and lists. Something that showed
   *where* each system closes its loop, rather than just that it does, would use the
   `loop_stage` column harder.
+- `loop_stage: adapt` reads "change the policy or the model from the outcome", which
+  admits offline fine-tuning on collected rollouts (EnvHarness carries it) as well as
+  learning at run time. If the tag is meant to single out online learning, the help
+  text has to say so and the tagged papers need a re-read. Raised 2026-09-07.
 - Nothing here is a course schedule, and it should stay that way. If reading
   assignments start to leak in as fields, that is the failure mode `mission.md` names.
