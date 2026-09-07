@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """Validation surface for the awesome-physical-ai database.
 
-Every check here enforces a rule written down in
-.claude/skills/dev-handbook/conventions.md. If you add a convention, add a check.
-If a check is wrong, fix the convention first.
+Every check here enforces one of the database's conventions: sections are filters
+over columns, cells stay short, a value enters the schema before the data, prose
+stays plain, and the review layer never reaches the deliverable. If you add a
+convention, add a check. If a check is wrong, fix the convention first.
 
-Runs standalone with no dependencies:
+Runs standalone with no dependencies, from any directory:
 
-    python3 .claude/skills/dev-test/tests/test_database.py
+    python3 paper-hub/tests/test_database.py
 
 Also works under pytest if it happens to be installed:
 
-    pytest .claude/skills/dev-test/
+    pytest paper-hub/tests/
 """
 import json
 import re
@@ -20,8 +21,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[4]
-HUB = ROOT / "paper-hub"  # the database, the page, and build.py
+HUB = Path(__file__).resolve().parents[1]  # paper-hub/: the database, the page, build.py
 SCHEMA = json.loads((HUB / "data" / "schema.json").read_text(encoding="utf-8"))
 FILES = sorted((HUB / "data" / "papers").glob("*.json"))
 PAPERS = [p for f in FILES for p in json.loads(f.read_text(encoding="utf-8"))]

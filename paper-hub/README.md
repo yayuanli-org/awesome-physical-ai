@@ -47,6 +47,7 @@ build.py              inlines data into the template
 serve.py              localhost server that persists review comments to disk
 src/template.html     page shell: CSS, JS, __PHYSAI_DATA__ placeholder
 src/comment-*.{css,js}  the comment layer, inlined into review.html only
+tests/test_database.py  schema, coverage, prose-voice and build checks
 data/
   schema.json         the taxonomy: columns, vocabularies, views, reading protocol
   papers/*.json       the database, split into topical chunks
@@ -61,6 +62,7 @@ workflows that validate and publish live at the repo root, in `.github/workflows
 python3 build.py            # writes index.html and review.html
 python3 build.py --check    # validate only, write nothing
 python3 build.py --site DIR # assemble what CI publishes, in DIR
+python3 tests/test_database.py  # the checks CI runs on every push
 ```
 
 The build reports any value that is not in the schema vocabulary. That is a
@@ -86,7 +88,7 @@ data/schema.json      the taxonomy, machine-readable
 data/papers/*.json    the database, machine-readable
 ```
 
-`build.py`, `serve.py` and `.claude/` stay in the repo and off the site.
+`build.py`, `serve.py` and `tests/` stay in the repo and off the site.
 
 Tag a version to cut a release with a standalone copy of the page attached:
 

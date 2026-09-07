@@ -12,7 +12,7 @@ second, and the review scaffolding never reaches the deliverable.
     python3 build.py --site DIR # assemble the public artifact in DIR
 
 --site is what CI publishes. It writes the page and the raw database into a
-fresh directory and nothing else, so build.py, serve.py and .claude/ stay out
+fresh directory and nothing else, so build.py, serve.py and tests/ stay out
 of the deployed site. Working-tree index.html and review.html are untouched.
 """
 import json

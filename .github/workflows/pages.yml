@@ -30,7 +30,7 @@ jobs:
       # tests that read it. The hub lives in paper-hub/; build.py resolves its
       # own paths, so it runs from the repo root.
       - run: python3 paper-hub/build.py
-      - run: python3 .claude/skills/dev-test/tests/test_database.py
+      - run: python3 paper-hub/tests/test_database.py
 
   deploy:
     needs: validate
@@ -55,7 +55,7 @@ jobs:
       - uses: actions/configure-pages@v5
       # _site holds the page and the raw database. Nothing else in the repo
       # reaches the public site, which is what keeps build.py, serve.py and
-      # .claude/ off it without deleting them from the repo.
+      # tests/ off it without deleting them from the repo.
       - run: python3 paper-hub/build.py --site _site
       - uses: actions/upload-pages-artifact@v3
         with:
