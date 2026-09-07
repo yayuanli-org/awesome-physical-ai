@@ -18,6 +18,9 @@ from pathlib import Path
 
 import nbformat as nbf
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from debate1_cells import debate1  # noqa: E402  the Debate 1 brief that closes §5
+
 HERE = Path(__file__).resolve().parent.parent
 CELLS: list[tuple[str, str]] = []
 
@@ -322,7 +325,7 @@ The professional end of §1.2 is the second.
 md('''
 <div class="callout note"><span class="t">debate 1 is this section</span>
 <p>Physical AI against virtual AI. Is it needed at all, where is the boundary, and what is
-the technical difference. Every claim above is there to be attacked.</p></div>
+the technical difference. Every claim above is there to be attacked. The brief is in §5.</p></div>
 ''')
 
 md('''
@@ -668,7 +671,8 @@ are the C, the S and the A of PACES, which is why §4 came before this.
 
 md('''
 The first debate is §2, physical AI against virtual AI. Is it needed at all, where is the
-boundary, and what is the technical difference. Prepare by writing the five PACES rows for
+boundary, and what is the technical difference. Its brief, the reading, a ten-minute recap
+and ten motions, closes this section. Prepare by writing the five PACES rows for
 both papers before you pick a side. A side chosen before the S row is written is a side
 you cannot defend.
 ''')
@@ -716,6 +720,8 @@ md('''
 >
 > [C] **ai:** Row 1 is from your draft, with a candidate pair of papers. Rows 2 to 8 are candidates I pulled from §3's gaps and from the hub's own group blurbs, two papers each with a prompt. The syllabus decides the real list, so treat this as a menu and cut it down.
 ''')
+
+debate1(md, flow)
 
 md('''
 The debates change the hub, and §6 is how.
