@@ -1,0 +1,61 @@
+/* toc-layer.css — styles for the foldable left TOC (see toc-layer.js).
+ * Palette falls back to the house pink; docs can override via the custom properties. */
+
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+.toc-layer {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 248px; box-sizing: border-box;
+  overflow-y: auto; overscroll-behavior: contain;
+  background: #fff; border-right: 1px solid var(--tl-line, #e9e7ea);
+  padding: 14px 14px 48px; font-size: 0.84rem; line-height: 1.55; z-index: 60;
+  transform: translateX(-105%); transition: transform 0.18s ease;
+}
+/* width is set inline by toc-layer.js (drag the right edge to resize; persists per doc) */
+body.tl-open .toc-layer { transform: none; box-shadow: 0 0 28px rgba(35, 38, 47, 0.14); }
+.toc-layer.tl-resizing { transition: none; user-select: none; }
+.tl-grip { position: absolute; top: 0; right: 0; width: 6px; height: 100%; cursor: col-resize; }
+.tl-grip:hover, .toc-layer.tl-resizing .tl-grip { background: var(--tl-accent-line, #f3cddb); }
+
+.tl-head { display: flex; align-items: center; justify-content: space-between;
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--tl-faint, #a4a8b3); margin: 0 0 10px; }
+.tl-head .tl-close { border: none; background: none; color: var(--tl-muted, #757a87);
+  font-size: 1rem; cursor: pointer; padding: 0 4px; line-height: 1; }
+.tl-head .tl-close:hover { color: var(--tl-accent, #d24d7c); }
+
+.toc-layer .tl-row { display: flex; align-items: baseline; padding: 2px 0; }
+.toc-layer .tl-row a { text-decoration: none; color: var(--tl-ink, #23262f); }
+.toc-layer .tl-row a:hover { color: var(--tl-accent, #d24d7c); }
+.toc-layer .tl-l0 { margin-top: 8px; }
+.toc-layer .tl-l0 a { font-weight: 600; }
+.toc-layer .tl-l1 a { color: var(--tl-accent, #d24d7c); }
+.toc-layer .tl-l2 a { color: var(--tl-muted, #757a87); }
+
+.toc-layer .tl-car, .toc-layer .tl-noc { flex: 0 0 16px; }
+.toc-layer .tl-car { border: none; background: none; padding: 0;
+  color: var(--tl-faint, #a4a8b3); cursor: pointer; font-size: 0.6rem; }
+.toc-layer .tl-car:hover { color: var(--tl-accent, #d24d7c); }
+.toc-layer .tl-car::before { content: "\25BE"; display: inline-block; transition: transform 0.15s ease; }
+.toc-layer .tl-car[aria-expanded="false"]::before { transform: rotate(-90deg); }
+
+.toc-layer .tl-grp.tl-fold { display: none; }
+.toc-layer .tl-g0 { margin-left: 8px; }
+.toc-layer .tl-g1 { margin-left: 24px; border-left: 1px solid var(--tl-line, #e9e7ea); padding-left: 8px; }
+
+.tl-btn {
+  position: fixed; top: 14px; left: 14px; z-index: 59;
+  border: 1px solid var(--tl-line, #e9e7ea); background: #fff; color: var(--tl-muted, #757a87);
+  font: 600 0.7rem/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 11px; border-radius: 16px;
+  cursor: pointer; box-shadow: 0 1px 5px rgba(35, 38, 47, 0.1);
+}
+.tl-btn:hover { color: var(--tl-accent, #d24d7c); border-color: var(--tl-accent-line, #f3cddb); }
+body.tl-open .tl-btn { display: none; }
+
+@media (min-width: 1360px) {
+  body.tl-docked .toc-layer { transform: none; box-shadow: none; }
+  body.tl-docked .tl-btn { display: none; }
+  /* content margins are set by window.__dockLayout (shared with the comment layer's right panel) */
+}
+
+@media print { .toc-layer, .tl-btn, .tl-grip { display: none; } }

@@ -24,9 +24,10 @@ python3 .claude/skills/dev-test/tests/test_database.py
 Stdlib only, no pytest required, exits nonzero on failure. It also collects under
 `pytest .claude/skills/dev-test/` if pytest happens to be installed.
 
-Prints one line per check, then `N/M passed`. Currently 22 checks. `python3 build.py
---check` is the faster subset when you only want the paper count and the undeclared-
-value notice.
+Prints one line per check, then `N/M passed`. Currently 23 checks. `python3
+paper-hub/build.py --check` is the faster subset when you only want the paper count
+and the undeclared-value notice. Every path in the script hangs off `HUB`, which is
+`paper-hub/` under the repo root.
 
 ## What it covers, and why each check exists
 

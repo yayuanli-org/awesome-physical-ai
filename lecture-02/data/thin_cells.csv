@@ -1,0 +1,11 @@
+axis,value,papers,examples
+loop stage,adapt,7,"EnvHarness, Adaptive World Models, Ego-R1"
+embodiment,human+robot,6,"DexUMI, TWIST, Spot-On"
+horizon,hours,4,"P-JEPA, Ego-R1, Birth and Death of a Rose"
+sensing,tactile / force,2,"DexUMI, VTV-LLM"
+change channel,fabrication,1,BrickGPT
+domain,clinical,6,"Mistake Analysis Review, eXplainMR, AR Medical Visualisation"
+domain,skill/sport,6,"SkillFormer, TI-PREGO, ExpertAF"
+contribution,survey,2,"Mistake Analysis Review, VLA Survey"
+representation,physics params,8,"PhysX-3D, Particle-Grid Neural Dynamics, Force Prompting"
+autonomy,mixed initiative,8,"Ego-EXTRA, HowToDIV, AROMA"

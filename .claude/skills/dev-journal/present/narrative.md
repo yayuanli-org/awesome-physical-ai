@@ -1,6 +1,12 @@
 # Current focus
 
-_Updated [2026-08-24 11:30 PDT]_
+_Updated [2026-09-07 14:25 PDT]_
+
+**The repo is two parts now, and the course part is empty.** `paper-hub/` is the list
+and its page, unchanged. `courses/umich-26fall-rob599-physically-grounded-ai-agents/`
+is where the semester's material goes. The first thing due there is a lecture notebook
+that sums up the hub and shares opinions, built with `doc-jupyter` from prompts the
+maintainer has ready. Debate sessions follow.
 
 **Framework is done; coverage is the next axis.** The taxonomy held up against 110
 papers spanning egocentric procedural understanding, world models, VLAs, mistake
@@ -33,5 +39,5 @@ from `index.html` and a test keeps it that way.
   admits offline fine-tuning on collected rollouts (EnvHarness carries it) as well as
   learning at run time. If the tag is meant to single out online learning, the help
   text has to say so and the tagged papers need a re-read. Raised 2026-09-07.
-- Nothing here is a course schedule, and it should stay that way. If reading
-  assignments start to leak in as fields, that is the failure mode `mission.md` names.
+- Course material has its own folder now. The failure mode `mission.md` names is still
+  worth watching: reading assignments must not leak into the hub as fields.

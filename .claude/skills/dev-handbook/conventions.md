@@ -90,9 +90,12 @@ The repo follows the user's `Plain` output style. Everything user-visible obeys 
 - **Single `main` branch.** There is no manager branch and no PR flow here; it is a
   data repo with one maintainer. If it grows collaborators, revisit
   `~/.claude/skills/git-for-ai-teams/references/main-only-fallback.md`.
-- **Commit the built `index.html`, ignore `review.html`.** `index.html` is a build
-  artifact and also the deliverable, so someone should be able to clone and open it.
-  `review.html` is regenerable working scaffolding and would duplicate 400 KB on every
-  data change. `*.comments.json` is per-reviewer markup on a draft and stays local.
+- **Commit neither page.** `index.html` is 360 KB of generated markup and CI builds it
+  on every push; tagged releases carry the offline copy. `review.html` is regenerable
+  working scaffolding and would duplicate 400 KB on every data change.
+  `*.comments.json` is per-reviewer markup on a draft and stays local.
+- **Course material stays in `courses/`.** A schedule, a lecture number or an
+  assignment is never a field in `data/`. The hub is a reference, and `mission.md`
+  names "the list becomes a syllabus" as a failure.
 - **One commit per coherent change to the data or the framework.** A commit that adds
   papers and retunes the views at once is two commits.

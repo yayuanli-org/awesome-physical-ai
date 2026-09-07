@@ -8,12 +8,14 @@ someone can clone this and open the page.
 
 ## Commands
 
+All from the repo root. `build.py` resolves its own paths, so it runs from anywhere.
+
 ```sh
-python3 build.py                                        # rebuild both pages
-python3 build.py --check                                # validate, write nothing
+python3 paper-hub/build.py                              # rebuild both pages
+python3 paper-hub/build.py --check                      # validate, write nothing
 python3 .claude/skills/dev-test/tests/test_database.py  # full test surface
-open index.html                                         # the deliverable (macOS)
-python3 serve.py                                        # then open review.html to mark up
+open paper-hub/index.html                               # the deliverable (macOS)
+cd paper-hub && python3 serve.py                        # then open review.html to mark up
 ```
 
 `build.py` prints the paper count, the arc split, and any value used in the data that
@@ -27,8 +29,10 @@ usually a typo.
 leave a comment, and it threads in a side panel.
 
 ```sh
-python3 serve.py            # localhost:8777, static files + a comment write-back API
+cd paper-hub && python3 serve.py    # localhost:8777, static files + a comment write-back API
 ```
+
+`serve.py` serves and writes in its cwd, which is why it runs from inside `paper-hub/`.
 
 Comments persist to `physai.comments.json` beside the page, which is what makes them
 readable between sessions. Opened over `file://` instead, the layer still works but
@@ -58,6 +62,6 @@ Two environment notes: the Bash sandbox blocks network, so these calls need
 
 ## Git
 
-Single `main` branch, one maintainer, no PR flow. `index.html` is committed even though
-it is generated, because it is the deliverable. If this ever grows collaborators, the
-main-only fallback in `~/.claude/skills/git-for-ai-teams/` is the upgrade path.
+Single `main` branch, one maintainer, no PR flow. Neither page is committed; CI builds
+them on every push. If this ever grows collaborators, the main-only fallback in
+`~/.claude/skills/git-for-ai-teams/` is the upgrade path.

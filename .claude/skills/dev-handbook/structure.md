@@ -3,93 +3,105 @@
 Full tree with line counts. CLAUDE.md keeps only the top-level map and points here,
 so this file is what makes that pointer real.
 
-_Generated [2026-08-24 11:31 PDT], `src/` counts refreshed [2026-09-07 13:55 PDT]. Regenerate with the recipe at the bottom._
+_Generated [2026-09-07 14:19 PDT]. Regenerate with the recipe at the bottom._
 
 ```
  lines  path
 ------  ----------------------------------------------------------
 
     83  .claude/skills/dev-handbook/SKILL.md
-    96  .claude/skills/dev-handbook/conventions.md
+    98  .claude/skills/dev-handbook/conventions.md
    127  .claude/skills/dev-handbook/design-rationale.md
     63  .claude/skills/dev-handbook/dev-setup.md
     93  .claude/skills/dev-handbook/flows/add-a-paper.md
-    64  .claude/skills/dev-handbook/flows/build-pipeline.md
+   109  .claude/skills/dev-handbook/flows/build-pipeline.md
     50  .claude/skills/dev-handbook/mission.md
-    96  .claude/skills/dev-handbook/structure.md
+    95  .claude/skills/dev-handbook/structure.md
     72  .claude/skills/dev-journal/SKILL.md
     14  .claude/skills/dev-journal/future/long.md
-    15  .claude/skills/dev-journal/future/mid.md
-    12  .claude/skills/dev-journal/future/short.md
-    92  .claude/skills/dev-journal/past/changelog.md
-    33  .claude/skills/dev-journal/present/narrative.md
-    74  .claude/skills/dev-test/SKILL.md
-   377  .claude/skills/dev-test/tests/test_database.py
+    22  .claude/skills/dev-journal/future/mid.md
+    13  .claude/skills/dev-journal/future/short.md
+   154  .claude/skills/dev-journal/past/changelog.md
+    37  .claude/skills/dev-journal/present/narrative.md
+    75  .claude/skills/dev-test/SKILL.md
+   398  .claude/skills/dev-test/tests/test_database.py
 
-    70  CLAUDE.md
-   129  README.md
-   135  build.py
+    63  .github/workflows/pages.yml
+    33  .github/workflows/release.yml
 
-  1727  data/papers/01-world-models.json
-  1656  data/papers/02-objects-scenes-physics.json
-  1165  data/papers/03-egocentric-procedural-data.json
-  1114  data/papers/04-procedure-structure.json
-  1600  data/papers/05-human-embodiment.json
-   801  data/papers/06-verify-mistakes.json
-  1969  data/papers/07-robot-embodiment.json
-  1704  data/papers/08-human-to-robot-and-together.json
-   473  data/papers/09-scenes-4d-physics-checks.json
-   685  data/papers/10-guidance-skill-fabrication.json
-   879  data/schema.json
+    20  .gitignore
+   110  CLAUDE.md
+    16  README.md
 
-   909  index.html
-  2056  review.html
-    84  serve.py
-   120  src/comment-bridge.js
-   230  src/comment-layer.css
-   889  src/comment-layer.js
-   933  src/template.html
+    16  courses/umich-26fall-rob599-physically-grounded-ai-agents/README.md
 
- 20564  TOTAL across 37 files
+   187  paper-hub/README.md
+   173  paper-hub/build.py
+  1727  paper-hub/data/papers/01-world-models.json
+  1656  paper-hub/data/papers/02-objects-scenes-physics.json
+  1165  paper-hub/data/papers/03-egocentric-procedural-data.json
+  1114  paper-hub/data/papers/04-procedure-structure.json
+  1600  paper-hub/data/papers/05-human-embodiment.json
+   801  paper-hub/data/papers/06-verify-mistakes.json
+  1969  paper-hub/data/papers/07-robot-embodiment.json
+  1704  paper-hub/data/papers/08-human-to-robot-and-together.json
+   473  paper-hub/data/papers/09-scenes-4d-physics-checks.json
+   685  paper-hub/data/papers/10-guidance-skill-fabrication.json
+   879  paper-hub/data/schema.json
+   933  paper-hub/index.html
+  2181  paper-hub/review.html
+    84  paper-hub/serve.py
+   120  paper-hub/src/comment-bridge.js
+   230  paper-hub/src/comment-layer.css
+   889  paper-hub/src/comment-layer.js
+   933  paper-hub/src/template.html
+
+ 21264  TOTAL across 42 files
 ```
 
 ## What each thing is
 
 | Path | Role |
 |---|---|
-| `index.html` | The deliverable. Self-contained, no review scaffolding. Generated. |
-| `review.html` | The same page plus the comment layer, for marking the draft up. Generated. |
-| `build.py` | Reads `data/` and `src/`, validates, emits both pages. |
-| `serve.py` | Localhost static server plus a comment write-back API for `review.html`. |
-| `README.md` | User-facing: what the list is, how to add a paper. |
+| `README.md` | The two parts, one paragraph each. |
 | `CLAUDE.md` | Loaded every session. Overview, entry point, universal gotchas, map. |
-| `data/schema.json` | The taxonomy. Columns, vocabularies, views, reading protocol. |
-| `data/papers/NN-*.json` | The database. Split by topic; the prefix orders nothing at runtime. |
-| `src/template.html` | The whole client: CSS, markup shell, one IIFE, four placeholders. |
-| `src/comment-layer.{css,js}` | Vendored from the `commentable-html` skill, then forked (marker placement, see the journal). Re-copying overwrites the fork. |
-| `src/comment-bridge.js` | Ours. Reconciles the comment layer with this page's tab switching. |
+| `paper-hub/` | Part one: the database, the page, and the code that builds and serves it. |
+| `paper-hub/index.html` | The deliverable. Self-contained, no review scaffolding. Generated, not committed. |
+| `paper-hub/review.html` | The same page plus the comment layer, for marking the draft up. Generated, not committed. |
+| `paper-hub/build.py` | Reads `data/` and `src/` beside it, validates, emits both pages. Resolves its own paths, so it runs from any cwd. |
+| `paper-hub/serve.py` | Localhost static server plus a comment write-back API for `review.html`. Serves its cwd, so run it from `paper-hub/`. |
+| `paper-hub/README.md` | User-facing: what the hub is, how to add a paper. |
+| `paper-hub/data/schema.json` | The taxonomy. Columns, vocabularies, views, reading protocol. |
+| `paper-hub/data/papers/NN-*.json` | The database. Split by topic; the prefix orders nothing at runtime. |
+| `paper-hub/src/template.html` | The whole client: CSS, markup shell, one IIFE, four placeholders. |
+| `paper-hub/src/comment-layer.{css,js}` | Vendored from the `commentable-html` skill, then forked (marker placement, see the journal). Re-copying overwrites the fork. |
+| `paper-hub/src/comment-bridge.js` | Ours. Reconciles the comment layer with this page's tab switching. |
+| `courses/` | Part two: one folder per course. Course material never feeds the hub's data. |
+| `courses/umich-26fall-rob599-physically-grounded-ai-agents/` | ROB 599, Fall 2026. Its README names what lands there: syllabus, lecture notebooks, slides, debates, recordings. |
+| `.github/workflows/pages.yml` | Validate on every push and pull request, deploy `_site/` on push to main. |
+| `.github/workflows/release.yml` | On a `v*` tag, attach a standalone page and a data zip to a release. |
 | `.claude/skills/dev-handbook/` | Logical: what it is and why. |
 | `.claude/skills/dev-journal/` | Chronological: shipped, current, planned. |
-| `.claude/skills/dev-test/` | The validation surface. |
+| `.claude/skills/dev-test/` | The validation surface. Tests point at `paper-hub/` through `HUB`. |
 
 ## What is elided
 
-`.git`, `__pycache__`, `.pytest_cache`, `.venv`, `node_modules`, `.DS_Store`, `*.pyc`,
-`*.bak`, and `*.comments.json` (review comments, written by `serve.py` at runtime).
-Nothing else. There are no build caches, lockfiles or dependency stores, because the
-project has no dependencies.
+`.git`, `__pycache__`, `.pytest_cache`, `.venv`, `node_modules`, `_site`,
+`.ipynb_checkpoints`, `.DS_Store`, `*.pyc`, `*.bak`, and `*.comments.json` (review
+comments, written by `serve.py` at runtime). Nothing else. There are no build caches,
+lockfiles or dependency stores, because the project has no dependencies.
 
 Two counts here mislead and are worth naming. Line counts for the JSON data files are a
 formatting artifact rather than a content measure; the useful count is papers, from
-`python3 build.py --check`. And `index.html` and `review.html` report small line counts
-for large files because the inlined database is one very long line.
+`python3 paper-hub/build.py --check`. And `index.html` and `review.html` report small
+line counts for large files because the inlined database is one very long line.
 
 ## Regenerate
 
-The generator lives in git history for the commit that created this file. It walks the
-tree, skips the elided set above, counts lines per file, and groups by top-level
-directory. Refresh whenever a directory is added, renamed or removed.
+The generator is inline in the commit that last regenerated this file: walk the tree,
+skip the elided set above, count lines per file, group by top-level directory. Refresh
+whenever a directory is added, renamed or removed.
 
 ```sh
-git log --diff-filter=A --format=%H -1 -- .claude/skills/dev-handbook/structure.md
+git log --format=%H -1 -- .claude/skills/dev-handbook/structure.md
 ```

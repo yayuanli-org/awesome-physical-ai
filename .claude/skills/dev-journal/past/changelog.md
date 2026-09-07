@@ -5,6 +5,26 @@ curated layer that says what a change *meant*.
 
 ---
 
+## [2026-09-07 14:25 PDT] The repo splits into paper-hub/ and courses/
+
+The knowledge base has two parts now. Everything that sat at the root (`build.py`,
+`serve.py`, `data/`, `src/`, the README) moved under `paper-hub/`, unchanged inside.
+`courses/umich-26fall-rob599-physically-grounded-ai-agents/` is the first course
+folder. It holds a README naming what will land there (syllabus, lecture notebooks,
+slides, debates, recordings) and nothing else yet. The root README is one screen that
+names both parts.
+
+**The split is what keeps the hub a reference.** `mission.md` lists "the list becomes a
+syllabus" as a failure. Course schedules now have a home beside the hub instead of
+pressure to become columns in it.
+
+**Nothing on the site changed.** CI runs `python3 paper-hub/build.py` from the repo
+root, `build.py` resolves its own paths, and `--site _site` writes the same 12 files.
+The tests hang every path off `HUB = ROOT / "paper-hub"`. Course pages are not
+published. When the first lecture exists, its export reaches the site through
+`emit_site` or a copy step in `pages.yml`, and `test_site_artifact_is_minimal` has to
+learn the new files either way.
+
 ## [2026-09-07 13:55 PDT] Review markers sit on the content and survive scrolling
 
 Committed on 2026-09-07, but the edits date from 2026-08-24 around 12:00 PDT and sat

@@ -1,0 +1,84 @@
+/* custom.css — this lecture's own layer on top of doc.css.
+   A lede, a kicker, callouts, keycaps, the dashed flow figure and a two-column
+   this / not-this block. Edit this file and re-run the first cell to restyle the
+   whole document without touching the notebook. */
+
+:root {
+  --ok:#2f8f6b; --ok-soft:#eef7f3; --ok-line:#cbe5da;
+  --warn:#c26a2b; --warn-soft:#fdf3ea; --warn-line:#f0dcc6;
+  --blue:#5b6ee1; --blue-soft:#eef0fd; --blue-line:#d5daf8;
+}
+
+/* --- lede ------------------------------------------------------------------ */
+.lede { font-size:18.5px; line-height:1.55; color:var(--muted);
+        margin:4px 0 22px; max-width:44em; }
+.lede strong, .lede b { color:var(--ink); font-weight:600; }
+
+.kicker { display:block; font-size:11.5px; font-weight:700; letter-spacing:.10em;
+          text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+
+/* --- callouts --------------------------------------------------------------
+   .callout          neutral, pink accent — the default
+   .callout.do       green — the take-home, what to do
+   .callout.warn     orange — the trap
+   .callout.note     blue  — a debate prompt, an aside                       */
+.callout { margin:18px 0; padding:14px 16px 13px; border:1px solid var(--line);
+           border-left:3px solid var(--accent); background:var(--accent-soft);
+           border-radius:0 8px 8px 0; font-size:14.5px; line-height:1.55; }
+.callout > :first-child { margin-top:0; }
+.callout > :last-child  { margin-bottom:0; }
+.callout .t { display:block; font-size:11.5px; font-weight:700; letter-spacing:.06em;
+              text-transform:uppercase; color:var(--accent); margin-bottom:7px; }
+.callout.do   { border-left-color:var(--ok);   background:var(--ok-soft);   border-color:var(--ok-line); }
+.callout.do   .t { color:var(--ok); }
+.callout.warn { border-left-color:var(--warn); background:var(--warn-soft); border-color:var(--warn-line); }
+.callout.warn .t { color:var(--warn); }
+.callout.note { border-left-color:var(--blue); background:var(--blue-soft); border-color:var(--blue-line); }
+.callout.note .t { color:var(--blue); }
+.callout ul { margin:6px 0 0; padding-left:20px; }
+.callout li { margin:5px 0; }
+
+/* --- keycaps --------------------------------------------------------------- */
+kbd { display:inline-block; font:600 11.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+      padding:4px 6px 3px; border:1px solid var(--line); border-bottom-width:2px;
+      border-radius:5px; background:#fff; color:var(--ink); vertical-align:baseline;
+      white-space:nowrap; }
+
+/* --- tables ---------------------------------------------------------------- */
+/* A "what / why" table reads better with the first column doing the naming. */
+table.k th:first-child, table.k td:first-child {
+  width:22%; font-weight:600; color:var(--ink); }
+table.k.narrow th:first-child, table.k.narrow td:first-child { width:9%; }
+table.k.wide th:first-child, table.k.wide td:first-child { width:34%; }
+table.k td:first-child code { font-size:12.5px; }
+table td code { background:none; padding:0; }
+table.k td { vertical-align:top; }
+table.k td:last-child { color:var(--muted); }
+table.k.plain td:last-child { color:inherit; }
+
+/* JupyterLab stripes every other row of every table it renders. That reads as a
+   notebook output, not as a table in a document, so it goes. */
+.jp-RenderedHTMLCommon tbody tr:nth-child(2n) { background:none; }
+.jp-RenderedHTMLCommon tbody tr:hover { background:#fafbfd; }
+.jp-RenderedHTMLCommon th { background:none; }
+
+/* --- the flow diagram ------------------------------------------------------ */
+pre.flow { background:#fbfbfd; border-style:dashed; color:var(--muted);
+           font-size:12.5px; line-height:1.7; }
+pre.flow b { color:var(--ink); font-weight:600; }
+
+/* --- this / not this -------------------------------------------------------- */
+.pair { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; }
+.pair > div { border:1px solid var(--line); border-radius:8px; padding:12px 14px;
+              font-size:13.5px; line-height:1.55; }
+.pair .yes { border-color:var(--ok-line); background:var(--ok-soft); }
+.pair .no  { border-color:var(--warn-line); background:var(--warn-soft); }
+.pair .t { display:block; font-size:11.5px; font-weight:700; letter-spacing:.06em;
+           text-transform:uppercase; margin-bottom:6px; }
+.pair .yes .t { color:var(--ok); }
+.pair .no  .t { color:var(--warn); }
+.pair code { font-size:12.5px; }
+@media (max-width:760px) { .pair { grid-template-columns:1fr; } }
+
+/* --- live charts ----------------------------------------------------------- */
+figure.nbdoc-fig { margin:16px 0; }

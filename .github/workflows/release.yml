@@ -20,7 +20,7 @@ jobs:
           python-version: "3.12"
       - name: Build the release assets
         run: |
-          python3 build.py --site _site
+          python3 paper-hub/build.py --site _site
           mv _site/index.html "awesome-physical-ai-${GITHUB_REF_NAME}.html"
           cd _site && zip -qr "../awesome-physical-ai-data-${GITHUB_REF_NAME}.zip" data
       - name: Publish

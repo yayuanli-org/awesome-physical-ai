@@ -1,0 +1,9 @@
+{
+    // Attach every cell to the DOM as the CPU goes idle. The default, "full",
+    // keeps only the viewport's ~17 cells attached, which breaks any table of
+    // contents, scroll observer, or in-page search that reads the document.
+    "windowingMode": "defer",
+    "recordTiming": false,
+    "showEditorForReadOnlyMarkdown": false,
+    "kernelShutdown": true
+}

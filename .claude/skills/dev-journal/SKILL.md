@@ -32,15 +32,15 @@ Run these; do not paste their output into markdown.
 ```sh
 git log --oneline -15
 git status --short
-python3 build.py --check                                 # paper count, arc split, new values
+python3 paper-hub/build.py --check                       # paper count, arc split, new values
 python3 .claude/skills/dev-test/tests/test_database.py   # full validation
 python3 -c "
 import json,glob
-for f in sorted(glob.glob('data/papers/*.json')):
+for f in sorted(glob.glob('paper-hub/data/papers/*.json')):
     print(f'{len(json.load(open(f))):3d}  {f}')"
 ```
 
-To see how the framework groups are currently balanced, open `index.html` and read the
+To see how the framework groups are currently balanced, open `paper-hub/index.html` and read the
 count at the right of each group heading. A group that has swallowed its arc is the
 signal that a `pri` needs retuning or a new paper was tagged too generously — see
 `../dev-handbook/design-rationale.md`.

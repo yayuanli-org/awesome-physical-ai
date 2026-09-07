@@ -1,19 +1,20 @@
 .DS_Store
 __pycache__/
 *.pyc
+.ipynb_checkpoints/
 
 # Both pages are generated. index.html is 360 KB, so committing it would bury
 # every paper addition under a whole-file diff and let the page go stale behind
 # anyone who forgot to rebuild. CI builds and deploys it; tagged releases carry
 # a standalone copy for offline reading.
-index.html
+paper-hub/index.html
 
-# the deploy artifact, assembled by `python3 build.py --site _site`
+# the deploy artifact, assembled by `python3 paper-hub/build.py --site _site`
 _site/
 
 # review.html is regenerable working scaffolding — `python3 build.py` remakes it,
 # and committing it would duplicate 400 KB of the deliverable on every data change.
-review.html
+paper-hub/review.html
 
 # per-reviewer markup on a draft, written by serve.py at runtime
 *.comments.json

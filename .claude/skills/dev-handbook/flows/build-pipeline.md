@@ -6,6 +6,11 @@ data/papers/*.json ┼─→ build.py ─→ template.html ─┼─→ review.h
 src/comment-*.{css,js} ┘           (4 placeholders) └─→ _site/       page + raw data, CI only
 ```
 
+Everything above sits in `paper-hub/`, and `build.py` resolves paths from its own
+location, so `python3 paper-hub/build.py` from the repo root is the normal call.
+`courses/` is outside this pipeline. Nothing in it reaches `_site/` until `emit_site`
+or a workflow step copies it there.
+
 Two pages come out of one template. `index.html` is the deliverable — self-contained,
 no server, no scaffolding. `review.html` is the same page with the comment layer
 inlined so the draft can be marked up before it ships. The split exists so review
@@ -36,10 +41,11 @@ deploy artifact into `DIR` instead of the two working-tree pages.
 `main` is the site. `.github/workflows/pages.yml` has two jobs. `validate` builds and
 runs the test suite on every push and every pull request. `deploy` runs only after
 `validate` passes and only outside a pull request, and it publishes what
-`build.py --site _site` writes.
+`python3 paper-hub/build.py --site _site` writes, run from the repo root.
 
 ```
 push to main       validate → deploy → https://yayuanli-org.github.io/awesome-physical-ai/
+push to dev        validate only
 pull request       validate only
 push tag v*        .github/workflows/release.yml attaches a standalone page to a release
 ```
@@ -55,13 +61,12 @@ verbatim, which published `build.py`, `CLAUDE.md` and all of `.claude/`. It now 
 only what `emit_site` writes, so a new file in the repo is private until it is added
 there on purpose.
 
-**The repo is private, the site is public.** A private repo can publish a public Pages
-site on this org's plan, so the dev files are unreadable on github.com while the page
-is not. Two consequences for the workflow. Actions minutes are billed rather than free,
-and every job that checks out code needs `contents: read` spelled out in its own
-`permissions:` block, because a job-level block replaces the workflow-level one instead
-of merging with it. The `deploy` job failed with `Repository not found` for exactly
-that reason the first time the repo went private.
+**The repo is public, and `dev` is the branch to try things on.** A push to `dev` runs
+`validate` and stops, a push to `main` runs `validate` then `deploy`. The repo was
+private from 2026-08-24 into September, and one thing learned then still holds: every
+job that checks out code keeps `contents: read` in its own `permissions:` block,
+because a job-level block replaces the workflow-level one instead of merging with it.
+The `deploy` job failed with `Repository not found` when that line was missing.
 
 **`data/` is published deliberately.** `_site/data/schema.json` and
 `_site/data/papers/*.json` ship beside the page so the database is fetchable without

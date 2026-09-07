@@ -1,10 +1,11 @@
 name: pages
 
-# Every push to main republishes the site. A pull request only validates, so a
-# malformed paper entry fails review instead of reaching the public page.
+# Every push to main republishes the site. A push to dev, or a pull request, only
+# validates, so a malformed paper entry fails there instead of reaching the public
+# page.
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
   workflow_dispatch:
 
@@ -26,13 +27,14 @@ jobs:
         with:
           python-version: "3.12"
       # index.html is generated and not committed, so build it before the
-      # tests that read it.
-      - run: python3 build.py
+      # tests that read it. The hub lives in paper-hub/; build.py resolves its
+      # own paths, so it runs from the repo root.
+      - run: python3 paper-hub/build.py
       - run: python3 .claude/skills/dev-test/tests/test_database.py
 
   deploy:
     needs: validate
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     # A job-level permissions block replaces the workflow-level one instead of
     # merging with it, so contents: read has to be repeated here. Without it
@@ -54,7 +56,7 @@ jobs:
       # _site holds the page and the raw database. Nothing else in the repo
       # reaches the public site, which is what keeps build.py, serve.py and
       # .claude/ off it without deleting them from the repo.
-      - run: python3 build.py --site _site
+      - run: python3 paper-hub/build.py --site _site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

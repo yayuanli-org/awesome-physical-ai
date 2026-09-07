@@ -9,7 +9,8 @@ ROB 599, Physically-Grounded AI Agents (UMich, Fall 2026) is a paper-reading cou
 Its open deliverable is this list. The bet in the project note is that with enough
 attention it could become to physical AI what cs231n's reading list was to vision — so
 the list is written for someone who has never heard of the course, and carries no
-schedule, no lecture numbers, and no assignments.
+schedule, no lecture numbers, and no assignments. Those live beside it in `courses/`,
+one folder per course, which is where the hub gets summed up and debated.
 
 ## What makes it different from the lists that already exist
 

@@ -73,7 +73,7 @@ that. This is the editorial line: what it settles, what it opens, what it sits o
 ## 7. Build and test
 
 ```sh
-python3 build.py
+python3 paper-hub/build.py
 python3 .claude/skills/dev-test/tests/test_database.py
 ```
 

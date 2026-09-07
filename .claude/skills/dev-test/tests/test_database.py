@@ -21,8 +21,9 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
-SCHEMA = json.loads((ROOT / "data" / "schema.json").read_text(encoding="utf-8"))
-FILES = sorted((ROOT / "data" / "papers").glob("*.json"))
+HUB = ROOT / "paper-hub"  # the database, the page, and build.py
+SCHEMA = json.loads((HUB / "data" / "schema.json").read_text(encoding="utf-8"))
+FILES = sorted((HUB / "data" / "papers").glob("*.json"))
 PAPERS = [p for f in FILES for p in json.loads(f.read_text(encoding="utf-8"))]
 FIELD = {f["key"]: f for f in SCHEMA["fields"]}
 VOCAB = {k: {v["v"] for v in f.get("vocab", [])} for k, f in FIELD.items() if f.get("vocab")}
@@ -312,7 +313,7 @@ def test_schema_prose_is_clean():
 
 def test_page_is_self_contained():
     """index.html is the deliverable and must open from file:// with nothing beside it."""
-    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    html = (HUB / "index.html").read_text(encoding="utf-8")
     bad = []
     for m in re.finditer(r"<(?:script|link|img|iframe|source)[^>]*?(?:src|href)=\"([^\"]+)\"", html):
         bad.append(m.group(1))
@@ -323,8 +324,8 @@ def test_page_is_self_contained():
 
 def test_review_scaffolding_is_stripped():
     """Two pages, one template. The comment layer belongs to review.html only."""
-    index = (ROOT / "index.html").read_text(encoding="utf-8")
-    review = (ROOT / "review.html").read_text(encoding="utf-8")
+    index = (HUB / "index.html").read_text(encoding="utf-8")
+    review = (HUB / "review.html").read_text(encoding="utf-8")
     for marker in ('data-comment-doc="physai"', "comment-layer.js", "commentThread"):
         assert marker not in index, f"review scaffolding leaked into index.html: {marker!r}"
     assert 'data-comment-doc="physai"' in review, "review.html has no comment layer"
@@ -342,7 +343,7 @@ def test_site_artifact_is_minimal():
         dest = Path(tmp) / "_site"
         built = subprocess.run(
             [sys.executable, "build.py", "--site", str(dest)],
-            cwd=ROOT, capture_output=True, text=True,
+            cwd=HUB, capture_output=True, text=True,
         )
         assert built.returncode == 0, built.stderr
         got = sorted(str(p.relative_to(dest)) for p in dest.rglob("*") if p.is_file())
@@ -355,18 +356,18 @@ def test_build_is_current():
     """Both pages are generated and neither is committed, so the only thing to
     check is that building twice from the same data gives the same bytes."""
     built = subprocess.run(
-        [sys.executable, "build.py"], cwd=ROOT, capture_output=True, text=True
+        [sys.executable, "build.py"], cwd=HUB, capture_output=True, text=True
     )
     assert built.returncode == 0, built.stderr
     # build.py writes in place, so re-run and confirm both pages are stable
-    before = {n: (ROOT / n).read_bytes() for n in ("index.html", "review.html")}
-    subprocess.run([sys.executable, "build.py"], cwd=ROOT, capture_output=True, text=True)
+    before = {n: (HUB / n).read_bytes() for n in ("index.html", "review.html")}
+    subprocess.run([sys.executable, "build.py"], cwd=HUB, capture_output=True, text=True)
     for n, b in before.items():
-        assert (ROOT / n).read_bytes() == b, f"{n} build is not deterministic"
+        assert (HUB / n).read_bytes() == b, f"{n} build is not deterministic"
 
 
 def test_embedded_json_parses():
-    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    html = (HUB / "index.html").read_text(encoding="utf-8")
     m = re.search(r'<script id="db" type="application/json">(.*?)</script>', html, re.S)
     assert m, "no embedded database in index.html"
     db = json.loads(m.group(1).replace("<\\/", "</"))

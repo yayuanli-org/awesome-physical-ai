@@ -33,6 +33,8 @@ The full list is in `conventions.md`. The ones that apply to every single edit:
   is at least plausible; you are the real check.
 - **`confidence: "medium"`** means grounded in the abstract but not read end to end.
   Use it honestly. It is rendered on the page.
+- **The hub is `paper-hub/`, the courses are `courses/`, and nothing flows from the
+  second into the first.** A schedule or an assignment is never a column.
 - **Prose voice is the `Plain` output style, and a test enforces the mechanical part.**
   No semicolon or em-dash welding two independent clauses, no antithesis reflex, no
   blacklist vocabulary.
@@ -76,7 +78,7 @@ The 13 physical-AI axes: `arc`, `loop_stage`, `closes_loop`, `embodiment`,
 
 | Change kind | Updates |
 |---|---|
-| File or directory added, renamed, removed | `structure.md` (refresh, bump the date) |
+| File or directory added, renamed, removed | `structure.md` (refresh, bump the date), and `CLAUDE.md`'s folder map |
 | New column, new vocabulary value, view retuned | `design-rationale.md` + `conventions.md` |
 | New rule for how a paper is written | `conventions.md`, and add an enforcing check in `../dev-test/` |
 | Build pipeline changed | `flows/build-pipeline.md` |
