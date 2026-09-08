@@ -11,6 +11,7 @@
 #   4. execute         so the charts are already there when it opens cold
 #   5. jupyter trust   or Lab strips the style and the scripts on open
 #   6. build.py        doc.html and deck.html, for readers without Jupyter
+#   7. readme.py       ../README.md, what GitHub shows for the lecture folder
 set -euo pipefail
 cd "$(dirname "$0")/.."
 V=~/fun/jupyter/.venv/bin
@@ -37,3 +38,4 @@ PY
 
 "$V/jupyter" trust doc.ipynb
 "$V/python" build.py --no-exec
+"$V/python" scripts/readme.py

@@ -21,6 +21,6 @@ The topics ranges from specific paper arguments and experiments design to genera
 | # | Date   | Description                                                                    | Course Materials                                      |
 |---|--------|--------------------------------------------------------------------------------|-------------------------------------------------------|
 | 1 | Sep 2  | Introduction to the course (Jason)                                             |                                                       |
-| 2 | Sep 9  | Physical AI: where the field stands, and how to join the conversation (Yayuan) | [notes](lectures/02-where-the-field-stands/doc.ipynb) |
+| 2 | Sep 9  | Physical AI: where the field stands, and how to join the conversation (Yayuan) | [notes](lectures/02-where-the-field-stands/) |
 | 3 | Sep 16 | Debate 1: from virtual to physical AI                                          |                                                       |
 
