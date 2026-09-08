@@ -30,6 +30,10 @@ from traitlets.config import Config
 
 HERE = Path(__file__).resolve().parent
 COMMENT_RE = re.compile(r"^>\s*\[C\].*$", re.M)
+# A thread is `> [C] …` lines joined by bare `>` lines. Once the marked lines are
+# gone, what is left of the cell is those bare lines: an empty blockquote, which the
+# deck showed as a blank box that cost a keypress. Found 2026-09-07, four per deck.
+BARE_QUOTE_RE = re.compile(r"^>\s*$", re.M)
 
 # The deck needs the document's stylesheet rewritten, and nbdoc.py already owns
 # that rewriter — it is what puts the same sheet into a live notebook. The two
@@ -118,7 +122,7 @@ def strip_comments(nb):
     for c in nb.cells:
         c = c.copy()
         if c.cell_type == "markdown":
-            c.source = COMMENT_RE.sub("", c.source).strip()
+            c.source = BARE_QUOTE_RE.sub("", COMMENT_RE.sub("", c.source)).strip()
             if not c.source:
                 continue
         out.cells.append(c)

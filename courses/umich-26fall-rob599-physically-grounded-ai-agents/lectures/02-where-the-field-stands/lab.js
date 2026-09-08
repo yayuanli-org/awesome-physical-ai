@@ -315,18 +315,39 @@
   // is reachable from the notebook, so the fix is to present the file we do
   // configure. The deck is a build artifact, so it shows the last build, not
   // the cell you just typed.
-  // Only Lab's own /lab/tree/<path>.ipynb route, because that is the one whose
-  // folder the server also publishes under /files/. Voila and build.py's static
-  // exports run this same script and have no deck to point at.
-  var nbRoute = decodeURIComponent(location.pathname || '')
-                  .match(/\/(?:lab|doc)(?:\/workspaces\/[^/]+)?\/tree\/(.*\/)?([^/]+)\.ipynb$/);
-  var nbDir = nbRoute ? (nbRoute[1] || '') : '';
-  var nbStem = nbRoute ? nbRoute[2] : '';
+  // Which notebook this is, so Present can name its deck. Lab's /lab/tree/<path>
+  // route carries the path, but only when Lab was opened at that URL. A tab that
+  // restores the notebook from a workspace sits at /lab or /lab/workspaces/<id>
+  // with no path in it, and until 2026-09-07 Present was silently missing there:
+  // the button was built only when the URL matched. The app knows the path
+  // whatever the URL says, so ask it second and the document title third, and
+  // resolve at click time as well as now, because a restored notebook can arrive
+  // after this cell's output has run.
+  var ROUTE = /\/(?:lab|doc)(?:\/workspaces\/[^/]+)?\/tree\/(.+\.ipynb)$/;
+  function nbPath() {
+    var m = decodeURIComponent(location.pathname || '').match(ROUTE);
+    if (m) return m[1];
+    try {
+      var w = notebookWidget();
+      var p = w && w.context && w.context.path;
+      if (p && /\.ipynb$/.test(p)) return p;
+    } catch (e) {}
+    var t = (document.title || '').match(/^(.+?\.ipynb)\b/);
+    return t ? t[1] : '';
+  }
   // Mirrors deck_name() in build.py. The two have to agree or Present 404s.
-  var deckName = !nbStem ? null
-    : (nbStem === 'doc' || nbStem.indexOf('doc_') === 0)
-      ? 'deck' + nbStem.slice(3) + '.html'
-      : nbStem + '-deck.html';
+  function deckFor(path) {
+    if (!path) return null;
+    var i = path.lastIndexOf('/');
+    var dir = i < 0 ? '' : path.slice(0, i + 1);
+    var stem = path.slice(i + 1).replace(/\.ipynb$/, '');
+    var name = (stem === 'doc' || stem.indexOf('doc_') === 0)
+      ? 'deck' + stem.slice(3) + '.html' : stem + '-deck.html';
+    return { dir: dir, stem: stem, name: name, path: dir + name };
+  }
+  // Voila and build.py's static exports run this same script with no Lab around
+  // them and no deck to point at: no chrome and no path, so no button.
+  var canPresent = hasChrome() || !!nbPath();
 
   // Two routes reach the same file, and they do not behave the same. Lab serves
   // /files/ with `Content-Security-Policy: … sandbox allow-scripts`, which puts
@@ -335,16 +356,12 @@
   // plain http.server over this same folder on the next port up, which is an
   // ordinary origin where both work. Prefer it, and keep /files/ for the Lab
   // someone started by hand.
-  function deckPath() { return deckName ? nbDir + deckName : null; }
+  function filesUrl(d) { return location.origin + '/files/' + d.path; }
 
-  function filesUrl() {
-    return deckName ? location.origin + '/files/' + deckPath() : null;
-  }
-
-  function staticUrl() {
+  function staticUrl(d) {
     var port = parseInt(location.port, 10);
-    return (deckName && port) ? location.protocol + '//' + location.hostname +
-                                ':' + (port + 1) + '/' + deckPath() : null;
+    return port ? location.protocol + '//' + location.hostname +
+                  ':' + (port + 1) + '/' + d.path : null;
   }
 
   // Is that server up? A cross-origin HEAD to a plain http.server carries no CORS
@@ -364,30 +381,38 @@
 
   function openDeck(url) { window.open(url, '_blank', 'noopener'); }
 
+  function say(label, title) {
+    pres.textContent = label; pres.title = title;
+    setTimeout(function () { pres.textContent = 'Present'; pres.title = PRES_TITLE; }, 4000);
+  }
+
   function present() {
-    if (!deckName) return;
+    var d = deckFor(nbPath());
+    if (!d) {
+      say('no notebook', 'Could not tell which notebook this is. Click into the ' +
+          'notebook, or open it from the file browser, and press Present again.');
+      return;
+    }
     // A missing deck is the normal state of a folder nobody has built yet, and a
     // blank tab explains nothing. Lab's route is same-origin, so its status is
     // readable; ask it whether the file exists, then pick the origin to open.
-    fetch(filesUrl(), { method: 'HEAD', credentials: 'same-origin' }).then(function (r) {
+    fetch(filesUrl(d), { method: 'HEAD', credentials: 'same-origin' }).then(function (r) {
       if (!r.ok) {
-        pres.textContent = 'run build.py';
-        pres.title = deckName + ' does not exist yet. Run `python build.py ' +
-                     nbStem + '.ipynb` in the folder, then press Present again.';
-        setTimeout(function () { pres.textContent = 'Present'; }, 4000);
+        say('run build.py', d.name + ' does not exist yet. Run `python build.py ' +
+            d.stem + '.ipynb` in the folder, then press Present again.');
         return;
       }
-      reachable(staticUrl()).then(function () { openDeck(staticUrl()); },
-                                  function () { openDeck(filesUrl()); });
-    }).catch(function () { openDeck(filesUrl()); });
+      reachable(staticUrl(d)).then(function () { openDeck(staticUrl(d)); },
+                                   function () { openDeck(filesUrl(d)); });
+    }).catch(function () { openDeck(filesUrl(d)); });
   }
 
-  var pres;
-  if (deckName) {
+  var PRES_TITLE = 'Open build.py\u2019s reveal.js deck for this notebook, in a new tab (Alt+P)';
+  var pres = null;
+  if (canPresent) {
     bar.appendChild(sep());
     pres = document.createElement('button');
-    pres.type = 'button'; pres.textContent = 'Present';
-    pres.title = 'Open ' + deckName + ' — build.py\u2019s reveal.js deck, in a new tab (Alt+P)';
+    pres.type = 'button'; pres.textContent = 'Present'; pres.title = PRES_TITLE;
     pres.addEventListener('click', present);
     bar.appendChild(pres);
   }
@@ -420,7 +445,7 @@
     var h = document.createElement('h2'); h.textContent = 'Keys'; card.appendChild(h);
     var t = document.createElement('table');
     HELP.forEach(function (row) {
-      if (row[1] === 'P' && !deckName) return;   // no deck in this folder, no key for it
+      if (row[1] === 'P' && !pres) return;   // no Lab around the notebook, no key for it
       var tr = document.createElement('tr');
       var k = document.createElement('td');
       if (row[0]) { var m = document.createElement('kbd'); m.textContent = row[0]; k.appendChild(m); k.appendChild(document.createTextNode(' ')); }
@@ -466,7 +491,7 @@
     if (typing) return;
     var m = MODES.filter(function (x) { return x.code === e.code; })[0];
     if (m) { toggle(m.key); e.preventDefault(); return; }
-    if (e.code === 'KeyP' && deckName) { present(); e.preventDefault(); return; }
+    if (e.code === 'KeyP' && pres) { present(); e.preventDefault(); return; }
     // Alt+? — a bare `?` is a character people type, so it stays theirs. Match the
     // physical key: on a Mac, Alt+Shift+/ arrives as `¿`, and Alt+/ as `÷`.
     if (e.code === 'Slash') { showHelp(); e.preventDefault(); return; }
