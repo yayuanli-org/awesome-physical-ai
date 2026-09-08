@@ -1,36 +1,28 @@
 """Debate 1, From virtual to physical AI: the cells that close §5 of Lecture 2.
 
-Imported by build_doc.py (the seed) and by insert_debate1.py (the one-shot that put
-these cells into the existing doc.ipynb on 2026-09-07). One block per cell. Every
-number was checked against the paper's own text, not the hub's copy of it.
+Imported by build_doc.py (the seed). One block per cell, in the lecture's slide
+format: a table, two to four bullets, and a map box at the end of each of the four
+parts (the question, what to read, the recap, the prompts). Every number was checked
+against the paper's own text, not the hub's copy of it.
 """
 from __future__ import annotations
 
 
-def debate1(md, flow) -> None:
+def debate1(md, flow, bullets, box) -> None:
     # ---------------------------------------------------------------- the question
     md("### Debate 1 · From virtual to physical AI")
 
     md('''
 > [C] on debate 1
 >
-> [C] **ai:** Four calls are yours. The core pair: ReAct with Inner Monologue as drafted, or ReAct with SayCan, whose single ablation is cleaner but whose loop is thinner. The podcast: Sutton for the in-principle case, Levine for the practitioner's numbers. The fourth side unit: RT-2 for whether web knowledge crosses over, HoloAssist for the guiding-a-person side. And which four motions to run, with R1, I1, F2 and F3 marked. Every number was checked against the paper's own text.
-''')
-
-    md('''
-"AI is going from virtual to physical" sounds obvious and is hard to make precise. Where is
-the line, what does crossing it cost, and how much of what people want from AI sits on the
-far side? The two core papers run the same loop, think, act, read what came back, on the two
-sides of the line, so every claim about the boundary can be checked against two sets of
-numbers. §2 argued that the body breaks that loop in three places, the state, the act and the
-check. This debate is whether that argument holds.
+> [C] **ai:** Four calls are yours: the core pair (Inner Monologue as drafted, or SayCan, whose ablation is cleaner but whose loop is thinner), the podcast (Sutton for the in-principle case, Levine for the practitioner's numbers), the fourth side unit (RT-2 for web-to-robot transfer, HoloAssist for guiding a person), and which four motions to run, with R1, I1, F2 and F3 marked.
 ''')
 
     flow('''
      Bisk 2020   WS2 internet ─────────► WS3 perception ─────────► WS4 embodiment
                  "virtual AI"                                      "physical AI"
 
-     core        <b>ReAct</b> (ICLR 2023)                  <b>Inner Monologue</b> (CoRL 2022)
+     core        ReAct (ICLR 2023)                  Inner Monologue (CoRL 2022)
                  a house made of text, ALFWorld     a real kitchen, feedback typed back as text
                  0 training, 3 examples per type    frozen PaLM, one learned success detector
                  71% best / 57% average             50% → 75% with the loop closed
@@ -40,26 +32,19 @@ check. This debate is whether that argument holds.
                  Bisk: the ladder · Sutton: why text is not enough · RT-2: 9% → 42% → 44%
 
      prompts     R1–R3 on ReAct    I1–I3 on Inner Monologue    F1–F4 on the field
-''')
+''', bold=("ReAct (ICLR 2023)", "Inner Monologue (CoRL 2022)"))
 
-    md('''
-ReAct is the control, the loop in a world where the state is handed over, every action works
-and the game reports success. Inner Monologue is the treatment, the same loop in a kitchen,
-with the state and the check fed back to the planner as sentences. The two papers already
-argue with each other, since ReAct's ablation ReAct-IM copies Inner Monologue's feedback
-style and loses. SayCan sits underneath both as the side reading that itemizes what a body
-costs. Bisk supplies the vocabulary, Sutton the sharpest case that virtual is not enough,
-RT-2 the one controlled measurement of how much crosses over. The prompts run from
-paper-level claims up to the question in the title.
-''')
+    bullets(
+        '"AI is going from virtual to physical" sounds obvious and is hard to make precise. '
+        "Where is the line, and what does crossing it cost?",
+        "The two core papers run the same loop on either side of the line, ReAct in a house "
+        "made of text and Inner Monologue in a real kitchen.",
+        "§2 said the body breaks the loop at the state, the act and the check. This debate is "
+        "whether that holds.",
+        "Ten motions follow. For one session, run R1, I1, F2 and F3.",
+    )
 
-    md('''
-Each prompt is a motion one side defends, the evidence either side can reach for from the
-readings, and the question that settles it. The paper prompts follow PACES. The first on each
-paper is about the claim and whether the evaluation substantiates it, the second about the
-approach, the third about the evaluation itself. Ten are here so the group can choose, and
-the recommended four for one session are R1, I1, F2 and F3.
-''')
+    box("debate 1")
 
     # ---------------------------------------------------------------- what to read
     md("### Debate 1 · What to read")
@@ -76,38 +61,20 @@ the recommended four for one session are R1, I1, F2 and F3.
 <tr><td>Inner Monologue: Embodied Reasoning through Planning with Language Models. Huang et
     al., CoRL 2022. <a href="https://arxiv.org/abs/2207.05608">arXiv</a></td>
     <td>The same loop with a body, closed by writing perception down as text</td>
-    <td>Method, experiments and the limitations paragraph. Skip the intro and related work,
-    as the hub's reading protocol says</td>
+    <td>Method, experiments and the limitations paragraph. Skip the intro and related work</td>
     <td>~9</td></tr>
 </tbody></table>
 ''')
 
-    md('''
-ReAct. Prompt a language model to alternate a thought, an action, and the observation the
-environment returns, all in one token stream. ALFWorld is a text version of a house. The
-observation is a sentence listing what is at your location, the action is a sentence, and a
-valid action always works. With three annotated example trajectories per task type and no
-training, the best ReAct prompt solves 71% of 134 unseen tasks, and 57% averaged over six
-prompts. The same prompts without thoughts reach 45%. BUTLER, an imitation learner trained
-on 100,000 expert trajectories per task type, reaches 37%. Read it as the control condition,
-what the brain does when the world is free.
-''')
-
-    md('''
-Inner Monologue. Keep the frozen planner and give it the world back as text. After each skill
-a success detector says whether it worked, an object recognizer says what is in view, and a
-person can answer a question the planner asks. All of it is appended to the prompt and the
-planner picks the next skill. In a real kitchen, on 8 instructions over 120 evaluations, the
-open-loop baseline (SayCan) completes 50.0% and the closed loop 75.0%. When a person disturbs
-the scene during execution, the baseline drops to 12.5% and the closed loop keeps 33.3%. Read
-the fine print with it. In simulation every feedback signal is ground truth from the
-simulator, and in the kitchen the object recognition is human-provided, so the only learned
-perception in the headline result is the success detector.
-''')
-
-    md('''
-Four side units, in reading order. Each is there for one reason.
-''')
+    bullets(
+        "ReAct alternates a thought, an action and the observation in one token stream, in a "
+        "text house where every valid action works. Three examples per task type, no training.",
+        "Inner Monologue keeps the frozen planner and hands the world back as text after each "
+        "skill, as a success flag, an object list, and a person's answer.",
+        "In simulation every feedback signal is ground truth, and in the kitchen a person "
+        "types the object list, so the only learned perception in the headline is the success "
+        "detector.",
+    )
 
     md('''
 <table class="k wide plain">
@@ -138,45 +105,48 @@ Four side units, in reading order. Each is there for one reason.
 </tbody></table>
 ''')
 
-    md('''
-Alternates, if the group leans a different way. For the podcast, "Fully autonomous robots
-are much closer than you think – Sergey Levine" (Dwarkesh Podcast, 12 Sep 2025) is the
-practitioner's version with numbers. Robot datasets are one to two orders of magnitude
-smaller than vision-language corpora, an arm cost $400,000 in 2014 and $3,000 now, and his
-median guess for household autonomy is five years out. For the fourth unit, HoloAssist
-(ICCV 2023) replaces RT-2 if the group cares more about guiding people than about robots.
-It holds 166 hours of a remote instructor watching a performer's first-person video and
-talking them through a task.
-''')
+    bullets(
+        "Each side unit is there for one reason: the price list, the vocabulary, the "
+        "in-principle case, the one controlled transfer measurement.",
+        "If the group leans the other way, Levine's episode (Dwarkesh Podcast, 12 Sep 2025) "
+        "is the practitioner's version, with its numbers in the recap.",
+        "HoloAssist (ICCV 2023), 166 hours of a remote instructor talking a first-person "
+        "performer through a task, replaces RT-2 if the group cares more about guiding people.",
+        "Cosmos and the CES 2025 keynote are not assigned. The one sentence they add is in "
+        "the recap.",
+    )
 
-    md('''
-Not assigned. NVIDIA's Cosmos paper and Jensen Huang's CES 2025 keynote supply the industry
-definition, which is one sentence and sits in the recap with a link.
-''')
+    box("reading")
 
     # ---------------------------------------------------------------- the recap
     md("### Debate 1 · The recap, ten minutes")
 
     md('''
-Enough to argue from if nobody read anything. Every number comes from the source named
-beside it. Three definitions first, then what the hub holds, then the two papers side by
-side.
+<table class="k wide plain">
+<thead><tr><th>the definition, by</th><th>what it says</th></tr></thead>
+<tbody>
+<tr><td>industry: <a href="https://arxiv.org/abs/2501.03575">Cosmos</a>, NVIDIA, Jan 2025</td>
+    <td>"Physical AI is an AI system equipped with sensors and actuators: the sensors allow it
+    to observe the world, and the actuators allow it to interact with and modify the world."
+    Huang at CES 2025 named the eras perception AI, generative AI, now physical AI, and said
+    "the ChatGPT moment for general robotics is just around the corner."</td></tr>
+<tr><td>the hub</td>
+    <td>Physical AI studies how the physical world gets changed in the age of AI. Model the
+    world, change it through an embodiment, and since acting changes what has to be modeled,
+    the two close into a loop. Virtual, in the hub's columns, is embodiment <code>none</code>
+    or <code>sim</code>.</td></tr>
+<tr><td>the ladder: Bisk et al. 2020</td>
+    <td>WS1 corpus, WS2 internet, WS3 perception, WS4 embodiment, WS5 social. "Most trending
+    work in NLP operates in the second." "You can't learn language from the radio."</td></tr>
+</tbody></table>
 ''')
 
-    md('''
-- Industry. "Physical AI is an AI system equipped with sensors and actuators: the sensors
-  allow it to observe the world, and the actuators allow it to interact with and modify the
-  world." ([Cosmos](https://arxiv.org/abs/2501.03575), NVIDIA, Jan 2025.) Huang at CES 2025
-  named the eras as perception AI, then generative AI, now physical AI, and said "the ChatGPT
-  moment for general robotics is just around the corner."
-- The hub. Physical AI studies how the physical world gets changed in the age of AI. Model
-  the world, change it through an embodiment, and since acting changes what has to be
-  modeled, the two close into a loop. Virtual, in the hub's columns, is embodiment `none`
-  or `sim`.
-- The ladder. Bisk et al. 2020: WS1 corpus, WS2 internet, WS3 perception, WS4 embodiment,
-  WS5 social. "Most trending work in NLP operates in the second." "You can't learn language
-  from the radio."
-''')
+    bullets(
+        "Enough to argue from if nobody read anything. Every number comes from the source "
+        "beside it.",
+        "All three definitions put sensors on the way in and a changed world on the way out. "
+        "They differ on where the line is.",
+    )
 
     md('''
 <table class="k narrow plain">
@@ -191,10 +161,11 @@ side.
 </tbody></table>
 ''')
 
-    md('''
-Language is the representation in 56 of the 110. Half of physical AI, as this hub has it,
-thinks in words.
-''')
+    bullets(
+        "Of the 22 papers with no body, one closes the loop. Of the 23 robot papers, 19 do.",
+        "Language is the representation in 56 of the 110. Half of physical AI, as this hub has "
+        "it, thinks in words.",
+    )
 
     md('''
 <table class="k wide plain">
@@ -219,51 +190,90 @@ thinks in words.
 </tbody></table>
 ''')
 
-    md('''
-Six more numbers.
-
-- Inner Monologue in simulation, where all feedback is ground truth, 50 episodes per task
-  with disturbances. Pick and place: policy alone 24%, with the object list 80%, plus
-  success detection 90%, plus a progress description 94%. Stack all blocks: 2%, 4%, 10%,
-  26%. On the four unseen tasks the policy alone scores 0%. Real tabletop, 10 runs each:
-  45% with the object list, 90% with success detection added.
-- SayCan, 101 instructions in a mock kitchen. Plan 84%, execution 74%. Real kitchen 81% and
-  60%. Without the value function, plan success 67%. Behind the 551 skills: 68,000
-  teleoperated demonstrations over 11 months on 10 robots, plus 12,000 successful autonomous
-  episodes filtered from 276,000. Weakest instruction family: Embodiment, the queries about
-  the robot's own state, 64% plan and 55% execution. Two new drawer skills over 21 queries:
-  plan 100%, execution 33%.
-- RT-2, 5B model, generalization to unseen objects and scenes. Trained from scratch 9%.
-  Web-pretrained, then fine-tuned on robot data only, 42%. Co-fine-tuned on web and robot
-  data, 44%. At 55B, co-fine-tuning 63% against fine-tuning 52%. Overall unseen 62% against
-  RT-1's 32%, over 6,000 real trials. Robot data from 13 robots over 17 months.
-- Cost of a body. Levine, Sep 2025: robot datasets one to two orders of magnitude smaller
-  than vision-language corpora, and his guess is under 100,000 arms in the world of the kind
-  you could train on. Cosmos: "these actions perturb the physical world and may cause severe
-  damage to the system and the world."
-- Guiding a person. HoloAssist, 166 hours, 2,221 sessions, 222 participants: the remote
-  instructor watched the performer's first-person video throughout, and about 6% of
-  fine-grained actions were mistakes. Vid2Coach: 58.5% fewer errors for eight blind and
-  low-vision cooks against their usual workflow. One AR assembly study: 31% faster and a
-  higher error rate.
-- Moravec, 1988: "it is comparatively easy to make computers exhibit adult level performance
-  on intelligence tests or playing checkers, and difficult or impossible to give them the
-  skills of a one-year-old when it comes to perception and mobility."
-''')
+    bullets(
+        "The same frozen planner on both sides. What differs is where the state, the action "
+        "and the success signal come from.",
+        "Thoughts are worth 3 to 26 points in the text house. The success detector and the "
+        "object list are worth 12.5 points each in the kitchen.",
+    )
 
     md('''
-Three quotes for a slide.
-
-- Sutton, Sep 2025: "Large language models are about mimicking people, doing what people say
-  you should do. They're not about figuring out what to do."
-- Sutton again: "There's no ground truth in large language models because you don't have a
-  prediction about what will happen next."
-- Fei-Fei Li, Nov 2025: today's models are "eloquent but inexperienced, knowledgeable but
-  ungrounded."
+<table class="k wide plain">
+<thead><tr><th>source</th><th>the numbers</th></tr></thead>
+<tbody>
+<tr><td>Inner Monologue in simulation. All feedback is ground truth, 50 episodes per task
+    with disturbances</td>
+    <td>Pick and place: policy alone 24%, with the object list 80%, plus success detection
+    90%, plus a progress description 94%. Stack all blocks: 2%, 4%, 10%, 26%. On the four
+    unseen tasks the policy alone scores 0%. Real tabletop, 10 runs each: 45% with the
+    object list, 90% with success detection added</td></tr>
+<tr><td>SayCan, 101 instructions</td>
+    <td>Mock kitchen: plan 84%, execution 74%. Real kitchen: 81% and 60%. Without the value
+    function, plan success 67%. Behind the 551 skills: 68,000 teleoperated demonstrations
+    over 11 months on 10 robots, plus 12,000 successful autonomous episodes filtered from
+    276,000. Weakest family, queries about the robot's own state: 64% plan, 55% execution.
+    Two new drawer skills over 21 queries: plan 100%, execution 33%</td></tr>
+<tr><td>RT-2, generalization to unseen objects and scenes</td>
+    <td>5B model: trained from scratch 9%, web-pretrained then fine-tuned on robot data 42%,
+    co-fine-tuned on web and robot data 44%. At 55B, co-fine-tuning 63% against fine-tuning
+    52%. Overall unseen 62% against RT-1's 32%, over 6,000 real trials. Robot data from 13
+    robots over 17 months</td></tr>
+<tr><td>the cost of a body</td>
+    <td>Levine, Sep 2025: robot datasets one to two orders of magnitude smaller than
+    vision-language corpora, under 100,000 arms in the world of the kind you could train on,
+    an arm $400,000 in 2014 and $3,000 now, and his median guess for household autonomy five
+    years out. Cosmos: "these actions perturb the physical world and may cause severe damage
+    to the system and the world"</td></tr>
+<tr><td>guiding a person</td>
+    <td>HoloAssist, 166 hours, 2,221 sessions, 222 participants: the remote instructor
+    watched the performer's first-person video throughout, and about 6% of fine-grained
+    actions were mistakes. Vid2Coach: 58.5% fewer errors for eight blind and low-vision
+    cooks against their usual workflow. One AR assembly study: 31% faster and a higher
+    error rate</td></tr>
+<tr><td>Moravec, 1988</td>
+    <td>"It is comparatively easy to make computers exhibit adult level performance on
+    intelligence tests or playing checkers, and difficult or impossible to give them the
+    skills of a one-year-old when it comes to perception and mobility"</td></tr>
+</tbody></table>
 ''')
+
+    bullets(
+        "Every feedback channel added to Inner Monologue adds success, most where the policy "
+        "alone is worst: 24% to 94% on pick and place.",
+        "The body's price is data, hardware and damage: 68,000 demonstrations for 551 skills, "
+        "under 100,000 trainable arms, and an action that does not undo.",
+    )
+
+    md('''
+<table class="k wide plain">
+<thead><tr><th>who, when</th><th>the quote</th></tr></thead>
+<tbody>
+<tr><td>Richard Sutton, Sep 2025</td>
+    <td>"Large language models are about mimicking people, doing what people say you should
+    do. They're not about figuring out what to do."</td></tr>
+<tr><td>Sutton again</td>
+    <td>"There's no ground truth in large language models because you don't have a prediction
+    about what will happen next."</td></tr>
+<tr><td>Fei-Fei Li, Nov 2025</td>
+    <td>Today's models are "eloquent but inexperienced, knowledgeable but ungrounded."</td></tr>
+</tbody></table>
+''')
+
+    bullets(
+        "Sutton's two make the in-principle case, that a virtual model has no goal, no ground "
+        "truth, and is never surprised. Li's is the same point, from vision.",
+    )
+
+    box("recap")
 
     # ---------------------------------------------------------------- prompts: ReAct
     md("### Debate 1 · Prompts on ReAct")
+
+    md('''
+Each prompt is a motion one side defends, the evidence either side can reach for from the
+readings, and the question that settles it. On each paper the first is about the claim and
+its substantiation, the second about the approach, the third about the evaluation.
+''')
 
     md('''
 <div class="callout note"><span class="t">R1 · claim and substantiation</span>
@@ -274,21 +284,20 @@ why ReAct works.</p></div>
     md('''
 <div class="pair">
 <div><span class="t">for</span>The environment hands over the three things §2 says the body
-breaks. The state arrives as a sentence. Every valid action succeeds. The task ends with a
-symbolic check. Remove any one and the 71% says nothing about a kitchen.</div>
+breaks. The state arrives as a sentence, every valid action succeeds, and the task ends with
+a symbolic check. Remove any one and the 71% says nothing about a kitchen.</div>
 <div><span class="t">against</span>ALFWorld keeps the part of the problem the language model
 actually solves. A task can have more than 50 locations and need more than 50 steps, and the
-agent has to guess where a desk lamp is likely to be. That prior is the same thing SayCan's
-planner contributes, and SayCan's ablation prices it at 67 points of plan success on its
-own.</div>
+agent has to guess where a desk lamp is likely to be. That prior is what SayCan's planner
+contributes, and SayCan's ablation prices it at 67 points of plan success on its own.</div>
 </div>
 ''')
 
     md('''
 Settle it. Of the three free things, which costs the physical papers the most? Map each to a
-number. The state to SayCan's 84% to 67% without the value function. The act to SayCan's 84%
-plan against 74% execution, and 81% against 60% in the real kitchen. The check to Inner
-Monologue's 50.0% falling to 12.5% under disturbance.
+number: the state to SayCan's 84% falling to 67% without the value function, the act to
+SayCan's 84% plan against 74% execution (81% against 60% in the real kitchen), the check to
+Inner Monologue's 50.0% falling to 12.5% under disturbance.
 ''')
 
     md('''
@@ -301,10 +310,10 @@ Monologue's 50.0% falling to 12.5% under disturbance.
 <div><span class="t">for</span>Best prompt 71%, average 57%, and the six prompts differ only
 in which two of the three annotated examples they include and in what order. On the
 question-answering benchmark ReAct loses to plain chain-of-thought, 27.4 to 29.4.</div>
-<div><span class="t">against</span>The paper's own defense is that the worst ReAct prompt,
-48%, still beats the best action-only prompt, 45%. The failure analysis shows a change in
-kind. Hallucination accounts for 56% of chain-of-thought failures and 0% of ReAct's, at the
-price of reasoning errors rising from 16% to 47%.</div>
+<div><span class="t">against</span>The worst ReAct prompt, 48%, still beats the best
+action-only prompt, 45%. The failure analysis shows a change in kind: hallucination is 56%
+of chain-of-thought failures and 0% of ReAct's, at the price of reasoning errors rising
+from 16% to 47%.</div>
 </div>
 ''')
 
@@ -324,13 +333,13 @@ one.</p></div>
 <div class="pair">
 <div><span class="t">for</span>ReAct-IM copies Inner Monologue's style, which the ReAct
 authors describe as "limited to observations of the environment state and what needs to be
-completed by the agent", and scores 53% against ReAct's 71%. Free-form thought beats
-structured reports on five of six task types. ReAct-IM "often made mistakes in identifying
-when subgoals were finished", the exact job Inner Monologue gives a success detector.</div>
+completed by the agent", and scores 53% against ReAct's 71%. Free-form thought wins on five
+of six task types. ReAct-IM "often made mistakes in identifying when subgoals were
+finished", the exact job Inner Monologue gives a success detector.</div>
 <div><span class="t">against</span>In the kitchen the structured reports are what lifted
-Inner Monologue from 12.5% to 33.3% under disturbance. ReAct never met a disturbance, because
-ALFWorld has none, and its "observation" is the whole state. The comparison is between a
-format and a world.</div>
+Inner Monologue from 12.5% to 33.3% under disturbance. ReAct never met a disturbance,
+because ALFWorld has none, and its "observation" is the whole state. The comparison is
+between a format and a world.</div>
 </div>
 ''')
 
@@ -346,7 +355,7 @@ success detector have to say for the planner to recover?
     md('''
 <div class="callout note"><span class="t">I1 · claim and substantiation</span>
 <p><b>Motion.</b> The headline kitchen result is a human-in-the-loop result, and the
-closed-loop claim is only shown with oracle perception.</p>
+closed-loop claim is only shown with perception from the simulator.</p>
 <p>The claim under debate: "Closed-loop language feedback significantly improves high-level
 instruction completion on three domains, including simulated and real table top
 rearrangement tasks and long-horizon mobile manipulation tasks in a kitchen environment in
@@ -357,11 +366,10 @@ the real world."</p></div>
 <div class="pair">
 <div><span class="t">for</span>In simulation every feedback signal comes from the simulator,
 and the paper says so: "We assume access to oracle scene descriptors." In the kitchen the
-object list is human-provided. The one learned perception module is the success detector,
-and the paper names its errors as the first failure mode: false negatives cause extra
-retries and false positives "add adversarial partial observability." The planner also
-sometimes "ignored the environment feedback and still proposed policy skills involving
-objects not present in the scene."</div>
+object list is human-provided. The one learned module, the success detector, is the paper's
+first named failure mode: false negatives cause extra retries and false positives "add
+adversarial partial observability." The planner also sometimes "ignored the environment
+feedback."</div>
 <div><span class="t">against</span>The success detector alone carries the "check" break, and
 it alone lifts 50.0% to 62.5% and 12.5% to 25.0%. Human object recognition stands in for a
 detector that existed at the time and bounds what perception could give, which is how you
@@ -373,7 +381,7 @@ hold that fixed.</div>
     md('''
 Settle it. The hub's `embodiment` column tags Inner Monologue both `robot` and
 `human+robot`. Which tag does the kitchen result earn, given that the perception runs through
-a person's eyes? Is it a robot paper, a human-plus-robot paper, or a virtual-AI paper with an
+a person's eyes? A robot paper, a human-plus-robot paper, or a virtual-AI paper with an
 excellent sensor?
 ''')
 
@@ -391,10 +399,10 @@ the tabletop and the kitchen, and each added channel adds success in simulation:
 proposing a new goal when the old one is infeasible, taking instructions in another
 language, come free because the channel is language.</div>
 <div><span class="t">against</span>A sentence drops geometry. "Stack all blocks" stays at 4%,
-10%, 26% with oracle feedback, because "the red block is on the blue block" carries no pose
-and no tolerance. ReAct shows the report format costs reasoning, 53% against 71%. And the
-paper's own failure list ends with the planner ignoring what it was told, which no channel
-can prevent.</div>
+10%, 26% with simulator feedback, because "the red block is on the blue block" carries no
+pose and no tolerance. ReAct shows the report format costs reasoning, 53% against 71%. And
+the paper's own failure list ends with the planner ignoring what it was told, which no
+channel can prevent.</div>
 </div>
 ''')
 
@@ -419,9 +427,8 @@ none, so its 71% cannot tell an open loop from a closed one. SayCan reported 84%
 without one. RT-2's 6,000 trials test generalization, not recovery.</div>
 <div><span class="t">against</span>The disturbances were applied by the experimenters during
 skill execution to make skills fail, so the protocol measures recovery from failures the
-authors chose. A result of 33.3% under disturbance is still two failures in three, and 120
-evaluations spread over 8 instructions and six conditions is a small sample for a
-headline.</div>
+authors chose. 33.3% under disturbance is still two failures in three, and 120 evaluations
+spread over 8 instructions and six conditions is a small sample for a headline.</div>
 </div>
 ''')
 
@@ -500,9 +507,8 @@ task.</div>
 first-person video the whole time, and two of their six utterance types, correcting a
 mistake and confirming the last action, are hard to produce without it. About 6% of
 fine-grained actions in HoloAssist were mistakes. Vid2Coach's camera monitoring cut errors
-58.5% for eight blind and low-vision cooks against their usual workflow. On the other side
-of the same coin, AR visual guidance in one assembly study made people 31% faster and raised
-their error rate.</div>
+58.5% for eight blind and low-vision cooks. On the other side of the same coin, AR visual
+guidance in one assembly study made people 31% faster and raised their error rate.</div>
 </div>
 ''')
 
@@ -533,10 +539,6 @@ defined by what it is trained on.</div>
 ''')
 
     md('''
-Settle it. Argue from this table, and contest any cell.
-''')
-
-    md('''
 <table class="k wide plain">
 <thead><tr><th></th><th>ReAct</th><th>SayCan, then Inner Monologue</th><th>RT-2</th></tr></thead>
 <tbody>
@@ -558,6 +560,12 @@ Settle it. Argue from this table, and contest any cell.
 ''')
 
     md('''
+Settle it. Argue from this table, and contest any cell.
+''')
+
+    md('''
 What came out. Filled in after the session: the sides, the strongest argument each way,
 where the room landed, and which prompts to reuse.
 ''')
+
+    box("prompts")

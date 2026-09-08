@@ -82,3 +82,18 @@ pre.flow b { color:var(--ink); font-weight:600; }
 
 /* --- live charts ----------------------------------------------------------- */
 figure.nbdoc-fig { margin:16px 0; }
+
+/* --- the map ---------------------------------------------------------------
+   The lecture's table of contents, drawn once under the title and again after
+   every unit as a "where we are" box: what is done in ink, the rest greyed out.
+   build_doc.py's render_map() writes the spans; this only colours them.        */
+pre.flow.map { font-size:12px; line-height:1.65; }
+pre.flow.map .lbl  { font-size:10.5px; font-weight:700; letter-spacing:.08em;
+                     text-transform:uppercase; color:var(--accent); }
+pre.flow.map .grp  { color:var(--faint); font-size:11px; letter-spacing:.05em;
+                     text-transform:uppercase; }
+pre.flow.map .done { color:var(--ink); }
+pre.flow.map .todo,
+pre.flow.map .sep  { color:#c4c8d4; }
+pre.flow.map b.done { color:var(--ink); font-weight:600; }
+pre.flow.map b.todo { color:#c4c8d4; font-weight:600; }
