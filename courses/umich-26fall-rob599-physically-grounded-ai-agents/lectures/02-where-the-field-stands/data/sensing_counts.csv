@@ -1,0 +1,12 @@
+label,value
+egocentric,51
+robot onboard,27
+exocentric,25
+web video,22
+simulator,17
+depth / 3d,17
+multi-view,13
+audio / speech,10
+imu / wearable,7
+eye gaze,7
+tactile / force,2

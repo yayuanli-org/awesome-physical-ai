@@ -1,0 +1,9 @@
+label,value
+pixels,15
+latent,8
+language,7
+3d/4d geometry,6
+trajectory/flow,6
+graph/symbol,4
+discrete tokens,3
+physics params,2

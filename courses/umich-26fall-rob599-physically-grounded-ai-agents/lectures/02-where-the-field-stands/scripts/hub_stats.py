@@ -134,6 +134,56 @@ def main() -> None:
                      examples(papers, key, value)])
     write("thin_cells.csv", ["axis", "value", "papers", "examples"], rows)
 
+    # --- sensing channel, most to least used -----------------------------------------
+    lab = labels_for(schema, "sensing")
+    c = count(papers, "sensing")
+    write("sensing_counts.csv", ["label", "value"],
+          [[lab[v].lower(), c[v]] for v, _ in c.most_common() if v in lab])
+
+    # --- anticipate and decide: one stage or two? -----------------------------------
+    a = {p["id"] for p in papers if "anticipate" in (p.get("loop_stage") or [])}
+    d = {p["id"] for p in papers if "decide" in (p.get("loop_stage") or [])}
+    write("anticipate_decide.csv", ["label", "value"],
+          [["anticipate only", len(a - d)], ["both", len(a & d)], ["decide only", len(d - a)]])
+
+    # --- what the anticipate-stage papers predict ------------------------------------
+    lab = labels_for(schema, "representation")
+    c = Counter()
+    for p in papers:
+        if "anticipate" in (p.get("loop_stage") or []):
+            c.update(p.get("representation") or [])
+    write("anticipate_by_representation.csv", ["label", "value"],
+          [[lab[v].lower(), c[v]] for v, _ in c.most_common() if v in lab])
+
+    # --- what the act-stage papers emit -----------------------------------------------
+    lab = labels_for(schema, "change_channel")
+    c = Counter()
+    for p in papers:
+        if "act" in (p.get("loop_stage") or []):
+            c.update(p.get("change_channel") or [])
+    write("act_by_channel.csv", ["label", "value"],
+          [[lab[v].lower(), c[v]] for v, _ in c.most_common() if v in lab and v != "none"])
+
+    # --- contribution by domain, one table ---------------------------------------------
+    dom = labels_for(schema, "domain")
+    con = labels_for(schema, "contribution")
+    tiers = ["everyday", "skill", "industrial", "clinical", "lab-sim", "web"]
+    rows = []
+    for c_ in ["dataset", "benchmark", "method", "system", "analysis", "survey"]:
+        cnt = Counter(v for p in papers if c_ in (p.get("contribution") or []) for v in (p.get("domain") or []))
+        rows.append([con[c_].lower()] + [cnt[t] for t in tiers])
+    write("contribution_by_domain.csv", ["contribution"] + [dom[t].lower() for t in tiers], rows)
+
+    # --- hours of released video per domain tier, from the hand-kept table -------------
+    hours_file = OUT / "dataset_hours.csv"
+    if hours_file.exists():
+        tot = Counter()
+        with hours_file.open(encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                tot[r["tier"]] += float(r["hours"])
+        write("hours_by_domain.csv", ["label", "value"],
+              [[t, round(tot[t])] for t in ["everyday", "skill", "industrial", "clinical"]])
+
     # --- one line of totals, for the prose to check itself against ----------------
     arcs = count(papers, "arc")
     both = sum(1 for p in papers if set(p.get("arc") or []) == {"model", "change"})

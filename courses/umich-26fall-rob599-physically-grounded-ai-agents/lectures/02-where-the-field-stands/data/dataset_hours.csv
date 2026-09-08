@@ -1,0 +1,15 @@
+dataset,hours,tier,note,source
+Ego4D,3670,everyday,unscripted daily life,arXiv 2110.07058
+EgoDex,829,everyday,tabletop manipulation with hand tracking,arXiv 2505.11709
+EPIC-KITCHENS-100,100,everyday,kitchens,arXiv 2006.13256
+CaptainCook4D,94.5,everyday,recipes with induced errors,arXiv 2312.14556
+HD-EPIC,41,everyday,kitchens with a digital twin,arXiv 2502.04144
+HowToDIV,24,everyday,clips behind generated dialogues,arXiv 2508.11192
+HOT3D,13.9,everyday,833 minutes of hand and object tracking,arXiv 2411.19167
+EgoOops,6.8,everyday,text-following tasks with mistakes,arXiv 2410.05343
+HUMOTO,2.2,everyday,mocap human-object interaction,arXiv 2504.10414
+Ego-Exo4D,1286,skill,ego and exo cameras combined; 5035 takes,arXiv 2311.18259
+Assembly101,513,industrial,12 views of toy-vehicle assembly; 362 sequences of 7 min,arXiv 2203.14712
+HoloAssist,166,industrial,instructor talks a performer through a task,arXiv 2309.17024
+Ego-EXTRA,50,industrial,expert plays the assistant,arXiv 2512.13238
+IndustReal,5.8,industrial,84 assembly and maintenance sequences,arXiv 2310.17323

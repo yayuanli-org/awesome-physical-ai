@@ -97,3 +97,28 @@ pre.flow.map .todo,
 pre.flow.map .sep  { color:#c4c8d4; }
 pre.flow.map b.done { color:var(--ink); font-weight:600; }
 pre.flow.map b.todo { color:#c4c8d4; font-weight:600; }
+
+/* --- galleries -------------------------------------------------------------
+   A row of figures with captions, drawn from assets/img/. build_doc.py's
+   gallery() writes the markup; .c2 to .c5 fix the column count, and a .rowlbl
+   above a row names whose embodiment the row is about.                       */
+.gal { display:grid; gap:12px; margin:10px 0 14px; grid-template-columns:repeat(2, minmax(0,1fr)); }
+.gal.c1 { grid-template-columns:minmax(0,1fr); }
+.gal.c3 { grid-template-columns:repeat(3, minmax(0,1fr)); }
+.gal.c4 { grid-template-columns:repeat(4, minmax(0,1fr)); }
+.gal.c5 { grid-template-columns:repeat(5, minmax(0,1fr)); }
+.gal figure { margin:0; min-width:0; }
+.gal img { width:100%; height:auto; max-height:300px; object-fit:contain; display:block;
+           border:1px solid var(--line); border-radius:6px; background:#fff; }
+.gal.tall img { max-height:440px; }
+.gal.short img { max-height:200px; }
+.gal figcaption { font-size:12px; color:var(--faint); margin-top:5px; line-height:1.4; }
+.gal figcaption b { color:var(--ink); font-weight:600; }
+.rowlbl { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+          color:var(--accent); margin:14px 0 2px; }
+.rowlbl.robot { color:var(--blue); }
+.rowlbl.both  { color:var(--ok); }
+@media (max-width:760px) { .gal, .gal.c3, .gal.c4, .gal.c5 { grid-template-columns:1fr 1fr; } }
+
+/* --- a timeline drawn in a pre.flow reads better with the years in ink ------ */
+pre.flow .yr { color:var(--accent); font-weight:600; }
