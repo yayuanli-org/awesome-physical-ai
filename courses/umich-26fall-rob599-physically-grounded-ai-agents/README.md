@@ -12,8 +12,8 @@ The topics ranges from specific paper arguments and experiments design to genera
 - When: Wednesdays, 4:30 to 7:00 PM
 - Where: FRB 1060, Ford Robotics Building
 - Zoom, every week: [umich.zoom.us/j/99907537702](https://umich.zoom.us/j/99907537702), passcode phai
-- Faculty instructor: Jason J. Corso
-- Graduate student instructor: Yayuan Li
+- Faculty instructor: [Jason J. Corso](https://www.linkedin.com/in/jason-corso/)
+- Graduate student instructor: [Yayuan Li](https://www.linkedin.com/in/yayuan-li-148659272/)
 - ~~Sign up: [form](https://docs.google.com/forms/d/1fB-Y1IlPavuOwqvDl3VhL2XWcu8TgjSMxxINdT75AGs/viewform)~~
 - Large files: [Google Drive folder](https://drive.google.com/drive/folders/13UnHaPS9eRrE-5e2LD4FWcnEaFbhgpEB?usp=drive_link)
 
@@ -21,8 +21,9 @@ The topics ranges from specific paper arguments and experiments design to genera
 
 | # | Date   | Description                                                                    | Course Materials                                      |
 |---|--------|--------------------------------------------------------------------------------|-------------------------------------------------------|
-| 1 | Sep 2  | Introduction to the course (Jason)                                             |                                                       |
+| 1 | Sep 2  | Introduction to the course (Jason)                                             | [recording][rec-01] |
 | 2 | Sep 9  | Physical AI: where the field stands, and how to join the conversation (Yayuan) | [notes](lectures/02-where-the-field-stands/) · [recording][rec-02] |
-| 3 | Sep 16 | Debate 1: from virtual to physical AI                                          |                                                       |
+| 3 | Sep 16 | Debate 1: from virtual to physical AI                                          | [preparation](lectures/02-where-the-field-stands/#debate-1--from-virtual-to-physical-ai) |
 
+[rec-01]: https://drive.google.com/drive/folders/18zV--WTfu6CAnnRQn_bmb5G-dYhG1pIa?usp=drive_link
 [rec-02]: https://umich.zoom.us/rec/play/teiogvQ8rDBvUhLtKTmTMVLGJaB-c7uwM_xHB3UBk8NrlVRNbLuwfhdYHACdpYQ_u0on7QIlrdN3NShT.dxPOh2jigrS6E5c9?accessLevel=meeting&canPlayFromShare=true&from=my_recording&continueMode=true&oldStyle=true&componentName=rec-play&originRequestUrl=https%3A%2F%2Fumich.zoom.us%2Frec%2Fshare%2FdOBA4fmWiCEnQS6i0WeRu-yTLThJiRXOMKVSP699Jl5mWaCIVA3OXvrMrIz0SBT2.T33fEHZp771D5OP5

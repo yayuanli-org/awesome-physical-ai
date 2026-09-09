@@ -1,11 +1,10 @@
 name: pages
 
-# Every push to main republishes the site. A push to dev, or a pull request, only
-# validates, so a malformed paper entry fails there instead of reaching the public
-# page.
+# Every push to main republishes the site. A pull request only validates, so a
+# malformed paper entry fails there instead of reaching the public page.
 on:
   push:
-    branches: [main, dev]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
