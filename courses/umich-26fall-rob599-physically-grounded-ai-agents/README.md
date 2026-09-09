@@ -23,7 +23,7 @@ The topics ranges from specific paper arguments and experiments design to genera
 |---|--------|--------------------------------------------------------------------------------|-------------------------------------------------------|
 | 1 | Sep 2  | Introduction to the course (Jason)                                             | [recording][rec-01] |
 | 2 | Sep 9  | Physical AI: where the field stands, and how to join the conversation (Yayuan) | [notes](lectures/02-where-the-field-stands/) · [recording][rec-02] |
-| 3 | Sep 16 | Debate 1: from virtual to physical AI                                          | [preparation](lectures/02-where-the-field-stands/#debate-1--from-virtual-to-physical-ai) |
+| 3 | Sep 16 | Debate 1: from virtual to physical AI                                          | [preparation](https://github.com/yayuanli-org/awesome-physical-ai/tree/main/courses/umich-26fall-rob599-physically-grounded-ai-agents/lectures/02-where-the-field-stands/#debate-1--from-virtual-to-physical-ai) |
 
 [rec-01]: https://drive.google.com/drive/folders/18zV--WTfu6CAnnRQn_bmb5G-dYhG1pIa?usp=drive_link
 [rec-02]: https://drive.google.com/drive/folders/1xZwW5zkZeqtFxDe7pJFGo2LCX8mFH7Uo?usp=drive_link
