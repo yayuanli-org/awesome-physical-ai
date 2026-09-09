@@ -911,11 +911,6 @@ bullets(
     "value, because the build fails on an empty one.",
 )
 
-md('''
-> [C] on the contribution protocol
->
-> [C] **ai:** The channel is yours to set: issues, email, or collaborator access to the private repo. Left out of the prose until you decide.
-''')
 box("a row, a cell, a column")
 
 md('''
