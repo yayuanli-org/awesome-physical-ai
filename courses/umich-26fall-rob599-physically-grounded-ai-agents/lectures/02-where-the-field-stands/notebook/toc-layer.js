@@ -4,7 +4,9 @@
  * Levels: h2.part → parts (top), other h2 → sections, h3 → groups (folded by default).
  * Docs without h2.part: h2 → top, h3 → folded groups. Fewer than 3 headings → no TOC.
  * Docked left of the content on wide viewports (≥1360px, content shifted right);
- * hidden behind a ☰ Contents pill below that (opens as an overlay; Escape closes).
+ * hidden behind a ☰ Contents pill below that (opens as a sidebar the content moves
+ * over for; Escape or « closes it). Clicking an entry keeps the nav open, so the
+ * reader can click around — it is a map to navigate by, not a menu to dismiss.
  * The « button hides it; drag the right edge to resize. Both choices persist per doc
  * (localStorage, keyed by data-comment-doc). Content margins are coordinated with the
  * comment layer's right panel through window.__dockLayout (defined by whichever layer
@@ -144,7 +146,10 @@
   nav.style.width = curW + 'px';
 
   function sync() {
-    window.__dockLayout.set('left', body.classList.contains('tl-docked') ? curW : 0, root);
+    // Docked or opened as an overlay: either way the nav stays put while the reader
+    // clicks through it, so the content moves over in both states.
+    var on = body.classList.contains('tl-docked') || body.classList.contains('tl-open');
+    window.__dockLayout.set('left', on ? curW : 0, root);
   }
   function apply() {
     if (mq.matches && localStorage.getItem(KEY) !== '1') body.classList.add('tl-docked');
@@ -177,14 +182,14 @@
 
   btn.addEventListener('click', function () {
     if (mq.matches) { localStorage.removeItem(KEY); body.classList.add('tl-docked'); sync(); }
-    else body.classList.add('tl-open');
+    else { body.classList.add('tl-open'); sync(); }
   });
   nav.querySelector('.tl-close').addEventListener('click', function () {
     if (body.classList.contains('tl-docked')) { localStorage.setItem(KEY, '1'); body.classList.remove('tl-docked'); }
     body.classList.remove('tl-open');
     sync();
   });
-  doc.addEventListener('keydown', function (e) { if (e.key === 'Escape') body.classList.remove('tl-open'); });
+  doc.addEventListener('keydown', function (e) { if (e.key === 'Escape') { body.classList.remove('tl-open'); sync(); } });
 
   nav.addEventListener('click', function (e) {
     var car = e.target.closest('.tl-car');
@@ -193,6 +198,7 @@
       car.setAttribute('aria-expanded', g.classList.toggle('tl-fold') ? 'false' : 'true');
       return;
     }
-    if (e.target.closest('a')) body.classList.remove('tl-open');
+    // A link click scrolls the document and leaves the nav where it is. Closing it
+    // here made every hop cost a reopen (reader's complaint, 2026-09-14).
   });
 })();
