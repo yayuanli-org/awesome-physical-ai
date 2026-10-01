@@ -20,6 +20,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from urllib.parse import urlparse
 
 HUB = Path(__file__).resolve().parents[1]  # paper-hub/: the database, the page, build.py
 SCHEMA = json.loads((HUB / "data" / "schema.json").read_text(encoding="utf-8"))
@@ -109,6 +110,15 @@ def test_links_are_urls():
         if v and not v.startswith(("http://", "https://"))
     ]
     assert not bad, "\n".join(bad)
+
+
+def test_doi_links_are_not_project_pages():
+    bad = [
+        p["id"] for p in PAPERS
+        if urlparse((p.get("links") or {}).get("page", "")).hostname
+        in {"doi.org", "dx.doi.org"}
+    ]
+    assert not bad, f"DOI links belong under links.publication, not links.page: {bad}"
 
 
 def test_cells_are_short():

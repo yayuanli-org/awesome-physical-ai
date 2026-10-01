@@ -180,7 +180,7 @@ a label destroys the information you came for.
 
 ## Current state
 
-110 papers, 2018–2026. Coverage is deliberately uneven: it is dense where the
+118 papers, 2018–2026. Coverage is deliberately uneven: it is dense where the
 framework needed stress-testing (egocentric procedural understanding, mistake
 detection, world models, VLAs) and thin elsewhere. Filling it out is the next pass.
 
