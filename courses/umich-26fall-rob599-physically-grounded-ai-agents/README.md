@@ -28,6 +28,7 @@ The topics ranges from specific paper arguments and experiments design to genera
 | 4 | Sep 23 | Debate 2: human as the embodiment (Ego-Exo4D, GuideMe)                         | [notes](lectures/04-human-as-the-embodiment/) |
 | 5 | Sep 30 | Debate 3: representation, JEPA vs. diffusion (I-JEPA, DDPM)                    | [notes](lectures/05-representation/) |
 | 6 | Oct 7  | Debate 4: anticipate, JEPA vs. diffusion on a robot (VLA-JEPA, Cosmos Policy)  | [notes](lectures/06-anticipate/) |
+| 7 | Oct 14 | Debate 5: decide, pick a skill vs. write code (SayCan, Code as Policies)       | [notes](lectures/07-decide/) |
 
 [rec-01]: https://drive.google.com/drive/folders/18zV--WTfu6CAnnRQn_bmb5G-dYhG1pIa?usp=drive_link
 [rec-02]: https://drive.google.com/drive/folders/1xZwW5zkZeqtFxDe7pJFGo2LCX8mFH7Uo?usp=drive_link
