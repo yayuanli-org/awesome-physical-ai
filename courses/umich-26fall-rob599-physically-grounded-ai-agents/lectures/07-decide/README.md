@@ -10,3 +10,11 @@ Debate 4 asked whether a robot should predict what happens next before it acts. 
 | Code as Policies. Liang et al., ICRA 2023. [arXiv](https://arxiv.org/abs/2209.07753) · [project](https://code-as-policies.github.io/) · [code](https://github.com/google-research/google-research/tree/master/code_as_policies) | Has a language model write the robot's behavior as code. It turns an instruction into Python that calls perception and motion functions, so it can do things no single skill covers. |
 
 Prepare the five PACES rows for both.
+
+## Theme debate
+
+Motion: a robot should act through programs a language model writes, rather than through skills it learned from demonstrations.
+
+- SayCan is reliable but closed. Anything outside its 551 skills is impossible.
+- Code as Policies is open but unchecked. It can compute new behavior, but the paper admits it can't tell beforehand whether its code is right (§V).
+- The motion asks which of these should be a robot's default.
