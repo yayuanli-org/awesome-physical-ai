@@ -1700,5 +1700,340 @@
    "data scaling",
    "benchmark"
   ]
+ },
+ {
+  "id": "robotwin-2",
+  "short": "RoboTwin 2.0",
+  "title": "RoboTwin 2.0: A Scalable Data Generator and Benchmark with Strong Domain Randomization for Robust Bimanual Robotic Manipulation",
+  "year": 2026,
+  "date": "2026-07",
+  "venue": "ICML 2026",
+  "venue_type": "conference",
+  "authors": [
+   "Tianxing Chen",
+   "Zanxin Chen",
+   "Baijun Chen",
+   "Zijian Cai",
+   "Yibin Liu"
+  ],
+  "n_authors": 26,
+  "institutions": [
+   "Lumina EAI",
+   "Shanghai AI Laboratory",
+   "Shenzhen University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2506.18088",
+   "page": "https://robotwin-platform.github.io/",
+   "data": "https://huggingface.co/datasets/TianxingChen/RoboTwin2.0",
+   "publication": "https://proceedings.mlr.press/v306/chen26j.html"
+  },
+  "tldr": "Generates bimanual demonstrations through simulation feedback and domain randomization, then tests policy transfer across tasks and embodiments.",
+  "contribution": [
+   "method",
+   "dataset",
+   "benchmark",
+   "system"
+  ],
+  "openness": [
+   "code",
+   "data"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "decide",
+   "act",
+   "verify",
+   "adapt"
+  ],
+  "embodiment": [
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state",
+   "interaction",
+   "scene",
+   "procedure"
+  ],
+  "representation": [
+   "geometry",
+   "program",
+   "trajectory"
+  ],
+  "change_channel": [
+   "plan",
+   "motor-action"
+  ],
+  "sensing": [
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Generate and validate expert bimanual task programs and demonstrations in varied simulated environments.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "task and skill API",
+      "modality": "text",
+      "tensor": "l = (w_1,...,w_L)",
+      "chars": "Goal, API examples and constraints."
+     },
+     {
+      "name": "object and robot assets",
+      "modality": "mesh",
+      "tensor": "vertices V in R^{N x 3}, faces F",
+      "chars": "Annotated geometry and embodiment configuration."
+     },
+     {
+      "name": "execution feedback",
+      "modality": "text",
+      "tensor": "e = (w_1,...,w_M)",
+      "chars": "Logs and observer diagnostics during repair."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "task program",
+      "modality": "program",
+      "tensor": "p = (c_1,...,c_J)",
+      "chars": "Executable Python skill calls."
+     },
+     {
+      "name": "demonstration trajectories",
+      "modality": "trajectory",
+      "tensor": "tau = {(o_t,a_t)}_{t=1}^T",
+      "chars": "Successful simulated executions under varied conditions."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Generated expert trajectories train downstream manipulation policies.",
+    "note": "Program synthesis uses pretrained models and execution feedback. It is distinct from downstream policy training."
+   }
+  },
+  "method": {
+   "intuition": "Execution feedback repairs generated programs, while embodiment-aware grasps and varied scenes broaden the resulting demonstrations.",
+   "family": [
+    "llm",
+    "simulation",
+    "imitation"
+   ],
+   "backbone": "MLLM code agent, VLM observer and robot simulator",
+   "init": "",
+   "components": [
+    "RoboTwin-OD object library",
+    "simulation-feedback program repair",
+    "five-axis domain randomization",
+    "embodiment-aware grasp adaptation",
+    "50-task benchmark"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "RoboTwin-OD",
+     "role": "new"
+    },
+    {
+     "name": "RoboTwin 2.0 expert trajectories",
+     "role": "synthetic"
+    },
+    {
+     "name": "real-robot sim-to-real trials",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate",
+    "code-generation success",
+    "refinement iterations",
+    "sim-to-real success"
+   ],
+   "baselines": [
+    "RoboTwin 1.0",
+    "no-feedback and feedback-only generators",
+    "policies trained without synthetic data"
+   ],
+   "headline": "Releases over 100,000 expert trajectories across 50 tasks and five dual-arm embodiments."
+  },
+  "why": "Adds a data-generation method and bimanual test environment with measured transfer to physical robots.",
+  "confidence": "medium",
+  "tags": [
+   "bimanual",
+   "simulation",
+   "synthetic data",
+   "domain randomization",
+   "sim-to-real"
+  ]
+ },
+ {
+  "id": "robodojo",
+  "short": "RoboDojo",
+  "title": "RoboDojo: A Unified Sim-and-Real Benchmark for Comprehensive Evaluation of Generalist Robot Manipulation Policies",
+  "year": 2026,
+  "date": "2026-07",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Tianxing Chen",
+   "Yue Chen",
+   "Zixuan Li",
+   "Junyuan Tang",
+   "Kailun Su"
+  ],
+  "n_authors": 44,
+  "institutions": [
+   "The University of Hong Kong",
+   "Tsinghua University",
+   "Peking University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2607.04434",
+   "page": "https://robodojo-benchmark.com/",
+   "code": "https://github.com/RoboDojo-Benchmark/RoboDojo"
+  },
+  "tldr": "Evaluates generalist manipulation policies on complementary simulation and real-robot tasks through a shared deployment and scoring protocol.",
+  "contribution": [
+   "benchmark",
+   "system",
+   "analysis"
+  ],
+  "openness": [
+   "code",
+   "data"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot",
+   "sim"
+  ],
+  "human_role": [
+   "evaluator"
+  ],
+  "world_facet": [
+   "interaction",
+   "object-state",
+   "procedure"
+  ],
+  "representation": [
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Measure generalist manipulation capabilities under standardized simulation and real-robot execution.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "candidate policy",
+      "modality": "program",
+      "tensor": "pi: (o_{<=t},l) -> A_t",
+      "chars": "Deployed through XPolicyLab."
+     },
+     {
+      "name": "task specification",
+      "modality": "text",
+      "tensor": "l = (w_1,...,w_L)",
+      "chars": "Instruction, scene and evaluation protocol."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "evaluation scores",
+      "modality": "scalar",
+      "tensor": "r in R^{N_tasks}",
+      "chars": "Task success and progress scores from executed trials."
+     },
+     {
+      "name": "rollout records",
+      "modality": "trajectory",
+      "tensor": "tau = {(o_t,a_t)}_{t=1}^T",
+      "chars": "Simulation and real-world execution traces."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Task demonstrations support policy fine-tuning under the benchmark protocol.",
+    "note": "The contribution is an evaluation platform, not a newly trained policy architecture."
+   }
+  },
+  "method": {
+   "intuition": "Complementary simulated and physical tasks expose different policy failures, while a shared interface makes evaluation repeatable.",
+   "family": [
+    "benchmark",
+    "simulation"
+   ],
+   "backbone": "Isaac Sim, RoboDojo-RealEval and XPolicyLab",
+   "init": "",
+   "components": [
+    "five simulation capability dimensions",
+    "heterogeneous parallel evaluation",
+    "standardized real-robot resets",
+    "unified policy interface",
+    "verified leaderboard"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "42 RoboDojo simulation tasks",
+     "role": "new"
+    },
+    {
+     "name": "18 RoboDojo real-world tasks",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate",
+    "task progress score",
+    "evaluation throughput",
+    "repeatability"
+   ],
+   "baselines": [
+    "30 integrated manipulation policies",
+    "human expert reference"
+   ],
+   "headline": "Evaluates policies on 42 simulation tasks and 18 real-world tasks."
+  },
+  "why": "Separates generalization, memory, precision and long-horizon failures under simulated and physical execution.",
+  "confidence": "medium",
+  "tags": [
+   "benchmark",
+   "generalist policy",
+   "simulation",
+   "real-robot evaluation",
+   "long-horizon"
+  ]
  }
 ]

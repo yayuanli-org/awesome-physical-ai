@@ -1723,5 +1723,276 @@
    "object-centric",
    "data engine"
   ]
+ },
+ {
+  "id": "world-model-robot-learning-survey",
+  "short": "Robot World Model Survey",
+  "title": "World Model for Robot Learning: A Comprehensive Survey",
+  "year": 2026,
+  "date": "2026-09",
+  "venue": "IJRR 2026",
+  "venue_type": "journal",
+  "authors": ["Bohan Hou", "Gen Li", "Jindou Jia", "Tuo An", "Xinying Guo"],
+  "n_authors": 18,
+  "institutions": ["Nanyang Technological University"],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2605.00080",
+   "page": "https://ntumars.github.io/wm-robot-survey/",
+   "code": "https://github.com/NTUMARS/Awesome-World-Model-for-Robotics-Policy",
+   "publication": "https://doi.org/10.1177/02783649261488980"
+  },
+  "tldr": "Organizes robot world models by how they support policies, learned simulators and video generation, and compares the evaluation each role needs.",
+  "contribution": ["survey"],
+  "openness": ["code"],
+  "arc": ["model", "change"],
+  "closes_loop": false,
+  "loop_stage": ["represent", "anticipate", "decide", "act"],
+  "embodiment": ["robot", "sim"],
+  "human_role": ["none"],
+  "world_facet": ["dynamics", "object-change", "scene", "interaction"],
+  "representation": ["latent", "pixels", "geometry", "trajectory"],
+  "change_channel": ["motor-action", "plan"],
+  "sensing": ["robot-onboard", "sim-render"],
+  "regime": "offline",
+  "domain": ["lab-sim", "everyday"],
+  "problem": {
+   "task": "Survey how predictive world models support robot learning, planning, simulation and evaluation.",
+   "inference": {"inputs": [], "outputs": []},
+   "training": {"supervision": "", "note": "Literature synthesis. No single training or inference pipeline is contributed."}
+  },
+  "method": {
+   "intuition": "A world model's interface to a policy or simulator explains which predictions and evaluations are useful for robot learning.",
+   "family": ["survey"],
+   "backbone": "",
+   "init": "",
+   "components": ["policy-coupling taxonomy", "learned simulators and evaluators", "robotic video generation", "navigation and driving", "datasets and evaluation protocols"]
+  },
+  "experiments": {
+   "datasets": [],
+   "metrics": [],
+   "baselines": [],
+   "headline": "Synthesizes reported results on LIBERO, RoboTwin, CALVIN and SIMPLER without running a new common evaluation."
+  },
+  "why": "Provides a robot-learning map connecting predictive models, policies, simulation and evaluation.",
+  "confidence": "medium",
+  "tags": ["survey", "world models", "robot learning", "WAM", "evaluation"]
+ },
+ {
+  "id": "world-model-manipulation-survey",
+  "short": "Manipulation World Model Survey",
+  "title": "World Models for Robotic Manipulation: A Survey",
+  "year": 2026,
+  "date": "2026-08",
+  "venue": "SmartBot 2026",
+  "venue_type": "journal",
+  "authors": ["Fangyuan Wang", "Ziyuan Wang", "Guorui Pei", "Mengshi Zhang", "Canxi Liang"],
+  "n_authors": 18,
+  "institutions": ["The Hong Kong Polytechnic University", "Great Bay University", "KTH Royal Institute of Technology"],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2606.00113",
+   "publication": "https://doi.org/10.1002/smb2.70053"
+  },
+  "tldr": "Separates manipulation world models by predicted representation, prediction-action interface and stage of use in robot learning.",
+  "contribution": ["survey"],
+  "openness": ["none"],
+  "arc": ["model", "change"],
+  "closes_loop": false,
+  "loop_stage": ["represent", "anticipate", "decide", "act", "verify", "adapt"],
+  "embodiment": ["robot", "sim"],
+  "human_role": ["none"],
+  "world_facet": ["object-change", "interaction", "scene", "dynamics"],
+  "representation": ["pixels", "latent", "trajectory", "geometry", "physics-params"],
+  "change_channel": ["motor-action", "plan"],
+  "sensing": ["robot-onboard", "depth-3d", "sim-render", "tactile"],
+  "regime": "offline",
+  "domain": ["lab-sim"],
+  "problem": {
+   "task": "Survey action-conditioned prediction and its use in robotic manipulation.",
+   "inference": {"inputs": [], "outputs": []},
+   "training": {"supervision": "", "note": "Literature synthesis. Predictive cores and their training objectives are compared across methods."}
+  },
+  "method": {
+   "intuition": "Separating what is predicted, how prediction drives action and when it is used makes manipulation methods comparable across architectures.",
+   "family": ["survey"],
+   "backbone": "",
+   "init": "",
+   "components": ["five representation families", "integrated prediction-action models and explicit planners", "learning infrastructure roles", "pretraining, post-training and inference adaptation", "evaluation tiers"]
+  },
+  "experiments": {
+   "datasets": [],
+   "metrics": [],
+   "baselines": [],
+   "headline": "Distinguishes predictive fidelity, downstream task performance and simulator reliability as separate evaluation requirements."
+  },
+  "why": "Explains when future prediction becomes useful for contact, planning, learning and verification in manipulation.",
+  "confidence": "medium",
+  "tags": ["survey", "world models", "manipulation", "contact", "evaluation"]
+ },
+ {
+  "id": "openwam",
+  "short": "OpenWAM",
+  "title": "OpenWAM: An Open, Modular Exploration Towards Systematic World-Action Model Pretraining",
+  "year": 2026,
+  "date": "2026-09",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Yuran Wang",
+   "Siqiao Huang",
+   "Mingleyang Li",
+   "Chenhao Zhang",
+   "Jiaqi Liang"
+  ],
+  "n_authors": 24,
+  "institutions": [
+   "National University of Singapore",
+   "Tsinghua University",
+   "Peking University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2609.07398",
+   "page": "https://openwam-official.github.io/",
+   "code": "https://github.com/OpenWAM-Official/OpenWAM"
+  },
+  "tldr": "A modular world-action stack tests which video priors, world-action connections and training mixtures improve robot control.",
+  "contribution": [
+   "method",
+   "system",
+   "analysis"
+  ],
+  "openness": [
+   "code",
+   "data",
+   "weights"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot",
+   "sim"
+  ],
+  "human_role": [
+   "observed"
+  ],
+  "world_facet": [
+   "object-change",
+   "interaction",
+   "dynamics"
+  ],
+  "representation": [
+   "pixels",
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "egocentric",
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Jointly predict future video and executable robot actions from observations and an instruction.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "current visual observation",
+      "modality": "image",
+      "tensor": "I_t in R^{H x W x 3}",
+      "chars": "Anchors the future video."
+     },
+     {
+      "name": "task instruction",
+      "modality": "text",
+      "tensor": "l = (w_1,...,w_L)",
+      "chars": "Conditions world and action generation."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "future video",
+      "modality": "video",
+      "tensor": "V_hat in R^{T x H x W x 3}",
+      "chars": "Generated jointly with the action chunk."
+     },
+     {
+      "name": "action chunk",
+      "modality": "action",
+      "tensor": "A_hat in R^{K x 80}",
+      "chars": "Uses a unified action space across embodiments."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Joint world/action denoising on about 6,400 hours of egocentric human and robot experience.",
+    "note": "Video priors initialize the world branch. Robot trajectories supply action grounding."
+   }
+  },
+  "method": {
+   "intuition": "Separate world and action capacity, then connect their information flow and denoising schedules so future prediction informs control.",
+   "family": [
+    "diffusion",
+    "transformer",
+    "imitation"
+   ],
+   "backbone": "Wan2.2-TI2V-5B with a dedicated ActionDiT",
+   "init": "finetune",
+   "components": [
+    "modular controlled study",
+    "alternative visual encoders",
+    "joint world-action attention",
+    "synchronized denoising",
+    "human and robot co-training"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "OpenWAM human and robot pretraining mixture",
+     "role": "remix"
+    },
+    {
+     "name": "eight simulation benchmarks",
+     "role": "existing"
+    },
+    {
+     "name": "three real-robot platforms",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate",
+    "benchmark score",
+    "out-of-domain generalization"
+   ],
+   "baselines": [
+    "WAM and VLA policies",
+    "backbone, encoder and attention ablations"
+   ],
+   "headline": "OpenWAM-alpha reports 99.3% average success on LIBERO."
+  },
+  "why": "Connects prediction to physical control and tests the design choices behind that connection.",
+  "confidence": "medium",
+  "tags": [
+   "WAM",
+   "joint video-action prediction",
+   "pretraining",
+   "cross-embodiment"
+  ]
  }
 ]

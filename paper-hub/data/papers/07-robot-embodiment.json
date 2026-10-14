@@ -1965,5 +1965,372 @@
    "survey",
    "VLA"
   ]
+ },
+ {
+  "id": "dexterous-imitation-survey",
+  "short": "Dexterous IL Survey",
+  "title": "Dexterous Manipulation through Imitation Learning: A Survey",
+  "year": 2025,
+  "date": "2025-12",
+  "venue": "IEEE T-ASE 2026",
+  "venue_type": "journal",
+  "authors": ["Shan An", "Ziyu Meng", "Chao Tang", "Yuning Zhou", "Tengyu Liu"],
+  "n_authors": 12,
+  "institutions": ["Tianjin University", "Shandong University", "KTH Royal Institute of Technology"],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2504.03515",
+   "publication": "https://doi.org/10.1109/TASE.2025.3646183"
+  },
+  "tldr": "Connects imitation algorithms, end-effector design and demonstration collection to the challenges of dexterous robot manipulation.",
+  "contribution": ["survey"],
+  "openness": ["none"],
+  "arc": ["change"],
+  "closes_loop": false,
+  "loop_stage": ["sense", "represent", "decide", "act"],
+  "embodiment": ["robot", "sim"],
+  "human_role": ["demonstrator"],
+  "world_facet": ["agent-body", "interaction", "procedure"],
+  "representation": ["trajectory", "latent"],
+  "change_channel": ["motor-action"],
+  "sensing": ["robot-onboard", "tactile", "web-video"],
+  "regime": "offline",
+  "domain": ["lab-sim", "industrial", "everyday"],
+  "problem": {
+   "task": "Survey learning dexterous robot manipulation from expert demonstrations.",
+   "inference": {"inputs": [], "outputs": []},
+   "training": {"supervision": "", "note": "Reviews imitation objectives and data collection. No single trained policy is contributed."}
+  },
+  "method": {
+   "intuition": "Imitation algorithms, hand morphology, sensing and demonstration interfaces jointly determine which dexterous skills transfer to a robot.",
+   "family": ["survey"],
+   "backbone": "",
+   "init": "",
+   "components": ["behavior cloning, IRL and adversarial imitation", "hierarchical and continual imitation", "end-effectors and tactile sensors", "teleoperation and video demonstrations", "datasets and deployment challenges"]
+  },
+  "experiments": {
+   "datasets": [],
+   "metrics": [],
+   "baselines": [],
+   "headline": "Compares five imitation-learning families alongside hand hardware, demonstration interfaces and data resources."
+  },
+  "why": "Provides context for dexterous policies and human-to-robot demonstrations beyond the VLA taxonomy.",
+  "confidence": "medium",
+  "tags": ["survey", "dexterous manipulation", "imitation learning", "teleoperation", "human video"]
+ },
+ {
+  "id": "open-x-embodiment",
+  "short": "Open X-Embodiment / RT-X",
+  "title": "Open X-Embodiment: Robotic Learning Datasets and RT-X Models",
+  "year": 2024,
+  "date": "2024-05",
+  "venue": "ICRA 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Open X-Embodiment Collaboration"
+  ],
+  "institutions": [],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2310.08864",
+   "page": "https://robotics-transformer-x.github.io/",
+   "code": "https://github.com/google-deepmind/open_x_embodiment",
+   "publication": "https://doi.org/10.1109/ICRA57147.2024.10611477"
+  },
+  "tldr": "Pooling robot demonstrations across embodiments lets RT-X transfer manipulation skills between platforms.",
+  "contribution": [
+   "dataset",
+   "method"
+  ],
+  "openness": [
+   "code",
+   "data",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "interaction",
+   "object-state",
+   "agent-body"
+  ],
+  "representation": [
+   "tokens",
+   "language"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "exocentric"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Learn language-conditioned manipulation policies from demonstrations collected on multiple robots.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "camera observations",
+      "modality": "video",
+      "tensor": "I in R^{T x H x W x 3}",
+      "chars": "Observation history depends on the RT-X variant."
+     },
+     {
+      "name": "task instruction",
+      "modality": "text",
+      "tensor": "l = (w_1,...,w_L)",
+      "chars": "Names the desired manipulation."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "robot command",
+      "modality": "action",
+      "tensor": "a_t in R^7",
+      "chars": "Gripper-frame motion and gripper opening, with robot-specific interpretation."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Standardized robot demonstrations. RT-2-X also co-trains with vision-language data.",
+    "note": "The collection spans 22 embodiments. The reported RT-X training mixture uses nine manipulators."
+   }
+  },
+  "method": {
+   "intuition": "A shared observation-action interface lets high-capacity policies learn reusable skills from experience collected on different robots.",
+   "family": [
+    "imitation",
+    "transformer",
+    "vla"
+   ],
+   "backbone": "RT-1 and RT-2-PaLI-X",
+   "init": "finetune",
+   "components": [
+    "standardized cross-robot datasets",
+    "shared action interface",
+    "RT-1-X and RT-2-X",
+    "cross-embodiment co-training"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Open X-Embodiment aggregation",
+     "role": "remix"
+    },
+    {
+     "name": "3,600 evaluation trials across six robots",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate",
+    "emergent-skill success"
+   ],
+   "baselines": [
+    "RT-1 and RT-2 trained on individual datasets",
+    "dataset-specific policies"
+   ],
+   "headline": "RT-1-X improves mean success by 50% relative to individually trained baselines in the small-data evaluation."
+  },
+  "why": "Documents the shared robot experience and cross-platform transfer behind later generalist policies.",
+  "confidence": "medium",
+  "tags": [
+   "dataset",
+   "cross-embodiment",
+   "RT-X",
+   "generalist policy"
+  ]
+ },
+ {
+  "id": "ftp-1",
+  "short": "FTP-1",
+  "title": "FTP-1: A Generalist Foundation Tactile Policy Across Tactile Sensors for Contact-Rich Manipulation",
+  "year": 2026,
+  "date": "2026-06",
+  "venue": "CoRL 2026",
+  "venue_type": "conference",
+  "authors": [
+   "Chengbo Yuan",
+   "Zicheng Zhang",
+   "Mingjie Zhou",
+   "Wendi Chen",
+   "Yi Wang"
+  ],
+  "n_authors": 17,
+  "institutions": [
+   "Tsinghua University",
+   "Shanghai Qi Zhi Institute",
+   "Sharpa"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2606.13102",
+   "page": "https://ftp1-policy.github.io/"
+  },
+  "tldr": "Maps heterogeneous tactile sensors into a shared representation and learns manipulation skills that transfer to unseen sensor setups.",
+  "contribution": [
+   "method",
+   "dataset"
+  ],
+  "openness": [
+   "code",
+   "data",
+   "weights"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "represent",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot",
+   "sim"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "interaction",
+   "agent-body"
+  ],
+  "representation": [
+   "latent",
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "tactile",
+   "robot-onboard",
+   "multi-view"
+  ],
+  "regime": "interactive",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Predict action chunks from vision, language, proprioception and heterogeneous tactile observations.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "camera views",
+      "modality": "image",
+      "tensor": "I_t in R^{N_v x H x W x 3}",
+      "chars": "RGB observations."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "l = (w_1,...,w_L)",
+      "chars": "Task goal."
+     },
+     {
+      "name": "proprioception",
+      "modality": "scalar",
+      "tensor": "s_t in R^{D_s}",
+      "chars": "Embodiment-specific robot state."
+     },
+     {
+      "name": "tactile observations",
+      "modality": "force",
+      "tensor": "X_t: image-, array- or state-shaped",
+      "chars": "Sensor-dependent shape and contact signal."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action chunk",
+      "modality": "action",
+      "tensor": "A_hat in R^{K x D_a}",
+      "chars": "Unified action slots adapted to the embodiment."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "About 3,000 hours of human and robot tactile demonstrations from 26 sources and 21 sensors.",
+    "note": "Includes new Sharpa North demonstrations and downstream sensor-specific fine-tuning."
+   }
+  },
+  "method": {
+   "intuition": "A morphology-aware tactile interface separates sensor-specific encoding from the manipulation knowledge shared across sensors.",
+   "family": [
+    "transformer",
+    "flow-matching",
+    "imitation"
+   ],
+   "backbone": "pi0.5 with an independent tactile Transformer expert",
+   "init": "finetune",
+   "components": [
+    "morphology-aware tactile tokens",
+    "heterogeneous sensor encoders",
+    "shared tactile expert",
+    "vision-language and action experts"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "FTP-1 aggregated tactile corpus",
+     "role": "remix"
+    },
+    {
+     "name": "Sharpa North-FTP-1 demonstrations",
+     "role": "new"
+    },
+    {
+     "name": "UniVTAC simulation tasks",
+     "role": "existing"
+    },
+    {
+     "name": "seen and unseen tactile-sensor setups",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate",
+    "unseen-sensor transfer"
+   ],
+   "baselines": [
+    "pi0.5",
+    "Tactile-VLA",
+    "FTP-pi0.5 without tactile pretraining"
+   ],
+   "headline": "Seen-sensor real-robot success averages 62.5%, compared with 45.3% for pi0.5."
+  },
+  "why": "Adds cross-sensor tactile representation learning and contact-dependent control to a vision-heavy collection.",
+  "confidence": "medium",
+  "tags": [
+   "tactile",
+   "contact",
+   "cross-sensor",
+   "generalist policy"
+  ]
  }
 ]
