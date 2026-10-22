@@ -6,6 +6,7 @@ This course reads the field through the [paper hub](https://yayuanli-org.github.
 The first two lectures set the frame about the logistics and give an overview about the current progress in the community. 
 Every session after that is a debate on 2 - 4 papers. 
 The topics ranges from specific paper arguments and experiments design to general methodology pros and cons (e.g., Auto-Regressive vs. Diffusion).
+New to the field? Start with the hub's [must-read list for students](https://yayuanli-org.github.io/awesome-physical-ai/#must-read/student): four papers, each one part of a vision-language-action model.
 
 ## Logistics
 
