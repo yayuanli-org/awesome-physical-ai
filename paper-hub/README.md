@@ -30,13 +30,21 @@ The thesis the taxonomy encodes:
 > Changing the world takes two moves — model it, then change it through an
 > embodiment — and acting changes what has to be modeled, so the two close into a loop.
 
-Three views ship on the page:
+General AI papers the physical-AI ones build on, such as the Transformer or PPO,
+carry a third arc value, `foundation`. They sit outside the two arcs, so the
+Framework view leaves them out and the Must-read view and the table hold them.
+
+Four views ship on the page:
 
 | View | What it is |
 |---|---|
 | **Framework** | The two arcs and their groups, as a reading list. Groups are filters. |
+| **Must-read** | One reading list per role, in two tiers: read first, read next. The lists come from the `must_read` column. |
 | **Papers** | The raw table. Every column, sortable, with a column chooser and JSON export. |
 | **How a paper is read** | The reading protocol and the full column dictionary. |
+
+`#must-read/<role>` links straight to one list, for example
+[`#must-read/student`](https://yayuanli-org.github.io/awesome-physical-ai/#must-read/student).
 
 ## Layout
 
@@ -163,9 +171,16 @@ The shape, in full:
 
   "why": "Why it earns a place on this list.",
   "confidence": "high",
-  "tags": []
+  "tags": [],
+
+  // optional: which reading lists it is on, role -> tier (1 = read first, 2 = read next)
+  "must_read": { "physical-ai": 1, "student": 1 }
 }
 ```
+
+A paper goes on a must-read list by getting a `must_read` cell. The roles and
+the tiers are declared in `data/schema.json`, and a list is never written down
+anywhere else, so moving a paper between tiers is a one-cell edit.
 
 Two rules keep the database useful:
 
@@ -180,7 +195,7 @@ a label destroys the information you came for.
 
 ## Current state
 
-110 papers, 2018–2026. Coverage is deliberately uneven: it is dense where the
+138 papers, 2013–2026. Coverage is deliberately uneven: it is dense where the
 framework needed stress-testing (egocentric procedural understanding, mistake
 detection, world models, VLAs) and thin elsewhere. Filling it out is the next pass.
 

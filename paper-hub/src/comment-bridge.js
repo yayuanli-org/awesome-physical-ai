@@ -1,7 +1,7 @@
-/* comment-bridge.js — glue between comment-layer.js and this page's three tabs.
+/* comment-bridge.js — glue between comment-layer.js and this page's four tabs.
  *
- * The layer assumes one document. This page is an app: all three views sit in the DOM
- * at once and two of them are hidden, so a comment can point at content that is not on
+ * The layer assumes one document. This page is an app: all four views sit in the DOM
+ * at once and three of them are hidden, so a comment can point at content that is not on
  * screen. The layer hides the marker for an anchor with no box, which handles the
  * pins. What it cannot know is which tab the content is on, so:
  *
@@ -14,7 +14,7 @@
 (function () {
 "use strict";
 
-var TAB = { "view-framework": "Framework", "view-table": "Papers", "view-protocol": "Protocol" };
+var TAB = { "view-framework": "Framework", "view-mustread": "Must-read", "view-table": "Papers", "view-protocol": "Protocol" };
 var VSEL = Object.keys(TAB).map(function (id) { return "#" + id; }).join(",");
 
 function q(sel, root) { return (root || document).querySelector(sel); }
@@ -22,7 +22,7 @@ function boxed(n) { return !!(n && n.getClientRects().length); }
 function nodeFor(id) { return q('.shell [data-cmt-thread="' + CSS.escape(id) + '"]'); }
 function pinFor(id) { return q('.cmt-pin[data-cmt-thread="' + CSS.escape(id) + '"]'); }
 
-// Where a thread's target lives: one of the three tabs, or the filter rail, which
+// Where a thread's target lives: one of the four tabs, or the filter rail, which
 // the app hides on the protocol tab.
 function locate(id) {
   var n = nodeFor(id);

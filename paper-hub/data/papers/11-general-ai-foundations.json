@@ -137,7 +137,10 @@
    "foundation",
    "CNN",
    "image encoder"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 1
+  }
  },
  {
   "id": "transformer",
@@ -279,7 +282,11 @@
    "foundation",
    "transformer",
    "attention"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 1,
+   "student": 1
+  }
  },
  {
   "id": "vit",
@@ -419,7 +426,10 @@
    "foundation",
    "transformer",
    "image encoder"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "clip",
@@ -568,7 +578,11 @@
    "image encoder",
    "vision-language",
    "zero-shot"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 1,
+   "student": 1
+  }
  },
  {
   "id": "mae",
@@ -705,7 +719,10 @@
    "foundation",
    "image encoder",
    "self-supervised"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "gpt-3",
@@ -839,7 +856,10 @@
    "foundation",
    "LLM",
    "in-context learning"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 1
+  }
  },
  {
   "id": "scaling-laws",
@@ -969,7 +989,10 @@
    "foundation",
    "scaling laws",
    "LLM"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "chinchilla",
@@ -1095,7 +1118,10 @@
    "foundation",
    "scaling laws",
    "LLM"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "lora",
@@ -1232,7 +1258,10 @@
    "foundation",
    "fine-tuning",
    "LLM"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "vae",
@@ -1363,7 +1392,10 @@
    "foundation",
    "latent",
    "generation"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "latent-diffusion",
@@ -1511,7 +1543,11 @@
    "foundation",
    "diffusion",
    "generation"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 1,
+   "student": 1
+  }
  },
  {
   "id": "flow-matching",
@@ -1642,7 +1678,10 @@
    "foundation",
    "flow matching",
    "generation"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "dqn",
@@ -1776,7 +1815,10 @@
    "foundation",
    "RL",
    "control"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "ppo",
@@ -1917,7 +1959,11 @@
    "foundation",
    "RL",
    "control"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 1,
+   "student": 1
+  }
  },
  {
   "id": "alphazero",
@@ -2046,7 +2092,10 @@
    "foundation",
    "RL",
    "planning"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "instructgpt",
@@ -2178,7 +2227,10 @@
    "foundation",
    "LLM",
    "RLHF"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 1
+  }
  },
  {
   "id": "chain-of-thought",
@@ -2314,7 +2366,10 @@
    "foundation",
    "LLM",
    "reasoning"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "dpo",
@@ -2448,7 +2503,10 @@
    "foundation",
    "LLM",
    "RLHF"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "deepseek-r1",
@@ -2579,6 +2637,9 @@
    "LLM",
    "RL",
    "reasoning"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  }
 ]

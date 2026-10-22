@@ -64,7 +64,9 @@ def audit(schema, papers):
     for p in papers:
         for key, allowed in vocab.items():
             val = p.get(key)
-            vals = val if isinstance(val, list) else ([val] if val else [])
+            # a ranked cell (must_read) maps each value to its tier, so its keys are the values
+            vals = (list(val) if isinstance(val, dict)
+                    else val if isinstance(val, list) else ([val] if val else []))
             for v in vals:
                 if v not in allowed:
                     unknown.setdefault(key, {}).setdefault(v, []).append(p["id"])
@@ -143,6 +145,15 @@ def main():
             counts[a] = counts.get(a, 0) + 1
     print("  arcs:", ", ".join(f"{k}={v}" for k, v in sorted(counts.items())),
           f", closed-loop={sum(1 for p in papers if p.get('closes_loop'))}")
+    lists = {}
+    for p in papers:
+        for role, tier in (p.get("must_read") or {}).items():
+            lists.setdefault(role, {}).setdefault(tier, 0)
+            lists[role][tier] += 1
+    if lists:
+        print("  must-read:", ", ".join(
+            f"{r}={sum(t.values())} ({'+'.join(str(t[k]) for k in sorted(t))})"
+            for r, t in sorted(lists.items())))
 
     if "--check" in sys.argv:
         return

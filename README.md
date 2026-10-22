@@ -3,7 +3,9 @@
 A knowledge base for physical AI. Two parts, both still growing.
 
 1. **Paper hub.** The papers, as a database with a page on top for fast filtering
-   and search. Live at https://yayuanli-org.github.io/awesome-physical-ai/.
+   and search, plus must-read lists for a general AI researcher, a physical AI
+   researcher and a student starting out. Live at
+   https://yayuanli-org.github.io/awesome-physical-ai/.
    The source, and how to add a paper, are in [`paper-hub/`](paper-hub/).
 2. **Courses.** Where we sum up the hub and share our opinions, and where we run
    debate sessions to go deep on a few papers. One folder per course in

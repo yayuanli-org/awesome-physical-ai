@@ -132,7 +132,10 @@
    "LLM",
    "planning",
    "affordance"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 1
+  }
  },
  {
   "id": "inner-monologue",
@@ -410,7 +413,10 @@
    "LLM",
    "program synthesis",
    "control"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "voxposer",
@@ -693,7 +699,10 @@
    "imitation",
    "diffusion",
    "manipulation"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 1
+  }
  },
  {
   "id": "act-aloha",
@@ -827,7 +836,10 @@
    "imitation",
    "bimanual",
    "hardware"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "rt-2",
@@ -972,7 +984,10 @@
    "VLA",
    "manipulation",
    "web knowledge"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 1
+  }
  },
  {
   "id": "openvla",
@@ -1121,7 +1136,10 @@
    "VLA",
    "open source",
    "manipulation"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "pi0",
@@ -1272,7 +1290,10 @@
    "VLA",
    "flow matching",
    "dexterous"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 1
+  }
  },
  {
   "id": "groot-n1",
@@ -1429,7 +1450,10 @@
    "humanoid",
    "VLA",
    "foundation model"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "safe-vla",
@@ -2118,7 +2142,10 @@
    "manipulation",
    "imitation",
    "data scaling"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "palm-e",
@@ -2291,7 +2318,10 @@
    "VLM",
    "embodied reasoning",
    "planning"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "open-x-embodiment",
@@ -2440,7 +2470,10 @@
    "dataset",
    "cross-embodiment",
    "manipulation"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 1
+  }
  },
  {
   "id": "droid",
@@ -2597,7 +2630,10 @@
    "dataset",
    "teleoperation",
    "manipulation"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "octo",
@@ -2753,7 +2789,10 @@
    "open source",
    "cross-embodiment",
    "diffusion"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "gemini-robotics",
@@ -2912,7 +2951,10 @@
    "VLA",
    "embodied reasoning",
    "dexterous"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "pi05",
@@ -3079,6 +3121,9 @@
    "VLA",
    "everyday tasks",
    "generalist"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  }
 ]

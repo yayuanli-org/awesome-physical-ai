@@ -44,6 +44,8 @@ def vals(paper, key):
     v = paper.get(key)
     if isinstance(v, bool):
         return [str(v).lower()]
+    if isinstance(v, dict):  # a ranked cell, e.g. must_read: {"student": 1}
+        return list(v)
     return v if isinstance(v, list) else ([v] if v else [])
 
 
@@ -215,6 +217,37 @@ def test_every_group_claims_something():
     assert not empty, "\n".join(empty)
 
 
+def test_must_read_lists_are_well_formed():
+    """must_read maps a declared role to a declared tier. Every role has a tier-1 paper,
+    and every tier is used, because an empty list or tier is a claim nobody tested."""
+    field = FIELD.get("must_read")
+    if not field:
+        return
+    roles = {v["v"] for v in field["vocab"]}
+    tiers = {t["v"] for t in field.get("tiers", [])}
+    bad, used = [], {}
+    for p in PAPERS:
+        m = p.get("must_read")
+        if m is None:
+            continue
+        if not isinstance(m, dict) or not m:
+            bad.append(f"{p['id']}: must_read is {m!r}, expected a non-empty role -> tier map")
+            continue
+        for role, tier in m.items():
+            if role not in roles:
+                bad.append(f"{p['id']}: must_read role {role!r} is not in schema.json")
+            if tier not in tiers:
+                bad.append(f"{p['id']}: must_read tier {tier!r} for {role} is not in schema.json")
+            used.setdefault(role, set()).add(tier)
+    for role in sorted(roles):
+        if 1 not in used.get(role, set()):
+            bad.append(f"must_read role {role!r} has no tier-1 paper")
+    used_tiers = set().union(*used.values()) if used else set()
+    for tier in sorted(tiers - used_tiers):
+        bad.append(f"must_read tier {tier!r} has no paper on any list")
+    assert not bad, "\n".join(bad)
+
+
 def test_loop_view_holds_only_arc_papers():
     """The loop view's blurb says every paper in it already appeared above."""
     loop = next((v for v in SCHEMA["views"] if v["id"] == "loop"), None)
@@ -308,6 +341,10 @@ def test_schema_prose_is_clean():
     for f in SCHEMA["fields"]:
         if f.get("help"):
             texts.append((f"{f['key']}.help", f["help"]))
+        # the must-read view renders its roles' and tiers' help as section text
+        if f.get("kind") == "ranked":
+            texts += [(f"{f['key']}.{v['v']}.help", v.get("help", "")) for v in f.get("vocab", [])]
+            texts += [(f"{f['key']}.tier{t['v']}.help", t.get("help", "")) for t in f.get("tiers", [])]
     bad = []
     for label, t in texts:
         if not t:

@@ -166,7 +166,10 @@
    "JEPA",
    "world model",
    "planning"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 1
+  }
  },
  {
   "id": "genie",
@@ -306,7 +309,10 @@
    "world model",
    "latent action",
    "video generation"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "cosmos",
@@ -448,7 +454,10 @@
    "world model",
    "foundation model",
    "physical AI"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  },
  {
   "id": "dino-world",
@@ -1579,7 +1588,10 @@
   "tags": [
    "foundation",
    "self-supervised"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "sam2",
@@ -1860,6 +1872,9 @@
    "world model",
    "RL",
    "latent"
-  ]
+  ],
+  "must_read": {
+   "physical-ai": 2
+  }
  }
 ]

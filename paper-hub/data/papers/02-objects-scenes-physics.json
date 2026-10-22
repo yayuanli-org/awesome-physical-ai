@@ -959,7 +959,10 @@
    "3D",
    "rendering",
    "foundation"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "nerf",
@@ -1087,7 +1090,10 @@
    "3D",
    "rendering",
    "foundation"
-  ]
+  ],
+  "must_read": {
+   "general-ai": 2
+  }
  },
  {
   "id": "hot3d",

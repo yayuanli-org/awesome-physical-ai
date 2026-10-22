@@ -261,6 +261,43 @@
   ],
   "fields": [
     {
+      "key": "must_read",
+      "label": "Must-read for",
+      "kind": "ranked",
+      "axis": "reader",
+      "facet": true,
+      "help": "Who has to read this paper, and how soon. Each role is a reading list with two tiers. Read tier 1 before tier 2, and within a tier read the oldest paper first, because the later ones build on it.",
+      "vocab": [
+        {
+          "v": "general-ai",
+          "label": "General AI researcher",
+          "help": "Anyone doing AI research. These are the methods every other paper on this page assumes you know."
+        },
+        {
+          "v": "physical-ai",
+          "label": "Physical AI researcher",
+          "help": "Someone building systems that model or change the physical world. Read the general AI list first."
+        },
+        {
+          "v": "student",
+          "label": "Student starting physical AI",
+          "help": "The shortest path into a course that reads physical-AI papers. Each paper is one part of a vision-language-action model: the transformer it is, the image features it sees with, the diffusion head it acts with, and the reinforcement learning that fine-tunes it."
+        }
+      ],
+      "tiers": [
+        {
+          "v": 1,
+          "label": "Read first",
+          "help": "The papers the rest of the list assumes you have read."
+        },
+        {
+          "v": 2,
+          "label": "Read next",
+          "help": "Each one extends a tier-1 paper or covers a part that tier 1 leaves out."
+        }
+      ]
+    },
+    {
       "key": "arc",
       "label": "Arc",
       "kind": "multi",

@@ -142,7 +142,17 @@ aside::-webkit-scrollbar{width:7px} aside::-webkit-scrollbar-thumb{background:va
 .ls{width:12px;height:4px;border-radius:2px;background:var(--line2)}
 .ls.on{background:var(--rose)}
 
+.arc{scroll-margin-top:64px}
 .outside{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:-18px 0 26px;font-size:12.5px;color:var(--ink2)}
+
+/* ---------- must-read view ---------- */
+.mrjump{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 30px}
+.mrchip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:550;padding:6px 11px;
+  border-radius:8px;border:1px solid var(--line2);background:var(--bg2);color:var(--ink)}
+.mrchip span{font:500 10.5px/1 var(--mono);color:var(--ink3)}
+.mrchip:hover{border-color:var(--rose);color:var(--rose)}
+.prow.ranked{grid-template-columns:24px minmax(0,1fr) auto}
+.prow .rk{font:600 12px/1.6 var(--mono);color:var(--rose);text-align:right}
 
 .legend{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:-8px 0 22px;
   font-size:11.5px;color:var(--ink3)}
@@ -331,6 +341,7 @@ body.cmt-docked #panel,body.cmt-docked #scrim{right:var(--cmt-panel-w,340px)}
     <div class="brand"><span class="dot"></span>Awesome Physical AI<span class="v" id="ver"></span></div>
     <nav role="tablist">
       <button role="tab" data-view="framework" aria-selected="true">Framework</button>
+      <button role="tab" data-view="mustread" aria-selected="false">Must-read</button>
       <button role="tab" data-view="table" aria-selected="false">Papers</button>
       <button role="tab" data-view="protocol" aria-selected="false">How a paper is read</button>
     </nav>
@@ -353,6 +364,7 @@ body.cmt-docked #panel,body.cmt-docked #scrim{right:var(--cmt-panel-w,340px)}
   </aside>
   <main>
     <div id="view-framework"></div>
+    <div id="view-mustread" hidden></div>
     <div id="view-table" hidden></div>
     <div id="view-protocol" hidden></div>
   </main>
@@ -399,12 +411,12 @@ P.forEach(p=>{
     p.venue,(p.tags||[]).join(' '),p.method&&p.method.intuition,p.problem&&p.problem.task,
     p.experiments&&p.experiments.headline,(p.method&&p.method.family||[]).join(' '),
     (p.experiments&&p.experiments.datasets||[]).map(d=>d.name).join(' '),
-    S.fields.filter(f=>f.facet&&f.kind!=='bool').map(f=>arr(p[f.key]).map(v=>label(f.key,v)).join(' ')).join(' ')
+    S.fields.filter(f=>f.facet&&f.kind!=='bool').map(f=>pv(p,f.key).map(v=>label(f.key,v)).join(' ')).join(' ')
   ].filter(Boolean).join(' \u2022 ').toLowerCase();
 });
 
 /* ---------- state ---------- */
-const VIEWS = ['framework','table','protocol'];
+const VIEWS = ['framework','mustread','table','protocol'];
 const state = {
   view:'framework', q:'',
   filters:{},            // key -> Set(values)
@@ -426,6 +438,8 @@ function facetValues(key){
 function pv(p,key){
   const f=F[key];
   if(f&&f.kind==='bool') return [String(!!p[key])];
+  // a ranked cell maps each value to its tier, e.g. must_read: {"student": 1}
+  if(f&&f.kind==='ranked') return Object.keys(p[key]||{});
   return arr(p[key]).map(String);
 }
 function passesExcept(p, skipKey){
@@ -447,7 +461,7 @@ function filtered(){ return P.filter(matches); }
 /* ---------- facets UI ---------- */
 function renderFacets(){
   const host=$('#facets'); const open=new Set([...host.querySelectorAll('details[open]')].map(d=>d.dataset.k));
-  if(!host.dataset.init){ FACET_KEYS.forEach(k=>{ if(['arc','embodiment','loop_stage','contribution'].includes(k)) open.add(k); }); host.dataset.init='1'; }
+  if(!host.dataset.init){ FACET_KEYS.forEach(k=>{ if(['must_read','arc','embodiment','loop_stage','contribution'].includes(k)) open.add(k); }); host.dataset.init='1'; }
   host.innerHTML='';
   FACET_KEYS.forEach(key=>{
     const f=F[key];
@@ -522,20 +536,27 @@ function markChips(p){
 // A paper shows up in several groups when dedupe is off. The first copy keeps the
 // plain id and repeats get a suffix, so the id a comment stored stays unique.
 const rowSeen=new Set();
-function paperRow(p){
-  const r=el('div','prow'); r.dataset.id=p.id;
-  let rid='row-'+p.id, k=1;
-  while(rowSeen.has(rid)) rid='row-'+p.id+'--'+(++k);
-  rowSeen.add(rid); r.id=rid;
+// opt.id: a caller whose ids are unique by construction (the must-read lists) passes
+// its own and skips the repeat counter. opt.rank: the reading-order number shown left.
+// opt.list: the ids the card's ‹ › keys walk, when that is not the filtered table.
+function paperRow(p,opt){
+  opt=opt||{};
+  const r=el('div','prow'+(opt.rank?' ranked':'')); r.dataset.id=p.id;
+  if(opt.id) r.id=opt.id;
+  else{
+    let rid='row-'+p.id, k=1;
+    while(rowSeen.has(rid)) rid='row-'+p.id+'--'+(++k);
+    rowSeen.add(rid); r.id=rid;
+  }
   const inst=(p.institutions||[])[0]||'';
   const a1=(p.authors||[])[0]||'';
-  r.innerHTML=`<div>
+  r.innerHTML=(opt.rank?`<div class="rk">${opt.rank}</div>`:'')+`<div>
       <div class="t">${hl(p.title)}</div>
       <div class="meta"><span class="yr">${esc(p.date||p.year||'')}</span> · ${esc(p.venue||'')}${a1?' · '+esc(a1)+((p.n_authors||1)>1?' et al.':''):''}${inst?' · '+esc(inst):''}</div>
       <div class="tl">${hl(p.tldr||'')}</div>
     </div>
     <div class="side">${markChips(p)}${loopStrip(p)}</div>`;
-  r.onclick=()=>openPanel(p.id);
+  r.onclick=()=>openPanel(p.id,opt.list);
   return r;
 }
 
@@ -618,14 +639,76 @@ function renderFramework(){
   // General-AI papers carry neither arc, so no section above lists them.
   const outside=rows.filter(p=>!arr(p.arc).some(a=>a==='model'||a==='change'));
   if(outside.length){
-    const note=el('div','outside',`<span><b>${outside.length}</b> general-AI papers sit outside the two arcs, because they neither model nor change the physical world. The Papers tab holds them.</span>`);
-    note.id='outside-arcs'; host.appendChild(note);
+    const note=el('div','outside',`<span><b>${outside.length}</b> general-AI papers sit outside the two arcs, because they neither model nor change the physical world. The must-read lists and the Papers tab hold them.</span>`);
+    note.id='outside-arcs';
+    const b=el('button','mini','Open the must-read lists'); b.onclick=()=>setView('mustread');
+    note.appendChild(b); host.appendChild(note);
   }
 
   const foot=el('div','tbar');
   const t=el('button','mini', state.dedupe?'Each paper listed once · show in every matching group':'Papers repeat across groups · list each once');
   t.onclick=()=>{state.dedupe=!state.dedupe;render();};
   foot.appendChild(t); host.appendChild(foot);
+}
+
+/* ---------- must-read view ---------- */
+// A second way to order the same papers: by who has to read them and how soon.
+// Each role in must_read's vocab is one list. A paper's cell maps role -> tier, a
+// paper may sit on several lists, and within a tier the oldest paper comes first.
+const MR=F.must_read||null;
+const MR_ROLES=MR?(MR.vocab||[]):[], MR_TIERS=MR?(MR.tiers||[]):[];
+const tierOf=(p,role)=>(p.must_read||{})[role];
+const tierLabel=v=>(MR_TIERS.find(t=>t.v===v)||{}).label||('tier '+v);
+function mustReadList(rows,role){
+  return rows.filter(p=>tierOf(p,role)!=null)
+    .sort((a,b)=>(tierOf(a,role)-tierOf(b,role))||String(a.date||'').localeCompare(String(b.date||'')));
+}
+function jumpToRole(role){
+  const t=document.getElementById('mr-'+slugId(role));
+  if(t) t.scrollIntoView({block:'start'});
+}
+function renderMustRead(){
+  const host=$('#view-mustread'); host.innerHTML='';
+  if(!MR){ host.appendChild(el('div','empty','This schema has no must-read lists.')); return; }
+  const rows=filtered();
+  const lede=el('div','lede'); lede.id='mr-lede';
+  lede.innerHTML=`<h1 id="mr-title">Must-read by role</h1><p id="mr-help">${esc(MR.help||'')}</p>`;
+  host.appendChild(lede);
+
+  const lists=MR_ROLES.map(r=>({r,items:mustReadList(rows,r.v)}));
+  const jump=el('div','mrjump'); jump.id='mr-jump';
+  lists.forEach(({r,items})=>{
+    const b=el('button','mrchip',`${esc(r.label)}<span>${items.length}</span>`);
+    b.id='mr-jump-'+slugId(r.v);
+    b.onclick=()=>{ jumpToRole(r.v); try{ history.replaceState(null,'','#must-read/'+r.v); }catch(e){} };
+    jump.appendChild(b);
+  });
+  host.appendChild(jump);
+  const ac=activeChips(); if(ac){ ac.style.margin='-14px 0 22px'; host.appendChild(ac); }
+
+  let shown=0;
+  lists.forEach(({r,items},ri)=>{
+    if(!items.length) return;
+    shown++;
+    const sec=el('section','arc'); sec.id='mr-'+slugId(r.v);
+    const h=el('div','archead');
+    h.innerHTML=`<div class="n">${String(ri+1).padStart(2,'0')} — ${items.length} papers</div>
+      <h2 id="${sec.id}-name">${esc(r.label)}</h2><p id="${sec.id}-help">${esc(r.help||'')}</p>`;
+    sec.appendChild(h);
+    let n=0;
+    MR_TIERS.forEach(t=>{
+      const tier=items.filter(p=>tierOf(p,r.v)===t.v);
+      if(!tier.length) return;
+      const gd=el('div','grp'); gd.id=sec.id+'-tier-'+t.v;
+      gd.innerHTML=`<div class="grphead"><h3 id="${gd.id}-name">${esc(t.label)}</h3>`+
+        `<span class="sub" id="${gd.id}-sub">${esc(t.help||'')}</span><span class="n">${tier.length}</span></div>`;
+      const list=el('div','plist');
+      tier.forEach(p=>list.appendChild(paperRow(p,{id:sec.id+'-'+p.id,rank:++n,list:items.map(x=>x.id)})));
+      gd.appendChild(list); sec.appendChild(gd);
+    });
+    host.appendChild(sec);
+  });
+  if(!shown) host.appendChild(el('div','empty','No must-read paper matches these filters.'));
 }
 
 /* ---------- table view ---------- */
@@ -640,6 +723,10 @@ const COLDEF=[
   {k:'change_channel',label:'Change channel'},{k:'sensing',label:'Sensing'},{k:'regime',label:'Regime'},
   {k:'horizon',label:'Horizon'},{k:'domain',label:'Domain'},{k:'autonomy',label:'Autonomy'},
   {k:'openness',label:'Released'},
+  {k:'must_read',label:'Must-read for',get:p=>{
+    const m=p.must_read||{}, ks=Object.keys(m);
+    return ks.length? ks.map(r=>`<span class="chip r">${esc(label('must_read',r))} · ${esc(m[r])}</span>`).join(' ') : '<span class="muted">—</span>';
+  },sort:p=>{ const v=Object.values(p.must_read||{}); return v.length?Math.min(...v):9; }},
   {k:'task',label:'Task',get:p=>esc((p.problem&&p.problem.task)||''),sort:p=>(p.problem&&p.problem.task)||''},
   {k:'intuition',label:'Method intuition',get:p=>esc((p.method&&p.method.intuition)||''),sort:p=>(p.method&&p.method.intuition)||''},
   {k:'headline',label:'Headline result',get:p=>esc((p.experiments&&p.experiments.headline)||''),sort:p=>(p.experiments&&p.experiments.headline)||''}
@@ -746,16 +833,17 @@ Training:
   <p id="p-columns-note">Sections on the Framework tab are filters over these columns rather than folders. A paper that models the world and changes it carries both values, and appears in both arcs.</p>`;
   d.innerHTML=h;
 
-  ['topic','meta'].forEach(axis=>{
+  ['topic','meta','reader'].forEach(axis=>{
     const fs=S.fields.filter(f=>f.axis===axis&&(f.vocab||f.kind==='bool'));
     if(!fs.length) return;
-    const ah=el('h3',null,axis==='topic'?'Physical-AI axes':'Bibliographic and contribution');
+    const ah=el('h3',null,{topic:'Physical-AI axes',meta:'Bibliographic and contribution',reader:'Reading priority'}[axis]);
     ah.id='p-axes-'+axis; d.appendChild(ah);
     const t=el('table','fieldtable'); t.id='fields-'+axis; const tb=el('tbody');
     fs.forEach(f=>{
       const tr=el('tr'); tr.id='field-'+slugId(f.key);
       tr.appendChild(el('td',null,`${esc(f.label)}<span>${esc(f.key)} · ${esc(f.kind)}</span>`));
-      const vals=(f.vocab||[]).map(v=>`<span class="chip">${esc(v.label)}</span>`).join(' ')||'<span class="chip">true</span> <span class="chip">false</span>';
+      const vals=((f.vocab||[]).map(v=>`<span class="chip">${esc(v.label)}</span>`).join(' ')||'<span class="chip">true</span> <span class="chip">false</span>')+
+        (f.tiers||[]).map(t=>` <span class="chip r">tier ${esc(t.v)} · ${esc(t.label)}</span>`).join('');
       tr.appendChild(el('td',null,(f.help?`<div style="margin-bottom:6px;color:var(--ink2)">${esc(f.help)}</div>`:'')+`<div class="chips">${vals}</div>`));
       tb.appendChild(tr);
     });
@@ -803,6 +891,7 @@ function renderPanel(p){
    ${p.why?`<div class="why"><b>Why it is on this list.</b> ${esc(p.why)}</div>`:''}
 
    <div class="sec"><h5>Where it sits</h5>
+     ${pv(p,'must_read').length?`<div class="kv"><div class="k">Must-read for</div><div>${pv(p,'must_read').map(r=>`<span class="chip r">${esc(label('must_read',r))} · ${esc(tierLabel(p.must_read[r]).toLowerCase())}</span>`).join(' ')}</div></div>`:''}
      <div class="kv"><div class="k">Arc</div><div>${chipRow('arc',p)}</div></div>
      <div class="kv"><div class="k">Loop stage</div><div>${chipRow('loop_stage',p)} ${p.closes_loop?'<span class="chip r">closes the loop</span>':''}</div></div>
      <div class="kv"><div class="k">Embodiment</div><div>${chipRow('embodiment',p)} ${pv(p,'human_role').filter(v=>v&&v!=='none').map(v=>`<span class="chip">human: ${esc(label('human_role',v))}</span>`).join(' ')}</div></div>
@@ -864,8 +953,8 @@ function renderPanel(p){
   $('#pbody').innerHTML=h; $('#pbody').scrollTop=0;
   $('#pidx').textContent=(panelIdx+1)+' / '+panelList.length;
 }
-function openPanel(id){
-  panelList=filtered().map(p=>p.id);
+function openPanel(id,list){
+  panelList=list||filtered().map(p=>p.id);
   panelIdx=panelList.indexOf(id);
   if(panelIdx<0){ panelList=[id]; panelIdx=0; }
   renderPanel(P.find(p=>p.id===id));
@@ -919,6 +1008,7 @@ window.__physai={ views:VIEWS.slice(), view:()=>state.view, setView:setView };
 
 function renderView(v){
   if(v==='framework') renderFramework();
+  else if(v==='mustread') renderMustRead();
   else if(v==='table') renderTable();
   else renderProtocol();
 }
@@ -931,12 +1021,15 @@ function render(){
   renderView(state.view);
 }
 render();
-// Fill the two idle views once, after first paint. A review comment resolves against
+// Fill the idle views once, after first paint. A review comment resolves against
 // the live DOM, and one pointing into a view that has never been rendered falls back
 // to matching its text — which lands on the wrong element whenever the same words
 // appear elsewhere, and vocabulary labels appear in the rail, the rows and the table.
 setTimeout(()=>VIEWS.forEach(v=>{ if(v!==state.view) renderView(v); }),0);
-if(location.hash){ const id=location.hash.slice(1); if(P.some(p=>p.id===id)) openPanel(id); }
+// #must-read opens the lists, #must-read/<role> scrolls to one of them, #<id> opens a paper
+const mrHash=location.hash.match(/^#must-read(?:\/([a-z0-9-]+))?$/);
+if(mrHash){ setView('mustread'); if(mrHash[1]) jumpToRole(mrHash[1]); }
+else if(location.hash){ const id=location.hash.slice(1); if(P.some(p=>p.id===id)) openPanel(id); }
 })();
 </script>
 
