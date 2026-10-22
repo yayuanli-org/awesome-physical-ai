@@ -1,0 +1,2584 @@
+[
+ {
+  "id": "resnet",
+  "short": "ResNet",
+  "title": "Deep Residual Learning for Image Recognition",
+  "year": 2015,
+  "date": "2015-12",
+  "venue": "CVPR 2016",
+  "venue_type": "conference",
+  "authors": [
+   "Kaiming He",
+   "Xiangyu Zhang",
+   "Shaoqing Ren",
+   "Jian Sun"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "Microsoft Research"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/1512.03385",
+   "code": "https://github.com/KaimingHe/deep-residual-networks"
+  },
+  "tldr": "Let each block learn only a correction that is added to its own input, and networks 152 layers deep train easily and keep getting more accurate as they get deeper.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "weights"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Classify a photo into one of 1000 categories with a network far deeper than earlier ones, without accuracy dropping as depth grows.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x ∈ R^{224×224×3}",
+      "chars": "A natural photo, cropped to 224 by 224 pixels."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "class scores",
+      "modality": "label",
+      "tensor": "p ∈ R^{1000}",
+      "chars": "A softmax over the 1000 ImageNet classes."
+     },
+     {
+      "name": "pooled feature",
+      "modality": "latent",
+      "tensor": "z ∈ R^{2048}",
+      "chars": "The vector before the classifier in ResNet-50 and deeper, 512 numbers in ResNet-18 and 34. Detectors and robot policies reuse it as the image feature."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Class labels on the 1.28 million ImageNet training images.",
+    "note": "The shortcut fixes training. A plain 34-layer network had higher training error than a plain 18-layer one, so depth was failing at optimization, and at inference the residual network is an ordinary feed-forward pass."
+   }
+  },
+  "method": {
+   "intuition": "A deeper network should never do worse than a shallower one, because its extra layers could just copy their input. Learning only the residual makes copying the easy case, since the layers then only have to push their output to zero.",
+   "family": [
+    "cnn"
+   ],
+   "backbone": "ResNet-18, 34, 50, 101 and 152",
+   "init": "scratch",
+   "components": [
+    "identity shortcut around every block",
+    "bottleneck blocks of 1×1, 3×3 and 1×1 convolutions",
+    "batch normalization after every convolution",
+    "projection shortcut where the dimensions change"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "ImageNet (ILSVRC 2015 classification)",
+     "role": "existing"
+    },
+    {
+     "name": "CIFAR-10",
+     "role": "existing"
+    },
+    {
+     "name": "PASCAL VOC and COCO detection",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "top-1 and top-5 error",
+    "detection mAP"
+   ],
+   "baselines": [
+    "plain networks of the same depth",
+    "VGG",
+    "GoogLeNet"
+   ],
+   "headline": "An ensemble of residual nets gets 3.57% error on the ImageNet test set, which won ILSVRC 2015 classification. The deeper features alone give a 28% relative gain on COCO object detection."
+  },
+  "why": "Every transformer on this page wraps each layer in this residual connection, and ResNet-18 is still the image encoder inside Diffusion Policy and ACT.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "CNN",
+   "image encoder"
+  ]
+ },
+ {
+  "id": "transformer",
+  "short": "Transformer",
+  "title": "Attention Is All You Need",
+  "year": 2017,
+  "date": "2017-06",
+  "venue": "NeurIPS 2017",
+  "venue_type": "conference",
+  "authors": [
+   "Ashish Vaswani",
+   "Noam Shazeer",
+   "Niki Parmar",
+   "Jakob Uszkoreit",
+   "Llion Jones",
+   "Aidan N. Gomez"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "Google Brain",
+   "Google Research",
+   "University of Toronto"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/1706.03762",
+   "code": "https://github.com/tensorflow/tensor2tensor"
+  },
+  "tldr": "A network built only from attention translates better than recurrent and convolutional models and trains in a fraction of their time, because every word attends to every other word in one parallel step.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "tokens"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Translate a sentence into another language one output token at a time, with a model that relates every pair of positions directly.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "source sentence",
+      "modality": "text",
+      "tensor": "x_{1..n}",
+      "chars": "Byte-pair tokens, from a vocabulary of about 37,000 shared by English and German. Each token is embedded and summed with a sinusoidal position code."
+     },
+     {
+      "name": "translation so far",
+      "modality": "text",
+      "tensor": "y_{<t}",
+      "chars": "The decoder's own earlier outputs, fed back one token at a time."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "next target token",
+      "modality": "text",
+      "tensor": "p(y_t | y_{<t}, x) ∈ R^{V}",
+      "chars": "A distribution over the vocabulary. Beam search with a beam of 4 assembles the full translation."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Cross-entropy on the next target token over WMT 2014 sentence pairs, 4.5 million for English-German and 36 million for English-French, with label smoothing.",
+    "note": "Training feeds the whole reference translation at once behind a causal mask, so every position trains in parallel. Inference still has to decode one token at a time."
+   }
+  },
+  "method": {
+   "intuition": "Recurrence makes a network read a sentence one word after another. Self-attention links every pair of positions in one step, so training runs in parallel across the sentence and distant words are one hop apart.",
+   "family": [
+    "transformer"
+   ],
+   "backbone": "encoder-decoder, 6 layers each (base d=512, big d=1024)",
+   "init": "scratch",
+   "components": [
+    "scaled dot-product attention",
+    "multi-head attention, 8 heads in the base model",
+    "sinusoidal position encoding",
+    "residual connection and layer normalization around every sub-layer",
+    "position-wise feed-forward layers"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "WMT 2014 English-German",
+     "role": "existing"
+    },
+    {
+     "name": "WMT 2014 English-French",
+     "role": "existing"
+    },
+    {
+     "name": "Penn Treebank (WSJ) constituency parsing",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "BLEU",
+    "training cost in FLOPs",
+    "parsing F1"
+   ],
+   "baselines": [
+    "GNMT",
+    "ConvS2S",
+    "ByteNet",
+    "mixture-of-experts"
+   ],
+   "headline": "28.4 BLEU on WMT 2014 English-to-German, more than 2 BLEU above the best previous results including ensembles, and 41.8 BLEU on English-to-French after 3.5 days on eight GPUs."
+  },
+  "why": "Every vision-language-action model on this page is a transformer, from RT-2 to π₀.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "transformer",
+   "attention"
+  ]
+ },
+ {
+  "id": "vit",
+  "short": "ViT",
+  "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+  "year": 2020,
+  "date": "2020-10",
+  "venue": "ICLR 2021",
+  "venue_type": "conference",
+  "authors": [
+   "Alexey Dosovitskiy",
+   "Lucas Beyer",
+   "Alexander Kolesnikov",
+   "Dirk Weissenborn",
+   "Xiaohua Zhai",
+   "Thomas Unterthiner"
+  ],
+  "n_authors": 12,
+  "institutions": [
+   "Google Brain"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2010.11929",
+   "code": "https://github.com/google-research/vision_transformer"
+  },
+  "tldr": "Cut an image into 16x16 patches and feed them to a standard transformer as if they were words. With enough pretraining data it matches the best convolutional networks for less training compute.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Classify images with a standard transformer applied directly to a sequence of image patches.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x ∈ R^{224×224×3}",
+      "chars": "With 16×16 patches this becomes 196 tokens, each a flattened patch passed through one linear layer."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "image feature",
+      "modality": "latent",
+      "tensor": "z_cls ∈ R^{D}",
+      "chars": "The learned class token after the last layer. Vision-language models built on ViT read the patch tokens instead, one per image region."
+     },
+     {
+      "name": "class scores",
+      "modality": "label",
+      "tensor": "p ∈ R^{K}",
+      "chars": "From an MLP head during pretraining and a single linear layer when fine-tuning."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Class labels on ImageNet-21k (14 million images) or JFT-300M, then fine-tuning on each target benchmark.",
+    "note": "Fine-tuning runs at a higher resolution than pretraining, so the learned position embeddings are interpolated in 2D. That step and the patch cut are the only places the model is told an image is two-dimensional."
+   }
+  },
+  "method": {
+   "intuition": "Convolutions build in the assumption that nearby pixels matter most. Given enough data a transformer learns that from scratch, and the general architecture then needs less compute for the same accuracy.",
+   "family": [
+    "transformer"
+   ],
+   "backbone": "ViT-B/16, ViT-L/16, ViT-H/14",
+   "init": "scratch",
+   "components": [
+    "linear patch embedding",
+    "learned 1D position embeddings",
+    "prepended class token",
+    "standard transformer encoder",
+    "large-scale supervised pretraining, then fine-tuning"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "ImageNet-21k and JFT-300M (pretraining)",
+     "role": "existing"
+    },
+    {
+     "name": "ImageNet, CIFAR-100, VTAB (transfer)",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "fine-tuning accuracy",
+    "few-shot linear accuracy",
+    "pretraining compute in TPUv3-core-days"
+   ],
+   "baselines": [
+    "BiT (large ResNets)",
+    "Noisy Student (EfficientNet)"
+   ],
+   "headline": "Pretrained on large datasets and transferred to ImageNet, CIFAR-100 and VTAB, ViT matches or beats state-of-the-art convolutional networks while needing substantially fewer computational resources to train."
+  },
+  "why": "The image encoder inside nearly every vision-language-action model on this page is a ViT, such as the SigLIP and DINOv2 encoders in OpenVLA.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "transformer",
+   "image encoder"
+  ]
+ },
+ {
+  "id": "clip",
+  "short": "CLIP",
+  "title": "Learning Transferable Visual Models From Natural Language Supervision",
+  "year": 2021,
+  "date": "2021-02",
+  "venue": "ICML 2021",
+  "venue_type": "conference",
+  "authors": [
+   "Alec Radford",
+   "Jong Wook Kim",
+   "Chris Hallacy",
+   "Aditya Ramesh",
+   "Gabriel Goh",
+   "Sandhini Agarwal"
+  ],
+  "n_authors": 12,
+  "institutions": [
+   "OpenAI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2103.00020",
+   "code": "https://github.com/openai/CLIP"
+  },
+  "tldr": "Train an image encoder and a text encoder to match 400 million web images with their captions, and the model classifies images into new categories from their names alone, with no labeled examples.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Learn image features from captions alone, then classify images into any set of categories named in text, with no training on the target dataset.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x ∈ R^{224×224×3}",
+      "chars": "Any photo. The best model, ViT-L/14 at 336 px, takes 336×336."
+     },
+     {
+      "name": "class prompts",
+      "modality": "text",
+      "tensor": "{ℓ_1..ℓ_K}",
+      "chars": "One caption per candidate class, written from a template such as \"A photo of a {label}.\""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "image and text embeddings",
+      "modality": "latent",
+      "tensor": "f(x), g(ℓ_k) ∈ R^{d}",
+      "chars": "Unit-length vectors in one shared space, compared by cosine similarity."
+     },
+     {
+      "name": "zero-shot class",
+      "modality": "label",
+      "tensor": "argmax_k cos(f(x), g(ℓ_k))",
+      "chars": "The class whose caption lies closest to the image."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "A symmetric contrastive loss over 400 million (image, text) pairs from the internet. In each batch of 32,768 pairs the true pairings are the positives and every other pairing is a negative.",
+    "note": "Training never sees a class label. At test time the class names are written as captions, so the text encoder builds a classifier for any label set on demand."
+   }
+  },
+  "method": {
+   "intuition": "Captions on the web name far more visual concepts than any fixed label set. Matching images to their captions turns that free text into supervision, and any concept that can be named becomes a class at test time.",
+   "family": [
+    "contrastive",
+    "vlm",
+    "transformer"
+   ],
+   "backbone": "ResNet or ViT image encoder (up to ViT-L/14 at 336 px) + 12-layer text transformer",
+   "init": "scratch",
+   "components": [
+    "image and text encoders trained together",
+    "symmetric contrastive loss over every pairing in the batch",
+    "prompt templates for zero-shot classification",
+    "WIT, a 400M-pair web dataset"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "WIT, 400M web image-text pairs",
+     "role": "new"
+    },
+    {
+     "name": "over 30 vision benchmarks, ImageNet among them",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "zero-shot accuracy",
+    "linear-probe accuracy",
+    "accuracy under distribution shift"
+   ],
+   "baselines": [
+    "ResNet-50 supervised on ImageNet",
+    "Visual N-Grams",
+    "linear probes on BiT and EfficientNet features"
+   ],
+   "headline": "Zero-shot CLIP matches the original ResNet-50 on ImageNet without using any of its 1.28 million training examples, and is often competitive with fully supervised baselines across over 30 datasets."
+  },
+  "why": "CLIP-style image features are how most vision-language-action models see, through descendants such as the SigLIP encoder inside π₀ and OpenVLA.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "image encoder",
+   "vision-language",
+   "zero-shot"
+  ]
+ },
+ {
+  "id": "mae",
+  "short": "MAE",
+  "title": "Masked Autoencoders Are Scalable Vision Learners",
+  "year": 2021,
+  "date": "2021-11",
+  "venue": "CVPR 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Kaiming He",
+   "Xinlei Chen",
+   "Saining Xie",
+   "Yanghao Li",
+   "Piotr Dollár",
+   "Ross Girshick"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "Meta FAIR"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2111.06377",
+   "code": "https://github.com/facebookresearch/mae"
+  },
+  "tldr": "Hide 75% of an image's patches and train a ViT to fill in the missing pixels. The encoder sees only the visible quarter, so pretraining runs 3x faster, and its features transfer better than supervised pretraining.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "sense",
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "object-state"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Pretrain a ViT image encoder on unlabeled images, for transfer to classification, detection and segmentation.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x ∈ R^{224×224×3}",
+      "chars": "Cut into 16×16 patches, 14×14 for ViT-H. In pretraining a random 75% of them are removed before the encoder."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "patch features",
+      "modality": "latent",
+      "tensor": "z ∈ R^{N×d}",
+      "chars": "The encoder's output on the whole image, kept for transfer. The pixel decoder is thrown away after pretraining."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "No labels. Mean squared error between predicted and true pixels, on the masked patches only, over ImageNet-1K images.",
+    "note": "Pretraining shows the encoder only the visible 25% of patches and gives mask tokens to a small decoder. Transfer runs the encoder on the full image with no masking and drops the decoder."
+   }
+  },
+  "method": {
+   "intuition": "Images are redundant, so a few missing patches are easy to fill in from their neighbors. Hiding 75% forces the model to understand whole objects, and leaving the hidden patches out of the encoder makes training cheap.",
+   "family": [
+    "ssl",
+    "transformer"
+   ],
+   "backbone": "ViT-B, ViT-L or ViT-H encoder + 8-block decoder",
+   "init": "scratch",
+   "components": [
+    "random masking of 75% of patches",
+    "encoder that sees only the visible patches",
+    "lightweight decoder that adds mask tokens",
+    "pixel reconstruction loss on the masked patches"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "ImageNet-1K, labels unused in pretraining",
+     "role": "existing"
+    },
+    {
+     "name": "COCO detection, ADE20K segmentation",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "fine-tuning accuracy",
+    "linear-probe accuracy",
+    "box and mask AP",
+    "mIoU"
+   ],
+   "baselines": [
+    "supervised ViT pretraining",
+    "BEiT",
+    "MoCo v3",
+    "DINO"
+   ],
+   "headline": "A vanilla ViT-Huge reaches 87.8% on ImageNet-1K, the best among methods trained on ImageNet-1K data alone, and pretraining runs 3x or more faster."
+  },
+  "why": "Robot image encoders such as MVP and VC-1 were pretrained this way, mostly on egocentric video, and V-JEPA 2 on this page keeps the masking but predicts features in place of pixels.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "image encoder",
+   "self-supervised"
+  ]
+ },
+ {
+  "id": "gpt-3",
+  "short": "GPT-3",
+  "title": "Language Models are Few-Shot Learners",
+  "year": 2020,
+  "date": "2020-05",
+  "venue": "NeurIPS 2020",
+  "venue_type": "conference",
+  "authors": [
+   "Tom B. Brown",
+   "Benjamin Mann",
+   "Nick Ryder",
+   "Melanie Subbiah",
+   "Jared Kaplan",
+   "Prafulla Dhariwal"
+  ],
+  "n_authors": 31,
+  "institutions": [
+   "OpenAI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2005.14165"
+  },
+  "tldr": "Scale a language model to 175 billion parameters and it learns new tasks from a few examples written into its prompt, with no gradient updates, sometimes rivaling fine-tuned models.",
+  "contribution": [
+   "method",
+   "analysis"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "decide"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "tokens",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Do a new language task from a plain-text description and a few examples in the prompt, without fine-tuning.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "prompt",
+      "modality": "text",
+      "tensor": "x_{1..n}, n ≤ 2048",
+      "chars": "A task description, then zero, one or a few solved examples, usually 10 to 100 to fill the window, then the new query."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "continuation",
+      "modality": "text",
+      "tensor": "y_{1..m}",
+      "chars": "Generated one token at a time. Multiple-choice tasks compare the likelihood of each option."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Next-token prediction on 300 billion tokens drawn from filtered Common Crawl, WebText2, two book corpora and English Wikipedia.",
+    "note": "Training is next-token prediction and nothing else. At evaluation each task arrives as text in the prompt and no weight changes, so the model picks up the task inside one forward pass."
+   }
+  },
+  "method": {
+   "intuition": "To continue arbitrary web text, a model has to work out what task a passage is doing. Scaling it up makes that in-context learning strong enough to stand in for fine-tuning on many tasks.",
+   "family": [
+    "llm",
+    "transformer",
+    "prompting"
+   ],
+   "backbone": "decoder-only transformer, 8 sizes from 125M to 175B parameters",
+   "init": "scratch",
+   "components": [
+    "175B-parameter decoder-only transformer",
+    "zero-, one- and few-shot evaluation by prompting",
+    "filtered and deduplicated Common Crawl in the training mix",
+    "alternating dense and sparse attention layers"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "filtered Common Crawl, WebText2, Books1, Books2, Wikipedia",
+     "role": "remix"
+    },
+    {
+     "name": "NLP benchmarks: translation, question answering, cloze, reasoning",
+     "role": "existing"
+    },
+    {
+     "name": "made-up tasks: arithmetic, word unscrambling, using a new word",
+     "role": "synthetic"
+    }
+   ],
+   "metrics": [
+    "zero-, one- and few-shot accuracy",
+    "BLEU",
+    "human accuracy at spotting generated news"
+   ],
+   "baselines": [
+    "fine-tuned state-of-the-art models",
+    "smaller GPT-3 models, 125M to 13B"
+   ],
+   "headline": "With 175 billion parameters, 10x more than any previous non-sparse language model, GPT-3 does translation, question answering and 3-digit arithmetic from a few examples in its prompt, with no gradient updates."
+  },
+  "why": "SayCan, Inner Monologue and Code as Policies on this page all plan by prompting a large language model with a few worked examples, the method this paper established.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "LLM",
+   "in-context learning"
+  ]
+ },
+ {
+  "id": "scaling-laws",
+  "short": "Scaling laws",
+  "title": "Scaling Laws for Neural Language Models",
+  "year": 2020,
+  "date": "2020-01",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Jared Kaplan",
+   "Sam McCandlish",
+   "Tom Henighan",
+   "Tom B. Brown",
+   "Benjamin Chess",
+   "Rewon Child"
+  ],
+  "n_authors": 10,
+  "institutions": [
+   "OpenAI",
+   "Johns Hopkins University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2001.08361"
+  },
+  "tldr": "Language model loss falls as a power law in model size, data and compute, while width and depth barely matter. So a fixed compute budget is best spent on a very large model trained on modest data and stopped early.",
+  "contribution": [
+   "analysis"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "tokens"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Predict a language model's test loss from its parameter count, training tokens and training compute, before training it.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "training budget",
+      "modality": "scalar",
+      "tensor": "(N, D, C)",
+      "chars": "Non-embedding parameters N, training tokens D, and training compute C in PF-days."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "predicted test loss",
+      "modality": "scalar",
+      "tensor": "L(N) = (N_c/N)^{α_N}",
+      "chars": "Cross-entropy in nats per token. Each factor alone gives a power law, with α_N ≈ 0.076 for model size."
+     },
+     {
+      "name": "compute-optimal model size",
+      "modality": "scalar",
+      "tensor": "N_opt ∝ C^{0.73}",
+      "chars": "Most of any added compute should go to a larger model, and little to more data."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Decoder-only transformers from 768 to 1.5 billion non-embedding parameters, trained by next-token prediction on 22 million to 23 billion tokens of WebText2.",
+    "note": "The laws are fit on runs up to 1.5 billion parameters and then used to plan far larger ones. Chinchilla later refit the compute split and moved it toward more data."
+   }
+  },
+  "method": {
+   "intuition": "If loss is a smooth power law in scale, small runs predict large ones. Choosing a model size and a dataset size then becomes arithmetic on a fitted curve.",
+   "family": [
+    "analysis",
+    "llm"
+   ],
+   "backbone": "decoder-only transformers, 768 to 1.5B non-embedding parameters",
+   "init": "scratch",
+   "components": [
+    "power-law fits of loss against N, D and C",
+    "joint law L(N, D) for overfitting",
+    "learning-curve law in training steps",
+    "compute-optimal allocation of a fixed budget"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "WebText2",
+     "role": "existing"
+    },
+    {
+     "name": "Books Corpus, Common Crawl, English Wikipedia, Internet Books (test loss transfer)",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "test cross-entropy loss in nats per token",
+    "fitted power-law exponents"
+   ],
+   "baselines": [
+    "LSTM language models"
+   ],
+   "headline": "Loss follows a power law in model size, dataset size and training compute, with some trends spanning more than seven orders of magnitude. Compute-optimal training uses very large models on modest data and stops well before convergence."
+  },
+  "why": "Robot foundation models are a bet that loss keeps falling predictably with scale, and every robot scaling study since tests whether this result holds for actions.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "scaling laws",
+   "LLM"
+  ]
+ },
+ {
+  "id": "chinchilla",
+  "short": "Chinchilla",
+  "title": "Training Compute-Optimal Large Language Models",
+  "year": 2022,
+  "date": "2022-03",
+  "venue": "NeurIPS 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Jordan Hoffmann",
+   "Sebastian Borgeaud",
+   "Arthur Mensch",
+   "Elena Buchatskaya",
+   "Trevor Cai",
+   "Eliza Rutherford"
+  ],
+  "n_authors": 22,
+  "institutions": [
+   "DeepMind"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2203.15556"
+  },
+  "tldr": "For a fixed compute budget, model size and training tokens should grow in equal proportion, so most large language models were undertrained. A 70B model trained on 4x more data beats the 280B Gopher at the same compute.",
+  "contribution": [
+   "analysis"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "tokens"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Choose the model size and the number of training tokens that give the lowest loss for a given compute budget.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "compute budget",
+      "modality": "scalar",
+      "tensor": "C ≈ 6ND FLOPs",
+      "chars": "Training FLOPs, approximated as 6 times parameters times training tokens."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "compute-optimal size and data",
+      "modality": "scalar",
+      "tensor": "N_opt ∝ C^{0.5}, D_opt ∝ C^{0.5}",
+      "chars": "Parameters and tokens grow equally, about 20 tokens per parameter. Chinchilla's 70B parameters get 1.4 trillion tokens."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Over 400 decoder-only language models from 70 million to over 16 billion parameters, trained on 5 to 500 billion tokens of MassiveText.",
+    "note": "The frontier is fit on runs up to 16 billion parameters and then extrapolated to choose Chinchilla's 70 billion. Training Chinchilla is the test of that extrapolation."
+   }
+  },
+  "method": {
+   "intuition": "Earlier scaling advice said to grow the model much faster than the data. Three independent fits of the same question say to grow both equally, so large models need far more tokens than they were getting.",
+   "family": [
+    "analysis",
+    "llm"
+   ],
+   "backbone": "decoder-only transformer, Gopher architecture, 70B parameters for Chinchilla",
+   "init": "scratch",
+   "components": [
+    "three estimates of the compute-optimal frontier: training-curve envelope, IsoFLOP profiles, parametric loss fit",
+    "learning-rate schedule matched to each run's length",
+    "Chinchilla, 70B parameters trained on 1.4 trillion tokens"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "MassiveText",
+     "role": "existing"
+    },
+    {
+     "name": "MMLU, BIG-bench, reading comprehension, closed-book question answering",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "validation loss",
+    "MMLU accuracy",
+    "downstream task accuracy"
+   ],
+   "baselines": [
+    "Gopher (280B)",
+    "GPT-3 (175B)",
+    "Jurassic-1 (178B)",
+    "Megatron-Turing NLG (530B)"
+   ],
+   "headline": "Chinchilla, at 70B parameters and the same compute as the 280B Gopher, reaches 67.5% average accuracy on MMLU, more than 7% above Gopher."
+  },
+  "why": "Robot foundation models are limited by how much data can be collected, and this paper is the rule of thumb for how much data a model of a given size should see.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "scaling laws",
+   "LLM"
+  ]
+ },
+ {
+  "id": "lora",
+  "short": "LoRA",
+  "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+  "year": 2021,
+  "date": "2021-06",
+  "venue": "ICLR 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Edward J. Hu",
+   "Yelong Shen",
+   "Phillip Wallis",
+   "Zeyuan Allen-Zhu",
+   "Yuanzhi Li",
+   "Shean Wang"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "Microsoft"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2106.09685",
+   "code": "https://github.com/microsoft/LoRA"
+  },
+  "tldr": "Freeze the pretrained weights and train only a low-rank update beside each weight matrix. That matches full fine-tuning of GPT-3 175B with 10,000 times fewer trainable parameters and no added inference latency.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "adapt"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "tokens"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Adapt a large pretrained transformer to a new task while training and storing only a small fraction of its parameters.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "task input",
+      "modality": "text",
+      "tensor": "x",
+      "chars": "Text, for the RoBERTa, DeBERTa, GPT-2 and GPT-3 models tested."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "task output",
+      "modality": "text",
+      "tensor": "h = W₀x + BAx",
+      "chars": "Each adapted weight W₀ ∈ R^{d×k} gets a trained update BA, with B ∈ R^{d×r}, A ∈ R^{r×k} and rank r far smaller than d and k."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Each downstream task's labeled data, with gradients flowing only into A and B.",
+    "note": "Training keeps W₀ frozen and updates only A and B, which is where the memory saving comes from. For deployment BA is added into W₀, so the adapted model runs at the original speed, and switching tasks means swapping BA."
+   }
+  },
+  "method": {
+   "intuition": "The weight change that fine-tuning makes has a low intrinsic rank, so two thin matrices can hold it. Training only those matrices captures the adaptation at a small fraction of the memory and storage.",
+   "family": [
+    "fine-tuning",
+    "transformer"
+   ],
+   "backbone": "frozen RoBERTa, DeBERTa, GPT-2 or GPT-3 175B",
+   "init": "finetune",
+   "components": [
+    "frozen pretrained weights",
+    "trainable low-rank matrices A and B beside each adapted weight",
+    "B starts at zero, so training begins from the pretrained model",
+    "BA merged into W₀ for deployment"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "GLUE",
+     "role": "existing"
+    },
+    {
+     "name": "E2E NLG, WebNLG, DART",
+     "role": "existing"
+    },
+    {
+     "name": "WikiSQL, MultiNLI, SAMSum",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "task accuracy",
+    "BLEU and ROUGE",
+    "trainable parameters",
+    "GPU memory",
+    "inference latency"
+   ],
+   "baselines": [
+    "full fine-tuning",
+    "adapters",
+    "prefix tuning",
+    "BitFit"
+   ],
+   "headline": "Against GPT-3 175B fine-tuned with Adam, LoRA cuts trainable parameters 10,000 times and GPU memory 3 times, and matches or beats fine-tuning quality on RoBERTa, DeBERTa, GPT-2 and GPT-3."
+  },
+  "why": "LoRA is a common way for a robot lab to fine-tune a large pretrained model on its own robot data, and OpenVLA on this page found it matches full fine-tuning.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "fine-tuning",
+   "LLM"
+  ]
+ },
+ {
+  "id": "vae",
+  "short": "VAE",
+  "title": "Auto-Encoding Variational Bayes",
+  "year": 2013,
+  "date": "2013-12",
+  "venue": "ICLR 2014",
+  "venue_type": "conference",
+  "authors": [
+   "Diederik P Kingma",
+   "Max Welling"
+  ],
+  "n_authors": 2,
+  "institutions": [
+   "University of Amsterdam"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/1312.6114"
+  },
+  "tldr": "With each latent sample rewritten as a mean plus scaled noise, a neural encoder and decoder learn a latent-variable model of a large dataset by ordinary stochastic gradient descent. This works even when the exact posterior over latents cannot be computed.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "represent"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [],
+  "autonomy": "none",
+  "problem": {
+   "task": "Learn a generative model with continuous latent variables from a large dataset, plus a fast encoder that infers each data point's latent.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x ∈ R^{D}",
+      "chars": "A flattened image, such as a 28×28 MNIST digit. The encoder's input."
+     },
+     {
+      "name": "prior sample",
+      "modality": "latent",
+      "tensor": "z ~ N(0, I), z ∈ R^{J}",
+      "chars": "Replaces the encoded image when the decoder generates new data."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "latent code",
+      "modality": "latent",
+      "tensor": "q_φ(z | x) = N(μ, diag σ²)",
+      "chars": "The encoder's Gaussian over the latent. A sample is z = μ + σ ⊙ ε with ε drawn from a standard normal."
+     },
+     {
+      "name": "decoded image",
+      "modality": "image",
+      "tensor": "p_θ(x | z)",
+      "chars": "The decoder's distribution over pixels, Bernoulli for MNIST and Gaussian for Frey Face."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None beyond the data. Each step maximizes a sampled estimate of the evidence lower bound, a reconstruction log-likelihood minus a Kullback-Leibler term that pulls the encoder's Gaussian toward the prior.",
+    "note": "Training runs encoder and decoder as one network through the sampled latent, so gradients pass through the noise. At inference either half runs alone, the encoder to infer a latent and the decoder to generate."
+   }
+  },
+  "method": {
+   "intuition": "Sampling a latent blocks the gradient. Drawing the noise first and computing z = μ + σ·ε takes the randomness off the gradient path, so backpropagation reaches the encoder.",
+   "family": [
+    "vae"
+   ],
+   "backbone": "MLP encoder and decoder",
+   "init": "scratch",
+   "components": [
+    "reparameterization trick",
+    "stochastic gradient variational Bayes (SGVB) estimator",
+    "recognition model (encoder) trained jointly with the generative model",
+    "standard normal prior on the latent"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "MNIST",
+     "role": "existing"
+    },
+    {
+     "name": "Frey Face",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "variational lower bound",
+    "estimated marginal likelihood"
+   ],
+   "baselines": [
+    "wake-sleep algorithm",
+    "Monte Carlo expectation maximization"
+   ],
+   "headline": "On MNIST and Frey Face, auto-encoding variational Bayes converges faster than the wake-sleep algorithm and reaches a higher lower bound."
+  },
+  "why": "The ALOHA paper's action-chunking policy on this list trains as a conditional VAE, and latent diffusion generates images inside a VAE-style compressed space.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "latent",
+   "generation"
+  ]
+ },
+ {
+  "id": "latent-diffusion",
+  "short": "Latent Diffusion",
+  "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+  "year": 2021,
+  "date": "2021-12",
+  "venue": "CVPR 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Robin Rombach",
+   "Andreas Blattmann",
+   "Dominik Lorenz",
+   "Patrick Esser",
+   "Björn Ommer"
+  ],
+  "n_authors": 5,
+  "institutions": [
+   "LMU Munich",
+   "Heidelberg University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2112.10752",
+   "code": "https://github.com/CompVis/latent-diffusion"
+  },
+  "tldr": "Run diffusion in the latent space of a pretrained autoencoder instead of on pixels, and high-resolution image synthesis keeps its quality at a fraction of the compute. Cross-attention lets the same model take text, layouts or images as conditions.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "anticipate"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "latent",
+   "pixels"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "High-resolution image generation, unconditional or conditioned on text, layouts or images, trainable on limited compute.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "noise latent",
+      "modality": "latent",
+      "tensor": "z_T ∈ R^{h×w×c}",
+      "chars": "Gaussian noise at the autoencoder's latent size, which is the image size divided by a downsampling factor f."
+     },
+     {
+      "name": "condition",
+      "modality": "text",
+      "tensor": "y",
+      "chars": "A text prompt for text-to-image. Box layouts also enter through cross-attention, and spatial inputs such as a low-resolution image are concatenated with the latent."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "x̃ = D(z_0) ∈ R^{H×W×3}",
+      "chars": "The decoder maps the denoised latent back to pixels in one pass."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Two stages. An autoencoder learns to compress images under a perceptual and a patch-based adversarial loss, then a U-Net learns to predict the noise added to the frozen latents.",
+    "note": "Training noises a frozen latent to one random step and asks the U-Net for that noise. Sampling runs the U-Net over many steps and calls the decoder once at the end."
+   }
+  },
+  "method": {
+   "intuition": "Most of an image's bits encode detail nobody perceives. Compress that detail away once with an autoencoder, and the diffusion model spends its compute on content and layout.",
+   "family": [
+    "diffusion",
+    "cnn"
+   ],
+   "backbone": "U-Net with cross-attention, on a frozen pretrained autoencoder",
+   "init": "scratch",
+   "components": [
+    "perceptual compression autoencoder with light Kullback-Leibler or vector-quantization regularization",
+    "denoising diffusion in the latent space",
+    "cross-attention conditioning",
+    "convolutional sampling at higher resolution"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "CelebA-HQ, FFHQ, LSUN Churches and Bedrooms (unconditional)",
+     "role": "existing"
+    },
+    {
+     "name": "ImageNet (class-conditional, super-resolution)",
+     "role": "existing"
+    },
+    {
+     "name": "LAION-400M, evaluated on MS-COCO (text-to-image)",
+     "role": "existing"
+    },
+    {
+     "name": "Places (inpainting)",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "Fréchet Inception Distance (FID)",
+    "Inception Score",
+    "precision and recall",
+    "training and sampling compute"
+   ],
+   "baselines": [
+    "pixel-space diffusion models",
+    "generative adversarial networks",
+    "autoregressive image transformers"
+   ],
+   "headline": "Latent diffusion sets a new state of the art on image inpainting and stays competitive on unconditional generation, semantic scene synthesis and super-resolution, with much less compute than pixel-space diffusion."
+  },
+  "why": "Cosmos's diffusion world model on this list denoises in the latent space of a learned video tokenizer, the design this paper made standard for images.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "diffusion",
+   "generation"
+  ]
+ },
+ {
+  "id": "flow-matching",
+  "short": "Flow Matching",
+  "title": "Flow Matching for Generative Modeling",
+  "year": 2022,
+  "date": "2022-10",
+  "venue": "ICLR 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Yaron Lipman",
+   "Ricky T. Q. Chen",
+   "Heli Ben-Hamu",
+   "Maximilian Nickel",
+   "Matt Le"
+  ],
+  "n_authors": 5,
+  "institutions": [
+   "Meta AI",
+   "Weizmann Institute of Science"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2210.02747"
+  },
+  "tldr": "Train a flow-based generator by regressing the velocity that carries noise to data along a fixed path, with no simulation during training. Straight optimal-transport paths train and sample faster than diffusion paths and beat diffusion training on ImageNet.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "anticipate",
+   "act"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "pixels"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [
+   "web-video"
+  ],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Generative modeling with continuous normalizing flows, trained at ImageNet scale without simulating the flow during training.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "noise sample",
+      "modality": "image",
+      "tensor": "x_0 ~ N(0, I), x_0 ∈ R^{H×W×3}",
+      "chars": "Gaussian noise the size of the target image."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "image sample",
+      "modality": "image",
+      "tensor": "x_1 = φ_1(x_0) ∈ R^{H×W×3}",
+      "chars": "Obtained by integrating dx/dt = v_t(x) from t = 0 to 1 with an off-the-shelf ordinary differential equation solver."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Conditional flow matching. The network's velocity is regressed onto the known velocity of a per-sample path from noise to one data point, which for optimal-transport paths is x_1 − (1 − σ_min) x_0.",
+    "note": "Training draws one time t and one point on a single sample's path, so it never runs the solver. Sampling integrates the learned velocity along the whole path from noise to image."
+   }
+  },
+  "method": {
+   "intuition": "Each sample's own path has a velocity known in closed form, and regressing on it gives the same gradient as regressing on the overall field, which cannot be computed. Straight optimal-transport paths make that field easy to learn and cheap to integrate.",
+   "family": [
+    "flow-matching"
+   ],
+   "backbone": "U-Net",
+   "init": "scratch",
+   "components": [
+    "conditional flow matching objective",
+    "Gaussian conditional probability paths",
+    "optimal-transport displacement paths",
+    "sampling with off-the-shelf ordinary differential equation solvers"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "CIFAR-10",
+     "role": "existing"
+    },
+    {
+     "name": "ImageNet at several resolutions",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "negative log-likelihood (bits per dimension)",
+    "Fréchet Inception Distance (FID)",
+    "function evaluations per sample"
+   ],
+   "baselines": [
+    "denoising diffusion probabilistic models (DDPM)",
+    "score matching",
+    "ScoreFlow",
+    "flow matching with diffusion paths"
+   ],
+   "headline": "On ImageNet, flow matching with optimal-transport paths beats diffusion-based methods on both likelihood and sample quality, and samples reliably with off-the-shelf ordinary differential equation solvers."
+  },
+  "why": "π₀'s action head and Genie Envisioner's action decoder on this list both generate continuous robot actions with flow matching.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "flow matching",
+   "generation"
+  ]
+ },
+ {
+  "id": "dqn",
+  "short": "DQN",
+  "title": "Human-level control through deep reinforcement learning",
+  "year": 2015,
+  "date": "2015-02",
+  "venue": "Nature 2015",
+  "venue_type": "journal",
+  "authors": [
+   "Volodymyr Mnih",
+   "Koray Kavukcuoglu",
+   "David Silver",
+   "Andrei A. Rusu",
+   "Joel Veness",
+   "Marc G. Bellemare"
+  ],
+  "n_authors": 19,
+  "institutions": [
+   "Google DeepMind"
+  ],
+  "links": {
+   "paper": "https://www.nature.com/articles/nature14236",
+   "arxiv": "https://arxiv.org/abs/1312.5602"
+  },
+  "tldr": "Q-learning can train a deep convolutional network straight from screen pixels if it replays random past experience and bootstraps from a periodically frozen copy of the network. The same architecture and settings then learn each Atari game from scratch.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "decide",
+   "act",
+   "adapt"
+  ],
+  "embodiment": [
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "pixels"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Learn to play many Atari 2600 games from the screen and the score alone, with one architecture and one set of hyperparameters.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "stacked frames",
+      "modality": "image",
+      "tensor": "s_t ∈ R^{84×84×4}",
+      "chars": "The last four screens, reduced to luminance and rescaled to 84×84."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action values",
+      "modality": "scalar",
+      "tensor": "Q(s_t, ·) ∈ R^{|A|}",
+      "chars": "One predicted discounted return per joystick action."
+     },
+     {
+      "name": "joystick action",
+      "modality": "action",
+      "tensor": "a_t = argmax_a Q(s_t, a)",
+      "chars": "Chosen ε-greedily, so a small fraction of moves stay random."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "The game score only, clipped to −1, 0 or +1 per step. Q-learning regresses each action value toward the reward plus the discounted best next-state value from a target network.",
+    "note": "Training samples old transitions at random from a replay memory and bootstraps from a target network that is synced only periodically. Play needs one forward pass per step."
+   }
+  },
+  "method": {
+   "intuition": "Consecutive frames are correlated and the targets shift with every update, which makes neural Q-learning diverge. Random replay breaks the correlation and the frozen copy holds the targets still between syncs.",
+   "family": [
+    "rl",
+    "cnn"
+   ],
+   "backbone": "three convolutional layers, a 512-unit fully connected layer, one linear output per action",
+   "init": "scratch",
+   "components": [
+    "experience replay",
+    "periodically synced target network",
+    "reward clipping",
+    "frame stacking and frame skipping"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "49 Atari 2600 games in the Arcade Learning Environment",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "game score",
+    "score as a percentage of the human tester's"
+   ],
+   "baselines": [
+    "prior reinforcement learning with hand-crafted features",
+    "professional human games tester",
+    "random play"
+   ],
+   "headline": "Across 49 Atari 2600 games, the same architecture and hyperparameters surpass all previous algorithms and reach a level comparable to a professional human games tester, from pixels and score alone."
+  },
+  "why": "Robot Q-learning from camera images, including the value functions SayCan on this list plans with, grew from this recipe of learning action values straight from pixels.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "RL",
+   "control"
+  ]
+ },
+ {
+  "id": "ppo",
+  "short": "PPO",
+  "title": "Proximal Policy Optimization Algorithms",
+  "year": 2017,
+  "date": "2017-07",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "John Schulman",
+   "Filip Wolski",
+   "Prafulla Dhariwal",
+   "Alec Radford",
+   "Oleg Klimov"
+  ],
+  "n_authors": 5,
+  "institutions": [
+   "OpenAI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/1707.06347",
+   "code": "https://github.com/openai/baselines"
+  },
+  "tldr": "Clip the policy-gradient objective so each update stays near the policy that collected the data, and one batch of experience supports several epochs of minibatch updates. It keeps some of trust region policy optimization's benefits while being much simpler to implement.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "decide",
+   "act",
+   "adapt"
+  ],
+  "embodiment": [
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Policy-gradient reinforcement learning that reuses each batch of experience for several updates and stays stable without second-order optimization.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "joint state",
+      "modality": "action",
+      "tensor": "s_t ∈ R^{d}",
+      "chars": "Joint positions and velocities of a simulated robot in the MuJoCo locomotion tasks."
+     },
+     {
+      "name": "game screens",
+      "modality": "image",
+      "tensor": "s_t",
+      "chars": "Raw frames in the Atari tasks, used in place of joint state."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action",
+      "modality": "action",
+      "tensor": "a_t ~ π_θ(· | s_t)",
+      "chars": "Continuous motor commands from a Gaussian for locomotion, or a joystick action from a categorical for Atari."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Environment reward only. A learned value function supplies generalized advantage estimates that weight a clipped probability-ratio objective.",
+    "note": "Training alternates between collecting a batch with the current policy and running several epochs of clipped updates on it, with a value network supplying advantages. At run time the policy network acts alone."
+   }
+  },
+  "method": {
+   "intuition": "A large policy step on stale data can collapse performance. Clipping the ratio of new to old action probabilities removes any gain from moving far, so several gradient epochs on one batch stay stable.",
+   "family": [
+    "rl"
+   ],
+   "backbone": "small MLP for locomotion, convolutional network for Atari",
+   "init": "scratch",
+   "components": [
+    "clipped surrogate objective",
+    "several epochs of minibatch updates per batch",
+    "generalized advantage estimation",
+    "adaptive Kullback-Leibler penalty variant"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "MuJoCo locomotion tasks in OpenAI Gym",
+     "role": "existing"
+    },
+    {
+     "name": "Atari games in the Arcade Learning Environment",
+     "role": "existing"
+    },
+    {
+     "name": "Roboschool 3D humanoid running and steering",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "average episode reward",
+    "sample efficiency",
+    "wall-clock time"
+   ],
+   "baselines": [
+    "trust region policy optimization (TRPO)",
+    "advantage actor-critic (A2C)",
+    "actor-critic with experience replay (ACER)",
+    "cross-entropy method",
+    "vanilla policy gradient"
+   ],
+   "headline": "On simulated robot locomotion and Atari, PPO outperforms other online policy gradient methods and strikes a favorable balance of sample complexity, simplicity and wall-clock time."
+  },
+  "why": "It is the usual algorithm when a legged or humanoid controller learns from its own trials in simulation, and InstructGPT used it to fine-tune a language model against a reward learned from human rankings.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "RL",
+   "control"
+  ]
+ },
+ {
+  "id": "alphazero",
+  "short": "AlphaZero",
+  "title": "Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm",
+  "year": 2017,
+  "date": "2017-12",
+  "venue": "arXiv 2017, Science 2018",
+  "venue_type": "journal",
+  "authors": [
+   "David Silver",
+   "Thomas Hubert",
+   "Julian Schrittwieser",
+   "Ioannis Antonoglou",
+   "Matthew Lai",
+   "Arthur Guez"
+  ],
+  "n_authors": 13,
+  "institutions": [
+   "DeepMind"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/1712.01815"
+  },
+  "tldr": "Drop every game-specific heuristic and train a network purely by self-play, with tree search improving on the network's own move choices, and the same algorithm reaches superhuman chess, shogi and Go from the rules alone.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "decide"
+  ],
+  "embodiment": [
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [],
+  "change_channel": [
+   "plan"
+  ],
+  "sensing": [
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Superhuman play in chess, shogi and Go from one algorithm that knows only each game's rules.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "board position",
+      "modality": "image",
+      "tensor": "s ∈ {0,1}^{N×N×C}",
+      "chars": "Recent board positions as binary feature planes, plus planes for side to move and other game state."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "policy and value",
+      "modality": "scalar",
+      "tensor": "(p, v) = f_θ(s)",
+      "chars": "Move probabilities and an expected game outcome. The search uses them to pick branches and to score positions."
+     },
+     {
+      "name": "move",
+      "modality": "action",
+      "tensor": "a ~ π",
+      "chars": "Chosen from the visit counts of Monte Carlo tree search."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Self-play outcomes only. The network learns to match the search's visit counts and to predict the final result of each game.",
+    "note": "In training the system plays itself and the search's move statistics become the network's targets. In a match the same search runs with the trained network to pick each move."
+   }
+  },
+  "method": {
+   "intuition": "Tree search turns a network's rough move preferences into stronger choices, and training the network to match the search raises the starting point of the next search. Self-play runs this cycle from random play with no human games.",
+   "family": [
+    "rl",
+    "cnn"
+   ],
+   "backbone": "residual convolutional network with policy and value heads, inside Monte Carlo tree search",
+   "init": "scratch",
+   "components": [
+    "Monte Carlo tree search guided by policy and value",
+    "self-play data generation",
+    "joint policy-value residual network",
+    "game rules as the only domain knowledge"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "self-play games of chess, shogi and Go",
+     "role": "synthetic"
+    }
+   ],
+   "metrics": [
+    "Elo rating",
+    "match wins, draws and losses"
+   ],
+   "baselines": [
+    "Stockfish (chess)",
+    "Elmo (shogi)",
+    "AlphaGo Zero (Go)"
+   ],
+   "headline": "Starting from random play and given only the rules, AlphaZero reached superhuman play in chess, shogi and Go within 24 hours, and convincingly defeated a world-champion program in each."
+  },
+  "why": "It shows how far search plus self-play goes when the rules of the world are known exactly, the condition a real robot lacks and a learned world model tries to supply.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "RL",
+   "planning"
+  ]
+ },
+ {
+  "id": "instructgpt",
+  "short": "InstructGPT",
+  "title": "Training language models to follow instructions with human feedback",
+  "year": 2022,
+  "date": "2022-03",
+  "venue": "NeurIPS 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Long Ouyang",
+   "Jeff Wu",
+   "Xu Jiang",
+   "Diogo Almeida",
+   "Carroll L. Wainwright",
+   "Pamela Mishkin"
+  ],
+  "n_authors": 20,
+  "institutions": [
+   "OpenAI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2203.02155"
+  },
+  "tldr": "Fine-tune a language model on human-written demonstrations, then optimize it against a reward model trained on human rankings of its outputs, and it follows instructions better, says fewer false things and produces less toxic text.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "adapt"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "demonstrator",
+   "evaluator"
+  ],
+  "world_facet": [],
+  "representation": [
+   "tokens",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Make a pretrained language model follow a user's instructions helpfully, truthfully and without toxic output.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "prompt",
+      "modality": "text",
+      "tensor": "x",
+      "chars": "A user instruction. Training prompts come from labelers and from requests sent to the OpenAI API."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "response",
+      "modality": "text",
+      "tensor": "y ~ π_φ(· | x)",
+      "chars": "Text generated token by token by the fine-tuned policy."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Three stages: supervised fine-tuning on labeler demonstrations, a reward model trained on labeler rankings of sampled outputs, then proximal policy optimization (PPO) against that reward with a Kullback-Leibler penalty toward the supervised model.",
+    "note": "Training needs people twice, once to write answers and once to rank the model's own samples. At inference the policy answers alone and the reward model is set aside."
+   }
+  },
+  "method": {
+   "intuition": "Predicting the next token of web text is a different objective from doing what a user asks. Demonstrations show the target behavior, and rankings turn people's judgment into a reward the model can optimize.",
+   "family": [
+    "llm",
+    "rl"
+   ],
+   "backbone": "GPT-3 at 1.3B, 6B and 175B parameters",
+   "init": "finetune",
+   "components": [
+    "supervised fine-tuning on demonstrations",
+    "reward model from pairwise rankings",
+    "proximal policy optimization with a Kullback-Leibler penalty",
+    "pretraining-gradient mix (PPO-ptx)"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "labeler demonstrations and output rankings on API and labeler-written prompts",
+     "role": "new"
+    },
+    {
+     "name": "public benchmarks such as TruthfulQA and RealToxicityPrompts",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "human preference rate",
+    "truthfulness",
+    "toxicity",
+    "public benchmark scores"
+   ],
+   "baselines": [
+    "GPT-3",
+    "GPT-3 with a few-shot instruction prompt",
+    "supervised fine-tuning alone",
+    "GPT-3 fine-tuned on FLAN and T0"
+   ],
+   "headline": "Labelers prefer the outputs of the 1.3B-parameter InstructGPT to those of the 175B GPT-3, though it has 100x fewer parameters."
+  },
+  "why": "It trains one model on people in the two roles this list tracks for robot learning, first as demonstrators and then as evaluators.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "LLM",
+   "RLHF"
+  ]
+ },
+ {
+  "id": "chain-of-thought",
+  "short": "Chain-of-thought",
+  "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+  "year": 2022,
+  "date": "2022-01",
+  "venue": "NeurIPS 2022",
+  "venue_type": "conference",
+  "authors": [
+   "Jason Wei",
+   "Xuezhi Wang",
+   "Dale Schuurmans",
+   "Maarten Bosma",
+   "Brian Ichter",
+   "Fei Xia"
+  ],
+  "n_authors": 9,
+  "institutions": [
+   "Google Brain"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2201.11903"
+  },
+  "tldr": "Show a large language model a few worked examples whose answers spell out the intermediate steps, and it writes its own steps and solves more arithmetic, commonsense and symbolic problems. The gain appears only in sufficiently large models.",
+  "contribution": [
+   "method",
+   "analysis"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "decide"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "tokens",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Multi-step arithmetic, commonsense and symbolic reasoning with a frozen language model and no fine-tuning.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "few-shot exemplars",
+      "modality": "text",
+      "tensor": "⟨question, reasoning, answer⟩ × k",
+      "chars": "Hand-written examples whose answers spell out the intermediate steps. Eight of them for GSM8K."
+     },
+     {
+      "name": "question",
+      "modality": "text",
+      "tensor": "q",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "chain of thought and answer",
+      "modality": "text",
+      "tensor": "(c, a)",
+      "chars": "Intermediate reasoning steps in natural language, then the final answer."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "None. Few-shot prompting of frozen models.",
+    "note": "There is no training. The only change from standard few-shot prompting is that each example answer includes its reasoning steps."
+   }
+  },
+  "method": {
+   "intuition": "Writing out intermediate steps splits a multi-step problem into easy pieces and lets the model spend more computation where more reasoning is needed. A few such examples are enough for a large model to copy the format.",
+   "family": [
+    "llm",
+    "prompting"
+   ],
+   "backbone": "PaLM 540B, LaMDA and GPT-3",
+   "init": "prompt-only",
+   "components": [
+    "chain-of-thought exemplars",
+    "few-shot prompting",
+    "ablation across model scale"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "GSM8K, SVAMP, ASDiv, AQuA, MAWPS (arithmetic)",
+     "role": "existing"
+    },
+    {
+     "name": "CSQA, StrategyQA, date and sports understanding, SayCan robot planning (commonsense)",
+     "role": "existing"
+    },
+    {
+     "name": "last-letter concatenation and coin flip (symbolic)",
+     "role": "synthetic"
+    }
+   ],
+   "metrics": [
+    "solve rate"
+   ],
+   "baselines": [
+    "standard few-shot prompting",
+    "finetuned GPT-3 with a verifier, the prior GSM8K state of the art"
+   ],
+   "headline": "Prompting a 540B-parameter model with just eight chain-of-thought exemplars reaches state-of-the-art accuracy on the GSM8K math word problems, beating finetuned GPT-3 with a verifier."
+  },
+  "why": "RT-2 on this list has a variant that writes a plan in words before its action tokens, the same idea applied to a robot, and ReAct interleaves such reasoning with actions.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "LLM",
+   "reasoning"
+  ]
+ },
+ {
+  "id": "dpo",
+  "short": "DPO",
+  "title": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+  "year": 2023,
+  "date": "2023-05",
+  "venue": "NeurIPS 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Rafael Rafailov",
+   "Archit Sharma",
+   "Eric Mitchell",
+   "Stefano Ermon",
+   "Christopher D. Manning",
+   "Chelsea Finn"
+  ],
+  "n_authors": 6,
+  "institutions": [
+   "Stanford University"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2305.18290",
+   "code": "https://github.com/eric-mitchell/direct-preference-optimization"
+  },
+  "tldr": "The reward in reinforcement learning from human feedback can be rewritten in terms of the policy itself, so preference tuning becomes one classification loss on preferred and rejected answers. Training then needs no separate reward model and no sampling from the model.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "adapt"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "evaluator"
+  ],
+  "world_facet": [],
+  "representation": [
+   "tokens",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Align a language model with human preferences between pairs of answers, without training a reward model or running reinforcement learning.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "prompt",
+      "modality": "text",
+      "tensor": "x",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "response",
+      "modality": "text",
+      "tensor": "y ~ π_θ(· | x)",
+      "chars": "The tuned policy's answer. Its log-probability ratio to the reference model doubles as an implicit reward."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Pairs of a preferred and a rejected answer to the same prompt, labeled by people. A binary cross-entropy loss raises the policy's likelihood ratio against a frozen reference model on the preferred answer relative to the rejected one.",
+    "note": "Training never samples from the model. It scores fixed preference pairs under the policy and a frozen reference model, while inference is ordinary generation."
+   }
+  },
+  "method": {
+   "intuition": "The best policy for a reward, with a penalty for drifting from a reference model, has a closed form, so the reward can be written through the policy. Fitting human preferences with that reward trains the policy directly.",
+   "family": [
+    "llm"
+   ],
+   "backbone": "pretrained language models such as GPT-2 large and Pythia 2.8B",
+   "init": "finetune",
+   "components": [
+    "closed-form reward reparameterization",
+    "binary cross-entropy preference loss",
+    "frozen reference model",
+    "implicit reward from log-probability ratios"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "IMDb (controlled sentiment)",
+     "role": "existing"
+    },
+    {
+     "name": "Reddit TL;DR (summarization)",
+     "role": "existing"
+    },
+    {
+     "name": "Anthropic Helpful and Harmless (single-turn dialogue)",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "reward against Kullback-Leibler divergence frontier",
+    "win rate judged by GPT-4",
+    "human evaluation"
+   ],
+   "baselines": [
+    "PPO-based reinforcement learning from human feedback",
+    "best-of-N sampling",
+    "supervised fine-tuning on preferred answers",
+    "unlikelihood training"
+   ],
+   "headline": "DPO controls sentiment better than reinforcement learning from human feedback with proximal policy optimization, and matches or beats it on summarization and single-turn dialogue while being substantially simpler to implement and train."
+  },
+  "why": "Together with InstructGPT it gives both ways to learn from human rankings, through a reward model and reinforcement learning or straight from the pairs, a choice robot policies trained on preferences face too.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "LLM",
+   "RLHF"
+  ]
+ },
+ {
+  "id": "deepseek-r1",
+  "short": "DeepSeek-R1",
+  "title": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
+  "year": 2025,
+  "date": "2025-01",
+  "venue": "Nature 2025",
+  "venue_type": "journal",
+  "authors": [
+   "DeepSeek-AI",
+   "Daya Guo",
+   "Dejian Yang",
+   "Haowei Zhang",
+   "Junxiao Song",
+   "Peiyi Wang"
+  ],
+  "n_authors": 200,
+  "institutions": [
+   "DeepSeek-AI"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2501.12948",
+   "page": "https://github.com/deepseek-ai/DeepSeek-R1"
+  },
+  "tldr": "Reinforcement learning that rewards correct final answers, with no human reasoning traces, teaches a language model to reflect, verify and change strategy on its own. The reasoning it learns also distills into smaller models.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "weights"
+  ],
+  "arc": [
+   "foundation"
+  ],
+  "closes_loop": false,
+  "loop_stage": [
+   "decide"
+  ],
+  "embodiment": [
+   "none"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [],
+  "representation": [
+   "tokens",
+   "language"
+  ],
+  "change_channel": [
+   "none"
+  ],
+  "sensing": [],
+  "regime": "offline",
+  "horizon": "frame",
+  "domain": [
+   "web"
+  ],
+  "autonomy": "none",
+  "problem": {
+   "task": "Long multi-step reasoning in math, code and science, learned from reward alone without human-written reasoning traces.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "problem",
+      "modality": "text",
+      "tensor": "x",
+      "chars": "A math, coding or science question, or a general prompt."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "reasoning and answer",
+      "modality": "text",
+      "tensor": "(c, a)",
+      "chars": "A long chain of thought that checks and revises itself, then the final answer."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Rules that check final-answer correctness and output format on math and code problems, optimized with Group Relative Policy Optimization (GRPO). R1 adds a small supervised cold start and later reward models for general prompts.",
+    "note": "R1-Zero is trained by reinforcement learning straight from the base model, and R1 adds a small supervised cold start. At inference the model simply generates, and the long reasoning comes from training."
+   }
+  },
+  "method": {
+   "intuition": "When the reward checks the final answer and never the steps, the model is free to find its own way to reason. Longer chains that check themselves earn more reward, so they grow during training.",
+   "family": [
+    "llm",
+    "rl"
+   ],
+   "backbone": "DeepSeek-V3-Base, a 671B-parameter mixture-of-experts model",
+   "init": "finetune",
+   "components": [
+    "Group Relative Policy Optimization (GRPO)",
+    "rule-based accuracy and format rewards",
+    "R1-Zero, reinforcement learning with no supervised start",
+    "distillation into smaller Qwen and Llama models"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "math, code and science problems with checkable answers, plus cold-start reasoning examples",
+     "role": "new"
+    },
+    {
+     "name": "AIME 2024, MATH-500, Codeforces, GPQA Diamond, LiveCodeBench, MMLU",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "pass@1 accuracy",
+    "Codeforces rating and percentile"
+   ],
+   "baselines": [
+    "OpenAI o1",
+    "DeepSeek-V3",
+    "GPT-4o",
+    "Claude 3.5 Sonnet"
+   ],
+   "headline": "Trained by reinforcement learning, the model beats counterparts trained by supervised learning on human demonstrations in mathematics, coding competitions and science and engineering problems."
+  },
+  "why": "Ego-R1 on this list follows its recipe, supervised fine-tuning and then reinforcement learning, to train an agent that reasons over a week of egocentric video.",
+  "confidence": "medium",
+  "tags": [
+   "foundation",
+   "LLM",
+   "RL",
+   "reasoning"
+  ]
+ }
+]

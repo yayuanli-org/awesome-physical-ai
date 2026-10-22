@@ -215,6 +215,17 @@ def test_every_group_claims_something():
     assert not empty, "\n".join(empty)
 
 
+def test_loop_view_holds_only_arc_papers():
+    """The loop view's blurb says every paper in it already appeared above."""
+    loop = next((v for v in SCHEMA["views"] if v["id"] == "loop"), None)
+    if not loop:
+        return
+    arcs = {w for v in SCHEMA["views"] if v["id"] != "loop" for w in v.get("filter", {}).get("arc", [])}
+    want = set(loop.get("filter", {}).get("arc", []))
+    assert want and want <= arcs, (
+        f"loop view filters arc on {sorted(want)}, but the arcs above are {sorted(arcs)}")
+
+
 def test_group_priorities_are_unique():
     bad = []
     for view in SCHEMA["views"]:

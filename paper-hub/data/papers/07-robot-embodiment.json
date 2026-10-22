@@ -1965,5 +1965,1120 @@
    "survey",
    "VLA"
   ]
+ },
+ {
+  "id": "rt-1",
+  "short": "RT-1",
+  "title": "RT-1: Robotics Transformer for Real-World Control at Scale",
+  "year": 2022,
+  "date": "2022-12",
+  "venue": "RSS 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Anthony Brohan",
+   "Noah Brown",
+   "Justice Carbajal",
+   "Yevgen Chebotar",
+   "Joseph Dabis",
+   "Chelsea Finn"
+  ],
+  "n_authors": 51,
+  "institutions": [
+   "Google",
+   "Everyday Robots"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2212.06817",
+   "page": "https://robotics-transformer1.github.io/",
+   "code": "https://github.com/google-research/robotics_transformer"
+  },
+  "tldr": "One transformer trained on 130k real-robot demonstrations performs over 700 instructions in real time. Making the training data more diverse helped it generalize more than making it larger.",
+  "contribution": [
+   "method",
+   "analysis"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "object-state"
+  ],
+  "representation": [
+   "tokens"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Follow a language instruction on a real mobile manipulator, across hundreds of tasks, with one policy fast enough for closed-loop control.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image history",
+      "modality": "image",
+      "tensor": "o_{t-5:t} ∈ R^{6×300×300×3}",
+      "chars": "The last six camera frames. An ImageNet-pretrained EfficientNet-B3 turns each frame into 81 tokens, and TokenLearner compresses them to 8."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "Embedded with the Universal Sentence Encoder and fed into the image encoder through FiLM layers, which scale and shift its features to suit the task."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action tokens",
+      "modality": "tokens",
+      "tensor": "a_t ∈ {1..256}^{11}",
+      "chars": "Seven arm dimensions, three base dimensions and a mode switch (move the arm, move the base, or end the episode), each split into 256 uniform bins. Issued at 3 Hz."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Behavior cloning with a cross-entropy loss on the action tokens, from about 130k demonstrations that people teleoperated with virtual-reality remotes on 13 robots over 17 months.",
+    "note": "Training can mix in episodes the deployed robot never produced: simulation data, or 209k bin-picking episodes from a Kuka arm. With the Kuka data, success on the original tasks dropped by only 2% while bin-picking success rose from 22% to 39%."
+   }
+  },
+  "method": {
+   "intuition": "Broad, task-agnostic data and a high-capacity model should generalize in robotics as they did in vision and language, if the model runs in real time. Compressing each image to a few tokens keeps a transformer fast enough for 3 Hz control.",
+   "family": [
+    "transformer",
+    "imitation"
+   ],
+   "backbone": "FiLM-conditioned EfficientNet-B3 + TokenLearner + decoder-only transformer, 35M parameters",
+   "init": "scratch",
+   "components": [
+    "FiLM language conditioning inside the image encoder",
+    "TokenLearner compression to 8 tokens per image",
+    "256-bin action tokenization",
+    "fleet-scale teleoperated data collection"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "RT-1 demonstrations, about 130k episodes over 700+ instructions",
+     "role": "new"
+    },
+    {
+     "name": "Kuka bin-picking episodes from QT-Opt",
+     "role": "existing"
+    },
+    {
+     "name": "simulation episodes",
+     "role": "synthetic"
+    },
+    {
+     "name": "about 3000 trials in office kitchens",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "success on seen instructions",
+    "generalization to unseen instructions, distractors and backgrounds",
+    "long-horizon success inside SayCan"
+   ],
+   "baselines": [
+    "Gato",
+    "BC-Z"
+   ],
+   "headline": "Generalizes to new instructions, distractors and backgrounds better than Gato and BC-Z trained on the same data. Its study of data size, model size and data diversity found diversity mattered more than quantity."
+  },
+  "why": "Read it before RT-2, which kept RT-1's robot data and 256-bin action tokens and replaced its architecture with a web-pretrained vision-language model.",
+  "confidence": "medium",
+  "tags": [
+   "manipulation",
+   "imitation",
+   "data scaling"
+  ]
+ },
+ {
+  "id": "palm-e",
+  "short": "PaLM-E",
+  "title": "PaLM-E: An Embodied Multimodal Language Model",
+  "year": 2023,
+  "date": "2023-03",
+  "venue": "ICML 2023",
+  "venue_type": "conference",
+  "authors": [
+   "Danny Driess",
+   "Fei Xia",
+   "Mehdi S. M. Sajjadi",
+   "Corey Lynch",
+   "Aakanksha Chowdhery",
+   "Brian Ichter"
+  ],
+  "n_authors": 22,
+  "institutions": [
+   "Google",
+   "TU Berlin"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2303.03378",
+   "page": "https://palm-e.github.io/"
+  },
+  "tldr": "Feed images and robot state into a pretrained language model as embeddings placed among the words, and one model writes robot plans and answers visual questions. Training on robot, vision and language data together transfers positively to the robot tasks.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "none"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "decide",
+   "verify"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "procedure",
+   "object-state"
+  ],
+  "representation": [
+   "language"
+  ],
+  "change_channel": [
+   "plan"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "minutes",
+  "domain": [
+   "everyday",
+   "lab-sim",
+   "web"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Embodied reasoning in one language model: answer questions about a scene and write the next step of a robot plan, from images, state estimates and text.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "o_t ∈ R^{H×W×3}",
+      "chars": "Encoded by a ViT or by an object-centric scene encoder (OSRT), then projected into the language model's word-embedding space."
+     },
+     {
+      "name": "state estimate",
+      "modality": "object-pose",
+      "tensor": "s ∈ R^{S}",
+      "chars": "Object poses, sizes or colors, mapped into the same space by an MLP."
+     },
+     {
+      "name": "prompt",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "Text with the embeddings placed among the words, as in \"Given <img>. Q: Was <skill> successful?\""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "next plan step",
+      "modality": "plan",
+      "tensor": "w_{1:L}",
+      "chars": "A short instruction handed to a separate low-level policy: RT-1 in the kitchen, a Language-Table policy on the tabletop, where PaLM-E sends subgoals at 1 Hz."
+     },
+     {
+      "name": "answer",
+      "modality": "text",
+      "tensor": "w_{1:L}",
+      "chars": "Answers and captions for visual questions, and yes or no for failure detection."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Next-token prediction on the text output, trained end to end through the encoders and the language model, on a mix of robot planning data, visual question answering, captioning and language tasks.",
+    "note": "Each training example is one prompt and one answer. At run time PaLM-E sits in a control loop: the low-level policy executes each step, and PaLM-E reads the new image and replans if needed."
+   }
+  },
+  "method": {
+   "intuition": "If a pretrained language model can read sensor data as if it were words, its knowledge of the world grounds in what the robot sees. Scale then protects the language skills that fine-tuning on robot data would otherwise erase.",
+   "family": [
+    "vlm",
+    "llm",
+    "transformer"
+   ],
+   "backbone": "PaLM (8B, 62B or 540B) + ViT (4B or 22B), up to 562B parameters",
+   "init": "finetune",
+   "components": [
+    "multimodal sentences of sensor embeddings and words",
+    "ViT, state-vector and OSRT input encoders",
+    "joint training across robot, vision-language and language data",
+    "closed-loop replanning over low-level policies"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "task-and-motion planning scenes in simulation",
+     "role": "synthetic"
+    },
+    {
+     "name": "Language-Table",
+     "role": "existing"
+    },
+    {
+     "name": "SayCan mobile manipulation runs",
+     "role": "existing"
+    },
+    {
+     "name": "OK-VQA, VQAv2, COCO captions",
+     "role": "existing"
+    },
+    {
+     "name": "real kitchen and tabletop robots",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "planning success",
+    "failure detection and affordance F1",
+    "VQA accuracy",
+    "retained language benchmark performance"
+   ],
+   "baselines": [
+    "PaLI",
+    "SayCan with oracle affordances",
+    "single-domain training"
+   ],
+   "headline": "PaLM-E-562B sets the state of the art on OK-VQA while also handling robot planning, and keeps more of its general language ability as model size grows."
+  },
+  "why": "The bridge from SayCan, whose language model never sees the scene, to RT-2, which fine-tuned PaLM-E itself to emit motor actions.",
+  "confidence": "medium",
+  "tags": [
+   "VLM",
+   "embodied reasoning",
+   "planning"
+  ]
+ },
+ {
+  "id": "open-x-embodiment",
+  "short": "Open X-Embodiment",
+  "title": "Open X-Embodiment: Robotic Learning Datasets and RT-X Models",
+  "year": 2023,
+  "date": "2023-10",
+  "venue": "ICRA 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Open X-Embodiment Collaboration",
+   "Abby O'Neill",
+   "Abdul Rehman",
+   "Abhinav Gupta",
+   "Abhiram Maddukuri",
+   "Abhishek Gupta"
+  ],
+  "n_authors": 294,
+  "institutions": [
+   "Google DeepMind",
+   "Open X-Embodiment Collaboration (21 institutions)"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2310.08864",
+   "page": "https://robotics-transformer-x.github.io/",
+   "code": "https://github.com/google-deepmind/open_x_embodiment"
+  },
+  "tldr": "Pool data from 22 robots and 21 institutions into one format, and a single model trained on all of it, RT-X, improves several robots by drawing on the others' experience. Small datasets gain even with the RT-1-sized model, while the large ones needed the 55-billion-parameter RT-2-X.",
+  "contribution": [
+   "dataset",
+   "analysis"
+  ],
+  "openness": [
+   "data",
+   "weights",
+   "code"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "object-state"
+  ],
+  "representation": [
+   "pixels",
+   "trajectory",
+   "tokens"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Train one manipulation policy on many robots' data and test whether experience from one robot helps another.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "image",
+      "modality": "image",
+      "tensor": "o_t ∈ R^{H×W×3}",
+      "chars": "One canonical camera view per dataset, resized to a common resolution, with a short history of recent frames."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": ""
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action tokens",
+      "modality": "tokens",
+      "tensor": "a_t",
+      "chars": "A 7-dimensional end-effector action (position, rotation, gripper), normalized per dataset and then discretized. The same output can mean different motions on different robots."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Behavior cloning on the pooled mixture: 60 existing datasets converted to one format (RLDS), 1M+ trajectories in the current release. RT-2-X is also co-trained with web vision-language data.",
+    "note": "Training mixes robots, camera placements and action conventions that are only coarsely aligned. Each evaluation runs on one robot, so the question is whether the other robots' data helped it."
+   }
+  },
+  "method": {
+   "intuition": "Other robots' data acts as extra experience for a model with enough capacity, so one shared format turns 22 robots into one training set. The 55-billion-parameter RT-2-X absorbed the large datasets where the 35-million-parameter RT-1-X underfit.",
+   "family": [
+    "dataset",
+    "transformer",
+    "vlm"
+   ],
+   "backbone": "RT-1 (RT-1-X) and a 55B RT-2 (RT-2-X)",
+   "init": "",
+   "components": [
+    "Open X-Embodiment dataset in one episode format",
+    "RT-1-X and RT-2-X trained on the mixture",
+    "evaluations across partner labs",
+    "released RT-1-X checkpoints"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Open X-Embodiment: 22 robots, 527 skills, 160266 tasks",
+     "role": "remix"
+    },
+    {
+     "name": "evaluations at partner labs on their own robots",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "success rate on each lab's evaluation",
+    "emergent skills transferred from other robots' data"
+   ],
+   "baselines": [
+    "each dataset's original method",
+    "RT-1 trained on one robot's data"
+   ],
+   "headline": "RT-X, trained on data from 22 robots, shows positive transfer and improves the capabilities of multiple robots over models trained on each robot's own data."
+  },
+  "why": "The dataset Octo and OpenVLA were trained on, and the reason cross-embodiment pretraining became the default first step for a robot policy.",
+  "confidence": "medium",
+  "tags": [
+   "dataset",
+   "cross-embodiment",
+   "manipulation"
+  ]
+ },
+ {
+  "id": "droid",
+  "short": "DROID",
+  "title": "DROID: A Large-Scale In-The-Wild Robot Manipulation Dataset",
+  "year": 2024,
+  "date": "2024-03",
+  "venue": "RSS 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Alexander Khazatsky",
+   "Karl Pertsch",
+   "Suraj Nair",
+   "Ashwin Balakrishna",
+   "Sudeep Dasari",
+   "Siddharth Karamcheti"
+  ],
+  "n_authors": 101,
+  "institutions": [
+   "Stanford University",
+   "UC Berkeley",
+   "Toyota Research Institute"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2403.12945",
+   "page": "https://droid-dataset.github.io/",
+   "code": "https://github.com/droid-dataset/droid"
+  },
+  "tldr": "Fifty collectors on three continents spent 12 months teleoperating one standard robot setup in 564 scenes, producing 76k trajectories. Policies co-trained with it perform better and generalize further than those co-trained with Open X-Embodiment alone.",
+  "contribution": [
+   "dataset"
+  ],
+  "openness": [
+   "data",
+   "code"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "scene",
+   "object-state"
+  ],
+  "representation": [
+   "pixels",
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "multi-view",
+   "depth-3d"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "A training set for manipulation policies that covers many real scenes, collected on one standard robot setup so every episode looks and acts alike.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "camera images",
+      "modality": "image",
+      "tensor": "o_t^{1..3}",
+      "chars": "Two adjustable exterior Zed 2 stereo cameras and one wrist-mounted Zed Mini, with calibrated extrinsics and depth."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "A language annotation per episode."
+     },
+     {
+      "name": "proprioception",
+      "modality": "action",
+      "tensor": "q_t",
+      "chars": "Franka joint positions and gripper state."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action chunk",
+      "modality": "trajectory",
+      "tensor": "a_{t:t+H}",
+      "chars": "Commands for a Franka Panda arm and a Robotiq 2F-85 gripper, recorded in joint and end-effector space at 15 Hz."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Behavior cloning from demonstrations teleoperated with an Oculus Quest 2 headset and controllers.",
+    "note": "The paper's policies co-train DROID with existing robot data, then run in scenes outside the training set. Scene diversity at training time is the variable the paper measures."
+   }
+  },
+  "method": {
+   "intuition": "Policies fail in new scenes because their training data comes from a few labs. Sending identical robot setups to 13 institutions buys scene diversity that no single lab can collect.",
+   "family": [
+    "dataset"
+   ],
+   "backbone": "Diffusion Policy, for the evaluation policies",
+   "init": "scratch",
+   "components": [
+    "shared Franka Panda platform on a wheeled standing desk",
+    "virtual-reality teleoperation",
+    "three synchronized stereo cameras with per-scene calibration",
+    "collection software that prompts scene changes"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "DROID: 76k trajectories, 350 h, 564 scenes",
+     "role": "new"
+    },
+    {
+     "name": "Open X-Embodiment, for co-training comparisons",
+     "role": "existing"
+    },
+    {
+     "name": "6 tasks in 4 locations, from labs to homes",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate",
+    "out-of-distribution success"
+   ],
+   "baselines": [
+    "no co-training",
+    "co-training with Open X-Embodiment"
+   ],
+   "headline": "76k trajectories, or 350 hours, across 564 scenes, and policies trained with it reach higher performance and generalize better."
+  },
+  "why": "The scene-diverse counterpart to Open X-Embodiment, and the robot video V-JEPA 2 learned its action-conditioned world model from.",
+  "confidence": "medium",
+  "tags": [
+   "dataset",
+   "teleoperation",
+   "manipulation"
+  ]
+ },
+ {
+  "id": "octo",
+  "short": "Octo",
+  "title": "Octo: An Open-Source Generalist Robot Policy",
+  "year": 2024,
+  "date": "2024-05",
+  "venue": "RSS 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Octo Model Team",
+   "Dibya Ghosh",
+   "Homer Walke",
+   "Karl Pertsch",
+   "Kevin Black",
+   "Oier Mees"
+  ],
+  "n_authors": 19,
+  "institutions": [
+   "UC Berkeley",
+   "Stanford University",
+   "CMU",
+   "Google DeepMind"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2405.12213",
+   "page": "https://octo-models.github.io/",
+   "code": "https://github.com/octo-models/octo"
+  },
+  "tldr": "A transformer policy pretrained on 800k Open X-Embodiment trajectories takes language or goal-image commands and fine-tunes to new sensors and action spaces in a few hours on a consumer graphics card.",
+  "contribution": [
+   "method",
+   "system"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "object-state"
+  ],
+  "representation": [
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim",
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "A generalist manipulation policy meant as a starting point for fine-tuning to a new robot, new cameras or a new action space.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "camera images",
+      "modality": "image",
+      "tensor": "o_{t-1:t}",
+      "chars": "Third-person and wrist views when present, two frames of history. A missing camera is simply left out of the token sequence."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "Encoded by a frozen T5-base model."
+     },
+     {
+      "name": "goal image",
+      "modality": "image",
+      "tensor": "g ∈ R^{H×W×3}",
+      "chars": "An alternative to language: a photo of the desired end state."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action chunk",
+      "modality": "trajectory",
+      "tensor": "a_{t:t+H}",
+      "chars": "Produced by a diffusion head that reads the transformer's readout tokens."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Behavior cloning on 800k trajectories from 25 Open X-Embodiment datasets, with language or hindsight goal images as the task.",
+    "note": "Pretraining fixes no camera set or action space. Fine-tuning adds a tokenizer for a new input or a new action head and trains the whole model, in about 5 hours on one 24 GB NVIDIA A5000."
+   }
+  },
+  "method": {
+   "intuition": "Turn every camera, proprioceptive signal and task specification into tokens, and adding a sensor or an action space at fine-tuning time becomes adding a tokenizer or a head.",
+   "family": [
+    "transformer",
+    "diffusion",
+    "imitation"
+   ],
+   "backbone": "Transformer with a diffusion action head, 27M (Octo-Small) and 93M (Octo-Base) parameters",
+   "init": "scratch",
+   "components": [
+    "per-input tokenizers for cameras, language and goal images",
+    "block-wise masked transformer with readout tokens",
+    "diffusion action head",
+    "fine-tuning to new observation and action spaces"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "25 datasets from Open X-Embodiment, 800k trajectories",
+     "role": "existing"
+    },
+    {
+     "name": "9 robot platforms",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "zero-shot success",
+    "success after fine-tuning"
+   ],
+   "baselines": [
+    "RT-1-X",
+    "RT-2-X",
+    "VC-1",
+    "ResNet + transformer trained from scratch"
+   ],
+   "headline": "Across 9 robotic platforms, it works as a policy initialization that fine-tunes to new observation and action spaces within a few hours on consumer graphics cards."
+  },
+  "why": "The small open policy that OpenVLA measured itself against, also trained on Open X-Embodiment but with a diffusion head and no large language model.",
+  "confidence": "medium",
+  "tags": [
+   "open source",
+   "cross-embodiment",
+   "diffusion"
+  ]
+ },
+ {
+  "id": "gemini-robotics",
+  "short": "Gemini Robotics",
+  "title": "Gemini Robotics: Bringing AI into the Physical World",
+  "year": 2025,
+  "date": "2025-03",
+  "venue": "arXiv",
+  "venue_type": "preprint",
+  "authors": [
+   "Gemini Robotics Team",
+   "Saminda Abeyruwan",
+   "Joshua Ainslie",
+   "Jean-Baptiste Alayrac",
+   "Montserrat Gonzalez Arenas",
+   "Travis Armstrong"
+  ],
+  "n_authors": 118,
+  "institutions": [
+   "Google DeepMind"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2503.20020",
+   "page": "https://deepmind.google/models/gemini-robotics/"
+  },
+  "tldr": "Extend Gemini 2.0's reasoning to space and time, and the resulting Gemini Robotics-ER points, detects 3D boxes and predicts grasps and trajectories. A vision-language-action model built on it controls robots directly and learns new short tasks from as few as 100 demonstrations.",
+  "contribution": [
+   "method",
+   "benchmark"
+  ],
+  "openness": [
+   "data"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "represent",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "scene",
+   "object-state"
+  ],
+  "representation": [
+   "language",
+   "geometry",
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard",
+   "multi-view"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Embodied reasoning about space and time in a vision-language model, and direct robot control from a vision-language-action model built on it.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "camera images",
+      "modality": "image",
+      "tensor": "o_t^{1..k}",
+      "chars": "Several views on the bimanual ALOHA 2 platform, the main source of action data."
+     },
+     {
+      "name": "instruction",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "Open-vocabulary natural language."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action chunk",
+      "modality": "trajectory",
+      "tensor": "a_{t:t+H}",
+      "chars": "From a local action decoder on the robot's computer, fed by a backbone in the cloud. About 250 ms from observation to chunk, 50 Hz effective control."
+     },
+     {
+      "name": "spatial answers",
+      "modality": "bbox",
+      "tensor": "points, 2D and 3D boxes, grasps",
+      "chars": "Gemini Robotics-ER output as text coordinates, used directly or to drive a robot through generated code."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Gemini Robotics-ER: embodied reasoning data such as pointing, detection and multi-view correspondence. Gemini Robotics: thousands of hours of teleoperated ALOHA 2 demonstrations collected over 12 months, mixed with web, code, multimodal and reasoning data.",
+    "note": "The reasoning model never outputs motor commands. The action model starts from a distilled version of it, and specializing to a long dexterous task or a new robot body takes a further fine-tuning stage."
+   }
+  },
+  "method": {
+   "intuition": "A robot model inherits the spatial understanding of its vision-language backbone, so improve that first and the action model built on it gets better.",
+   "family": [
+    "vlm",
+    "transformer"
+   ],
+   "backbone": "Gemini 2.0, distilled into a cloud backbone + on-robot action decoder",
+   "init": "finetune",
+   "components": [
+    "Gemini Robotics-ER embodied reasoning model",
+    "ERQA embodied reasoning benchmark",
+    "cloud backbone with a local action decoder",
+    "fine-tuning for dexterous tasks and new robot bodies",
+    "safety evaluation"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "ERQA",
+     "role": "new"
+    },
+    {
+     "name": "ALOHA 2 teleoperated demonstrations",
+     "role": "new"
+    },
+    {
+     "name": "ALOHA 2, a bi-arm Franka and the Apollo humanoid",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "ERQA accuracy",
+    "task success and progress",
+    "generalization to new objects, instructions and scenes"
+   ],
+   "baselines": [
+    "π₀ re-implemented on the same data",
+    "multi-task diffusion policy"
+   ],
+   "headline": "With fine-tuning it learns new short-horizon tasks from as few as 100 demonstrations and adapts to new robot bodies, while handling unseen objects, instructions and environments."
+  },
+  "why": "Google DeepMind's step after RT-2: the vision-language-action recipe moved onto a frontier model that first learns embodied reasoning, with π₀ as the baseline it beats.",
+  "confidence": "medium",
+  "tags": [
+   "VLA",
+   "embodied reasoning",
+   "dexterous"
+  ]
+ },
+ {
+  "id": "pi05",
+  "short": "π₀.₅",
+  "title": "π₀.₅: a Vision-Language-Action Model with Open-World Generalization",
+  "year": 2025,
+  "date": "2025-04",
+  "venue": "CoRL 2025",
+  "venue_type": "conference",
+  "authors": [
+   "Physical Intelligence",
+   "Kevin Black",
+   "Noah Brown",
+   "James Darpinian",
+   "Karan Dhabalia",
+   "Danny Driess"
+  ],
+  "n_authors": 36,
+  "institutions": [
+   "Physical Intelligence"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2504.16054",
+   "page": "https://physicalintelligence.company/blog/pi05",
+   "code": "https://github.com/Physical-Intelligence/openpi"
+  },
+  "tldr": "Co-train π₀ on other robots' data, web data and predicted subtasks, and the policy cleans kitchens and bedrooms in homes it never saw. 97.6% of its first-stage training examples come from sources other than the mobile robots it runs on.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "object-state",
+   "procedure"
+  ],
+  "representation": [
+   "trajectory",
+   "tokens",
+   "language"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Long household chores, such as cleaning a kitchen or bedroom, on mobile manipulators in homes absent from the training data.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "camera images",
+      "modality": "image",
+      "tensor": "o_t^{1..4}",
+      "chars": "Forward, backward and both wrist cameras on a two-armed mobile manipulator."
+     },
+     {
+      "name": "proprioception",
+      "modality": "action",
+      "tensor": "q_t",
+      "chars": "Joint angles, gripper pose, torso lift and base velocity."
+     },
+     {
+      "name": "task prompt",
+      "modality": "text",
+      "tensor": "ℓ",
+      "chars": "A high-level command such as \"put away the dishes\"."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "subtask",
+      "modality": "text",
+      "tensor": "ℓ̂",
+      "chars": "Predicted first by the same model, such as \"pick up the plate\". It then conditions the low-level action."
+     },
+     {
+      "name": "continuous action chunk",
+      "modality": "trajectory",
+      "tensor": "a_{t:t+H} ∈ R^{H×d}",
+      "chars": "From a flow-matching action expert, as in π₀. Targets for arms, grippers, torso and base at 50 Hz, 18 or 19 dimensions depending on the robot."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Pretraining on about 400 hours of mobile manipulation in about 100 homes, plus other robots, Open X-Embodiment, subtask labels and web captioning, question answering and object detection, with actions as FAST tokens. Post-training adds a flow-matching action expert and verbal instructions from human supervisors.",
+    "note": "Pretraining predicts discrete action tokens because they train faster. Post-training switches to continuous flow matching because decoding tokens one at a time is too slow for real-time control."
+   }
+  },
+  "method": {
+   "intuition": "A robot generalizes to a new home when its knowledge comes from many places: other robots, the web and the high-level steps of a task. Co-training one model on all of them carries that knowledge into its actions.",
+   "family": [
+    "vlm",
+    "flow-matching",
+    "transformer"
+   ],
+   "backbone": "PaliGemma 2B VLM + 300M flow-matching action expert",
+   "init": "finetune",
+   "components": [
+    "co-training on robot, web and subtask data",
+    "high-level subtask prediction before low-level action",
+    "FAST-token pretraining then flow-matching post-training",
+    "verbal instruction data"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "mobile manipulator data, about 400 h in about 100 homes",
+     "role": "new"
+    },
+    {
+     "name": "other robots' data and Open X-Embodiment",
+     "role": "existing"
+    },
+    {
+     "name": "web captioning, question answering and object localization",
+     "role": "existing"
+    },
+    {
+     "name": "entirely new homes and mock homes",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task progress",
+    "success rate",
+    "language following"
+   ],
+   "baselines": [
+    "π₀",
+    "π₀-FAST+Flow",
+    "co-training ablations"
+   ],
+   "headline": "Cleans a kitchen or bedroom in entirely new homes, the first end-to-end learned robot system shown doing long-horizon dexterous work there. Ablations show the co-training transfer is essential."
+  },
+  "why": "The step after π₀: the same model design trained on a new data mixture, and the first end-to-end learned system shown doing long chores in homes outside its training set.",
+  "confidence": "medium",
+  "tags": [
+   "VLA",
+   "everyday tasks",
+   "generalist"
+  ]
  }
 ]

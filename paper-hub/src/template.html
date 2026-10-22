@@ -142,6 +142,8 @@ aside::-webkit-scrollbar{width:7px} aside::-webkit-scrollbar-thumb{background:va
 .ls{width:12px;height:4px;border-radius:2px;background:var(--line2)}
 .ls.on{background:var(--rose)}
 
+.outside{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:-18px 0 26px;font-size:12.5px;color:var(--ink2)}
+
 .legend{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:-8px 0 22px;
   font-size:11.5px;color:var(--ink3)}
 .legend .grp2{display:flex;align-items:center;gap:6px}
@@ -563,6 +565,7 @@ function renderFramework(){
   bar.innerHTML=[
     ['papers',rows.length],['modeling',rows.filter(p=>arr(p.arc).includes('model')).length],
     ['changing',rows.filter(p=>arr(p.arc).includes('change')).length],
+    ['general AI',rows.filter(p=>arr(p.arc).includes('foundation')).length],
     ['closed loop',rows.filter(p=>p.closes_loop).length],
     ['datasets & benchmarks',withData],['code released',withCode],
     ['years',yrs.length?Math.min(...yrs)+'–'+Math.max(...yrs):'—']
@@ -611,6 +614,13 @@ function renderFramework(){
     });
     host.appendChild(sec);
   });
+
+  // General-AI papers carry neither arc, so no section above lists them.
+  const outside=rows.filter(p=>!arr(p.arc).some(a=>a==='model'||a==='change'));
+  if(outside.length){
+    const note=el('div','outside',`<span><b>${outside.length}</b> general-AI papers sit outside the two arcs, because they neither model nor change the physical world. The Papers tab holds them.</span>`);
+    note.id='outside-arcs'; host.appendChild(note);
+  }
 
   const foot=el('div','tbar');
   const t=el('button','mini', state.dedupe?'Each paper listed once · show in every matching group':'Papers repeat across groups · list each once');

@@ -1,6 +1,6 @@
 {
-  "version": "0.1",
-  "updated": "2026-08-24",
+  "version": "0.2",
+  "updated": "2026-10-22",
   "thesis": {
     "line": "Physical AI studies how the physical world gets changed in the age of AI.",
     "body": "Changing the world takes two moves. First model it: build a representation faithful enough to act on. Then change it: push a decision into the world through an embodiment — a human wearing glasses, a robot arm, or the two together. Acting changes the world, which changes what has to be modeled, so the two moves close into a loop. Every axis below is a column on that loop. The sections here are filters over those columns rather than folders."
@@ -214,7 +214,11 @@
       "name": "Closing the loop",
       "blurb": "A cross-section rather than a third topic. These papers consume the effect of their own action at run time, which is where modeling and changing stop being separable. Every paper here already appeared above.",
       "filter": {
-        "closes_loop": true
+        "closes_loop": true,
+        "arc": [
+          "model",
+          "change"
+        ]
       },
       "groups": [
         {
@@ -262,7 +266,7 @@
       "kind": "multi",
       "axis": "topic",
       "facet": true,
-      "help": "The two moves of physical AI. A paper can do both.",
+      "help": "The two moves of physical AI, plus the general AI both are built from. A paper can carry more than one.",
       "vocab": [
         {
           "v": "model",
@@ -273,6 +277,11 @@
           "v": "change",
           "label": "Change the world",
           "help": "Contributes something that moves atoms — a policy, a guidance signal, an intervention."
+        },
+        {
+          "v": "foundation",
+          "label": "General AI underneath",
+          "help": "A general AI method the physical-AI papers are built from. The paper itself neither models nor changes the physical world, so it sits outside the two arcs."
         }
       ]
     },

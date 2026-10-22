@@ -1700,5 +1700,152 @@
    "data scaling",
    "benchmark"
   ]
+ },
+ {
+  "id": "umi",
+  "short": "UMI",
+  "title": "Universal Manipulation Interface: In-The-Wild Robot Teaching Without In-The-Wild Robots",
+  "year": 2024,
+  "date": "2024-02",
+  "venue": "RSS 2024",
+  "venue_type": "conference",
+  "authors": [
+   "Cheng Chi",
+   "Zhenjia Xu",
+   "Chuer Pan",
+   "Eric Cousineau",
+   "Benjamin Burchfiel",
+   "Siyuan Feng"
+  ],
+  "n_authors": 8,
+  "institutions": [
+   "Stanford University",
+   "Columbia University",
+   "Toyota Research Institute"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2402.10329",
+   "page": "https://umi-gripper.github.io/",
+   "code": "https://github.com/real-stanford/universal_manipulation_interface"
+  },
+  "tldr": "A hand-held gripper carrying the same wrist camera the robot will use lets people record demonstrations anywhere, and policies trained only on that data run on real robots zero-shot in new places. Latency matching and relative-trajectory actions make the transfer work.",
+  "contribution": [
+   "method",
+   "system"
+  ],
+  "openness": [
+   "code",
+   "data",
+   "weights"
+  ],
+  "arc": [
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "sense",
+   "decide",
+   "act"
+  ],
+  "embodiment": [
+   "robot"
+  ],
+  "human_role": [
+   "demonstrator"
+  ],
+  "world_facet": [
+   "agent-body",
+   "interaction"
+  ],
+  "representation": [
+   "trajectory"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "robot-onboard"
+  ],
+  "regime": "streaming",
+  "horizon": "seconds",
+  "domain": [
+   "everyday",
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Record manipulation demonstrations anywhere with a hand-held gripper, then train policies that run on real robots without any robot data.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "wrist camera images",
+      "modality": "image",
+      "tensor": "o_{t-h:t}",
+      "chars": "A GoPro with a 155° fisheye lens and two side mirrors that act as extra viewpoints. The robot carries the same camera on the same fingers."
+     },
+     {
+      "name": "proprioception",
+      "modality": "action",
+      "tensor": "q_{t-h:t}",
+      "chars": "End-effector pose relative to the current pose, plus gripper width. During collection the pose comes from visual-inertial SLAM and the width from fiducial markers on the fingers."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "relative action trajectory",
+      "modality": "trajectory",
+      "tensor": "a_{t:t+T} ∈ R^{T×d}",
+      "chars": "End-effector poses relative to the current pose plus gripper widths, so collection and deployment never need a shared global frame."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Behavior cloning with Diffusion Policy on the hand-held demonstrations alone.",
+    "note": "No robot is present during collection, so the policy interface hides the difference. Latency matching aligns observation and action timing with each robot's sensor and actuation delays, and relative trajectories remove the need for a global frame."
+   }
+  },
+  "method": {
+   "intuition": "If the demonstration device sees through the same camera and closes the same fingers as the robot, the human data is already robot data. What remains is matching the timing and the action frame.",
+   "family": [
+    "imitation",
+    "diffusion",
+    "system"
+   ],
+   "backbone": "Diffusion Policy, with a fine-tuned CLIP ViT image encoder for the harder tasks",
+   "init": "scratch",
+   "components": [
+    "3D-printed hand-held gripper with a GoPro fisheye camera and side mirrors",
+    "inertial-monocular SLAM for gripper pose and fiducial markers for gripper width",
+    "inference-time latency matching",
+    "relative-trajectory action representation"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "hand-held demonstrations, including in-the-wild cup arrangement at 30 locations",
+     "role": "new"
+    },
+    {
+     "name": "cup arrangement, dynamic tossing, bimanual cloth folding, dish washing on UR5 and Franka arms",
+     "role": "real-robot"
+    }
+   ],
+   "metrics": [
+    "task success rate",
+    "zero-shot success in unseen environments and with unseen objects"
+   ],
+   "baselines": [
+    "ablations without latency matching, relative actions, mirrors or the CLIP encoder"
+   ],
+   "headline": "Policies trained only on hand-held demonstrations perform dynamic, bimanual, precise and long-horizon tasks, and generalize zero-shot to new environments and objects."
+  },
+  "why": "Started the hand-held route to robot data: collection needs no robot, unlike DROID's teleoperation, and DexUMI extends the idea to dexterous hands.",
+  "confidence": "medium",
+  "tags": [
+   "data collection",
+   "hardware",
+   "imitation"
+  ]
  }
 ]

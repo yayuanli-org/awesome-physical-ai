@@ -1723,5 +1723,143 @@
    "object-centric",
    "data engine"
   ]
+ },
+ {
+  "id": "dreamerv3",
+  "short": "DreamerV3",
+  "title": "Mastering Diverse Domains through World Models",
+  "year": 2023,
+  "date": "2023-01",
+  "venue": "Nature 2025",
+  "venue_type": "journal",
+  "authors": [
+   "Danijar Hafner",
+   "Jurgis Pasukonis",
+   "Jimmy Ba",
+   "Timothy Lillicrap"
+  ],
+  "n_authors": 4,
+  "institutions": [
+   "Google DeepMind",
+   "University of Toronto"
+  ],
+  "links": {
+   "arxiv": "https://arxiv.org/abs/2301.04104",
+   "page": "https://danijar.com/dreamerv3",
+   "code": "https://github.com/danijar/dreamerv3"
+  },
+  "tldr": "Learn a world model, train the actor and critic on futures imagined inside it, and one fixed configuration beats specialized methods on over 150 tasks. It was the first algorithm to collect diamonds in Minecraft from scratch, with no human data.",
+  "contribution": [
+   "method"
+  ],
+  "openness": [
+   "code"
+  ],
+  "arc": [
+   "model",
+   "change"
+  ],
+  "closes_loop": true,
+  "loop_stage": [
+   "represent",
+   "anticipate",
+   "decide",
+   "act",
+   "adapt"
+  ],
+  "embodiment": [
+   "sim"
+  ],
+  "human_role": [
+   "none"
+  ],
+  "world_facet": [
+   "dynamics"
+  ],
+  "representation": [
+   "latent"
+  ],
+  "change_channel": [
+   "motor-action"
+  ],
+  "sensing": [
+   "sim-render"
+  ],
+  "regime": "interactive",
+  "horizon": "seconds",
+  "domain": [
+   "lab-sim"
+  ],
+  "autonomy": "autonomous",
+  "problem": {
+   "task": "Reinforcement learning across many domains with one fixed set of hyperparameters, from pixels or vectors and from dense or sparse rewards.",
+   "inference": {
+    "inputs": [
+     {
+      "name": "observation",
+      "modality": "image",
+      "tensor": "x_t",
+      "chars": "Pixels, vectors or both, depending on the domain. Vector inputs are squashed with a symlog transform."
+     },
+     {
+      "name": "reward",
+      "modality": "scalar",
+      "tensor": "r_t ∈ R",
+      "chars": "Dense or sparse, with scales that differ by orders of magnitude across domains."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "action",
+      "modality": "action",
+      "tensor": "a_t ∼ π(a_t | s_t)",
+      "chars": "Sampled by the actor from the world model's latent state. Discrete or continuous, depending on the domain."
+     }
+    ]
+   },
+   "training": {
+    "supervision": "Reinforcement learning from the agent's own experience. The world model learns to reconstruct inputs and predict rewards and episode ends, and the actor and critic learn from rollouts imagined in its latent space.",
+    "note": "The actor never learns from real transitions directly. It learns from latent rollouts that the world model imagines from replayed states, and at run time it acts on the encoding of the real observation."
+   }
+  },
+  "method": {
+   "intuition": "Practicing inside a learned model of the world is cheaper than practicing in the world. Normalizing and transforming every signal so its scale stops mattering is what lets one configuration work across domains.",
+   "family": [
+    "rl"
+   ],
+   "backbone": "Recurrent state-space model (RSSM) with discrete latents, plus actor and critic networks",
+   "init": "scratch",
+   "components": [
+    "recurrent state-space world model with categorical latents",
+    "actor-critic learning in imagined rollouts",
+    "symlog inputs and two-hot reward and value regression",
+    "return normalization and free bits"
+   ]
+  },
+  "experiments": {
+   "datasets": [
+    {
+     "name": "Atari, ProcGen, DMLab, DeepMind Control Suite, BSuite, Crafter, Minecraft",
+     "role": "existing"
+    }
+   ],
+   "metrics": [
+    "episode return",
+    "human-normalized score",
+    "diamonds collected in Minecraft"
+   ],
+   "baselines": [
+    "PPO",
+    "tuned expert algorithms per domain"
+   ],
+   "headline": "Outperforms specialized methods across over 150 tasks with a single configuration, and collects diamonds in Minecraft from scratch without human data or curricula."
+  },
+  "why": "The reference agent for learning behavior inside a learned world model, the reinforcement-learning side of the world-model idea that V-JEPA 2 and Genie pursue with video.",
+  "confidence": "medium",
+  "tags": [
+   "world model",
+   "RL",
+   "latent"
+  ]
  }
 ]
