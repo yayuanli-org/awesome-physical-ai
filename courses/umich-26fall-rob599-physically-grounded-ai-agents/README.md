@@ -32,6 +32,7 @@ New to the field? Start with the hub's [must-read list for students](https://yay
 | 7 | Oct 14 | Debate 5: decide, pick a skill vs. write code (SayCan, Code as Policies)       | [notes](lectures/07-decide/) |
 | 8 | Oct 21 | Debate 6: act from human video, hand vs. latent actions (EgoScale, LAPT-Scale) | [notes](lectures/08-act-from-human-video/) |
 | 9 | Oct 28 | Debate 7: continual learning, training vs. architecture (Self-Distillation, Nested Learning) | [notes](lectures/09-continual-learning/) |
+| 10 | Nov 4 | Debate 8: memory, full detail vs. short lessons (ACE, ReasoningBank) | [notes](lectures/10-memory/) |
 
 [rec-01]: https://drive.google.com/drive/folders/18zV--WTfu6CAnnRQn_bmb5G-dYhG1pIa?usp=drive_link
 [rec-02]: https://drive.google.com/drive/folders/1xZwW5zkZeqtFxDe7pJFGo2LCX8mFH7Uo?usp=drive_link
