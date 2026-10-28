@@ -12,7 +12,7 @@ New to the field? Start with the hub's [must-read list for students](https://yay
 
 - When: Wednesdays, 4:30 to 7:00 PM
 - Where: FRB 1060, Ford Robotics Building
-- Zoom, every week: [umich.zoom.us/j/99907537702](https://umich.zoom.us/j/99907537702), passcode phai
+- Zoom, every week: [umich.zoom.us/j/99907537702](https://umich.zoom.us/j/99907537702).
 - Faculty instructor: [Jason J. Corso](https://www.linkedin.com/in/jason-corso/)
 - Graduate student instructor: [Yayuan Li](https://www.linkedin.com/in/yayuan-li-148659272/)
 - Grading: everyone starts at an A. A miss is being randomly called on and absent or unable to answer well; 0–2 misses keep the A, 3–4 give an A-, and every two more drop one step.
