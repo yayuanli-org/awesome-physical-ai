@@ -1,0 +1,174 @@
+/* lab.css — the reading environment, as opposed to doc.css which is the page.
+ *
+ * Loaded by nbdoc.lab() from the hidden first cell and injected as that cell's
+ * output, same channel as the document stylesheet. Nothing here is scoped by
+ * nbdoc's selector rewriter: these rules name JupyterLab's own classes on
+ * purpose, so they are written already-scoped and passed through verbatim.
+ *
+ * Everything is driven by classes on <body>, which lab.js toggles:
+ *
+ *     nbdoc-focus    dim every cell except the one you are on
+ *     nbdoc-reveal   cells below the reading line fade out until you reach them
+ *     nbdoc-zen-css  the fallback path for hiding Lab's chrome (see below)
+ */
+
+:root {
+  --nbdoc-dim: 0.34;          /* opacity of a cell that is not the focused one */
+  --nbdoc-reveal-floor: 0.14; /* opacity of a cell still well below the fold */
+  --nbdoc-line: 0.42;         /* reading line, as a fraction of viewport height */
+  --nbdoc-ui: #5a6072;
+  --nbdoc-ui-faint: #a4a8b3;
+  --nbdoc-ui-line: #e6e8ef;
+  --nbdoc-accent: #d24d7c;
+}
+
+/* --- zen, fallback only -----------------------------------------------------
+ * lab.js hides the chrome through Lab's own commands, which relayout properly.
+ * These rules are what it falls back to when window.jupyterapp is missing, i.e.
+ * when Lab was started without --expose-app-in-browser. Lumino gives each panel
+ * an absolute position, so collapsing one this way leaves its gap behind — the
+ * document still gets wider and quieter, but the seams show. */
+body.nbdoc-zen-css #jp-top-panel,
+body.nbdoc-zen-css .jp-NotebookPanel-toolbar,
+body.nbdoc-zen-css #jp-bottom-panel,
+body.nbdoc-zen-css .jp-SideBar,
+body.nbdoc-zen-css #jp-main-statusbar,
+body.nbdoc-zen-css #jp-main-dock-panel .lm-DockPanel-tabBar {
+  transition: max-height 0.16s ease, opacity 0.16s ease;
+  max-height: 0 !important;
+  min-height: 0 !important;
+  opacity: 0;
+  overflow: hidden !important;
+  pointer-events: none;
+}
+
+/* --- focus: dim everything but the cell you are on -------------------------- */
+body.nbdoc-focus .jp-Notebook .jp-Cell {
+  transition: opacity 0.22s ease;
+  opacity: var(--nbdoc-dim);
+}
+body.nbdoc-focus .jp-Notebook .jp-Cell.jp-mod-active,
+body.nbdoc-focus .jp-Notebook .jp-Cell:hover {
+  opacity: 1;
+}
+
+/* --- reveal: lab.js writes the per-cell opacity inline ---------------------- */
+body.nbdoc-reveal .jp-Notebook .jp-Cell {
+  transition: opacity 0.12s linear;
+  will-change: opacity;
+}
+/* Focus and reveal both want the opacity channel. Focus wins on the cell you
+   clicked; reveal keeps the rest. */
+body.nbdoc-reveal.nbdoc-focus .jp-Notebook .jp-Cell.jp-mod-active {
+  opacity: 1 !important;
+}
+
+/* --- the mode bar ----------------------------------------------------------- */
+.nbdoc-bar {
+  /* the panel's corner, not the window's: --nbdoc-right is a right sidebar's
+     width when one is open, --nbdoc-bottom the status bar's height */
+  position: fixed; z-index: 62;
+  right: calc(var(--nbdoc-right, 0px) + 14px);
+  bottom: calc(var(--nbdoc-bottom, 0px) + 14px);
+  transition: opacity 0.18s ease, right 0.16s ease, bottom 0.16s ease;
+  display: flex; gap: 4px; padding: 4px;
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: saturate(1.6) blur(6px);
+  border: 1px solid var(--nbdoc-ui-line); border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(35, 38, 47, 0.1);
+  opacity: 0.34;
+}
+.nbdoc-bar:hover, .nbdoc-bar:focus-within { opacity: 1; }
+.nbdoc-bar button {
+  border: none; background: none; cursor: pointer; border-radius: 14px;
+  font: 600 0.68rem/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--nbdoc-ui); padding: 7px 11px;
+}
+.nbdoc-bar button:hover { background: #f4f1fc; color: var(--nbdoc-accent); }
+.nbdoc-bar button[aria-pressed="true"] { background: var(--nbdoc-accent); color: #fff; }
+.nbdoc-bar .nbdoc-sep { width: 1px; background: var(--nbdoc-ui-line); margin: 5px 2px; }
+
+/* --- the key list, on `?` ---------------------------------------------------- */
+.nbdoc-help {
+  position: fixed; inset: 0; z-index: 70; display: none;
+  align-items: center; justify-content: center;
+  background: rgba(35, 38, 47, 0.28); backdrop-filter: blur(2px);
+}
+body.nbdoc-help-open .nbdoc-help { display: flex; }
+.nbdoc-help-card {
+  min-width: 400px; max-width: 540px; padding: 20px 26px 16px;
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(35, 38, 47, 0.22);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--nbdoc-ui);
+}
+.nbdoc-help h2 {
+  margin: 0 0 12px; font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--nbdoc-ui-faint);
+}
+.nbdoc-help table { border-collapse: collapse; width: 100%; }
+.nbdoc-help td { padding: 5px 0; vertical-align: baseline; }
+.nbdoc-help td:first-child { width: 96px; white-space: nowrap; }
+.nbdoc-help td b { color: #23262f; font-weight: 600; }
+.nbdoc-help kbd {
+  display: inline-block; padding: 3px 6px; border-radius: 5px;
+  font: 600 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #3d3752; background: #f4f1fc;
+  border: 1px solid var(--nbdoc-ui-line); border-bottom-width: 2px;
+}
+.nbdoc-help-foot { margin: 14px 0 0; font-size: 0.8rem; color: var(--nbdoc-ui-faint); }
+.nbdoc-bar .nbdoc-help-btn { padding: 7px 10px; font-size: 0.78rem; }
+
+/* Keep the mode bar and the ToC out of the RISE deck and out of prints. */
+body.rise-enabled .nbdoc-bar, body.rise-enabled .toc-layer, body.rise-enabled .tl-btn, body.rise-enabled .nbdoc-help { display: none; }
+@media print { .nbdoc-bar { display: none; } }
+
+/* --- floating ToC, as it lands in Lab ---------------------------------------
+ * toc-layer.css positions the nav against the viewport, which is what "floating"
+ * means here: it overlays the notebook instead of taking a dock slot, and the
+ * notebook re-margins itself so nothing is covered. These are the deltas Lab
+ * needs on top of that sheet.
+ *
+ * --nbdoc-top / --nbdoc-bottom / --nbdoc-left / --nbdoc-right are the notebook
+ * panel's own edges, written by lab.js. Anchoring to them rather than to the
+ * window keeps the nav off Lab's menu bar and out from under its file browser,
+ * moves it over the moment a sidebar opens, and lets it grow to full height on
+ * its own once zen hides the chrome.
+ *
+ * Scoped to .nbdoc-live, the class lab.js sets when it decides it is in a live
+ * notebook host. build.py's static exports carry this sheet too but wire their
+ * own copy of toc-layer.js at the page level, and it should keep its own look. */
+body.nbdoc-live .toc-layer {
+  z-index: 61;
+  top: var(--nbdoc-top, 0px);
+  bottom: var(--nbdoc-bottom, 0px);
+  left: var(--nbdoc-left, 0px);
+  transition: transform 0.18s ease, top 0.16s ease, bottom 0.16s ease, left 0.16s ease;
+}
+/* toc-layer.css hides the nav with translateX(-105%), measured from left: 0.
+   Anchored to the panel instead, that would park a closed nav on top of the file
+   browser, so the hidden position has to travel the extra --nbdoc-left as well.
+   Open and docked states keep toc-layer.css's `transform: none`. */
+body.nbdoc-live:not(.tl-open):not(.tl-docked) .toc-layer {
+  transform: translateX(calc(-105% - var(--nbdoc-left, 0px)));
+}
+body.nbdoc-live .tl-btn {
+  top: auto; z-index: 60;
+  left: calc(var(--nbdoc-left, 0px) + 14px);
+  bottom: calc(var(--nbdoc-bottom, 0px) + 14px);
+  opacity: 0.34; transition: opacity 0.18s ease, left 0.16s ease, bottom 0.16s ease;
+}
+body.nbdoc-live .tl-btn:hover { opacity: 1; }
+/* The notebook's scroller is the thing that has to move over, not <body>. */
+body.nbdoc-live .jp-WindowedPanel-outer,
+body.nbdoc-live #rendered_cells { transition: padding-left 0.18s ease; }
+
+/* --- small corrections to what Lab adds to a rendered markdown cell --------- */
+/* The ¶ Lab appends to every heading is an editor affordance, not part of the
+   page. The document already carries its own anchor ids. */
+.jp-RenderedHTMLCommon .jp-InternalAnchorLink { display: none; }
+
+/* Lab marks the selected cell with its brand blue, which fights a document that
+   has its own palette. One variable repaints every one of those affordances. */
+.jp-Notebook { --jp-brand-color1: var(--nbdoc-accent); }

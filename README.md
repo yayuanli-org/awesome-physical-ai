@@ -10,9 +10,11 @@ A knowledge base for physical AI. Two parts, both still growing.
 2. **Courses.** Where we sum up the hub and share our opinions, and where we run
    debate sessions to go deep on a few papers. One folder per course in
    [`courses/`](courses/). The first is ROB 599, Physically-Grounded AI Agents,
-   University of Michigan, Fall 2026.
+   University of Michigan, Fall 2026. Beside it sits a guest lecture for EMU's
+   COSC 480/592 Computer Vision, Fall 2026:
+   [Where Physical AI Stands](courses/emu-26fall-cosc480-computer-vision-guest-lecture/).
 
 ```
 paper-hub/   the database, the page, and the code that builds and serves it
-courses/     one folder per course: syllabus, lecture notes, slides, debates, recordings
+courses/     one folder per course or guest lecture: syllabus, lecture notes, slides, debates, recordings
 ```

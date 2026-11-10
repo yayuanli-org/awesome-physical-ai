@@ -1,0 +1,8 @@
+# Exports are generated from doc.ipynb by build.py. Rebuild rather than commit.
+doc.html
+deck.html
+*-share.html
+# JupyterLab's collaboration store and checkpoints
+.jupyter_ystore.db
+.ipynb_checkpoints/
+__pycache__/
