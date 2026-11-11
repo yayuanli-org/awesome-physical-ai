@@ -13,10 +13,11 @@ Prepare the five PACES rows for both.
 
 ## Theme debate
 
-Do this week's conclusions about digital agents carry over to teams of robots?
+Do this week's conclusions about digital agents carry over to a team of robots?
 
-Motion: a team of robots on one task gets better and faster as it grows, as the digital swarms in both papers do.
+Motion: a swarm needs no lead.
 
-- It carries over when one planner directs the whole team. In [RoboBallet](https://arxiv.org/abs/2509.05397), one learned planner gives each robot arm its reaching tasks and plans every arm's motion in a shared work cell. On the same 20 tasks, eight arms finish in about 4.5 seconds, against 7.5 for four. In [LLaMAR](https://arxiv.org/abs/2407.10031), one planner directs simulated household robots, and success rises from 37% with one robot to 70% with three. In [Chen et al.](https://arxiv.org/abs/2309.15943), arms moving boxes succeed in 75% of runs under a lead, against 25% when they settle each move by talking, as Kimi would expect. But RoboBallet only takes tasks that can be done in any order, and cooking or assembly has steps that must wait for others.
-- Robots take up room, and digital agents do not. Kimi's helpers each keep their own context, and Agensh's workers fix a clash in the code by merging. Robots share one space, and a collision cannot be merged or undone. In LLaMAR, success fell from 70% with three robots to 62% with five, because they blocked each other in single rooms. A lead also stops scaling, as Agensh warns. In Chen et al., the lead's success fell from 100% with eight arms to 30% with 32, while a lead whose robots checked its orders still reached 50%. But in LLaMAR's roomier search-and-rescue world, success kept rising, to 74% with five robots.
-- The motion asks whether robots, which share one space and often one order of steps, gain from a bigger team the way digital agents do, and whether a lead helps them or holds them back.
+- Task: several robots share one kitchen and cook a meal together.
+- Measure: how often the meal is done right within a set time, as in Agensh's 6-hour runs. Cost does not count.
+- For: Agensh's workers each read the shared state, claim a part, check it and merge it, and the team kept improving up to 1,024 workers with no lead. Kimi's lead sees only the short results its helpers send back. A robot at the stove sees the pot itself, so it can take the next step there without waiting for an order.
+- Against: Agensh's workers clash only in code, and they fix a clash afterwards by merging. Even there it had to start its workers seconds apart so they would not claim the same parts, and two robots that grab the same pan collide with nothing to merge. Kimi's lead learns when to split the work and when not to, so a lead can keep robots off the same pan and keep the steps in order.
