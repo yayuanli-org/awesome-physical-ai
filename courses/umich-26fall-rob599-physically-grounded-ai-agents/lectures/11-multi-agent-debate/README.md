@@ -13,10 +13,10 @@ Prepare the five PACES rows for both.
 
 ## Theme debate
 
-Does debate between agents work for physical AI tasks at all, in performance and in efficiency? This week's papers test it only on written questions.
+Is this week's multi-agent debate system useful for physical AI multi-agents, such as robots working together or robots working with people?
 
-Motion: debate between agents is worth it for physical AI tasks, in both performance and efficiency.
+Motion: this week's multi-agent debate system is useful for physical AI multi-agents.
 
-- Performance. Talk can help robots that see and reach different things. In [RoCo](https://arxiv.org/abs/2307.04738), robot arms that talk a plan through sorted cubes in 93% of runs, against 70% for one model that saw everything and planned for all of them. But that one model did better on four of RoCo's six tasks. In [Chen et al.](https://arxiv.org/abs/2309.15943), robots that each ran a model and talked in rounds succeeded in 25% of runs on a box-moving task, against 75% for one central model, and 82.5% when that model proposed a plan and each robot only checked its own part.
-- Efficiency. Talk costs model calls and time. Those talking robots made about eight times the model calls of the central model, and RoCo's authors call the wait for each model reply a problem when speed matters or the scene changes. But talk can save moves. RoCo's talking arms finished sorting in 4.9 steps on average, against 8.6 for the single model.
-- The motion asks whether debate's gains on written questions carry over to physical tasks, and whether they are worth the extra calls and time.
+- Useful. Physical agents see and reach different parts of a scene, so a round of debate can pass on facts the others lack. Debate or Vote's proof that talk adds nothing on average covers agents that all read the same question, and robots and people working together never do. A debate also settles a plan before anyone moves, and a move cannot be revised the way an answer can.
+- Not useful. The system needs a question that holds still and time for every agent to answer in every round. Du et al. ran mostly three agents for two rounds because of the compute cost, though more of both helped. In a physical team, the scene and the people change during each round. A debate can also agree on a wrong answer and affirm it with confidence, and a robot would act on it.
+- The motion asks whether a system built for copies of one model answering a fixed question can serve agents that act together in a changing physical world.
