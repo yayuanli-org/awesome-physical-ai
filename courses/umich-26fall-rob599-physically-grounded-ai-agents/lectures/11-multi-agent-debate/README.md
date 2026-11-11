@@ -15,8 +15,9 @@ Prepare the five PACES rows for both.
 
 What makes a good debate in physical AI?
 
-Motion: when several AI agents check whether a step of a cooking or assembly task was done right, a vote does as well as a debate.
+Motion: a vote among agents is as accurate as a debate.
 
-- A vote is enough. Agents that watch the same video are the setting where Debate or Vote proves talk adds nothing on average. A vote takes one round, and the person waits for the verdict before the next step. A debate can also agree on a wrong verdict with confidence, as Du et al. saw on written questions.
-- Debate adds what a vote cannot. Give the agents different views or roles, such as one on the head camera, one on a wall camera and one holding the recipe, and each knows something the others do not. If only the head camera saw the salt go in twice, a vote misses it 2 to 1, and a debate lets that agent tell the others. In Debate or Vote, agents with different roles beat the vote on medical questions by debating, 84.2% to 82.4%.
-- The motion asks whether different views or roles make a debate worth its extra rounds when checking a physical step.
+- Task: several AI agents check whether a step of a cooking or assembly task was done right.
+- Measure: performance only, meaning how often the verdict is right. Speed and cost do not count.
+- For: agents that watch the same video are the setting where Debate or Vote proves talk adds nothing on average. A debate can also agree on a wrong verdict with confidence, as Du et al. saw on written questions.
+- Against: give the agents different views or roles, such as a head camera, a wall camera and the recipe. If only the head camera saw the salt go in twice, a vote misses it 2 to 1, and a debate lets that agent tell the others. In Debate or Vote, agents with different roles beat the vote on medical questions by debating, 84.2% to 82.4%.
