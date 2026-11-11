@@ -1,0 +1,259 @@
+/* commentable-html — comment layer styling.
+   Self-contained. Prefix all classes with `cmt-`. No external deps. */
+
+:root {
+  --cmt-accent: #e0a800;
+  --cmt-highlight: rgba(255, 212, 0, 0.30);
+  --cmt-highlight-strong: rgba(255, 196, 0, 0.55);
+  --cmt-ai: #5b6cff;
+  /* Marker hue. Deliberately neutral, and deliberately translucent at rest: a marker sits ON
+     the content, so it should read as a watermark until you point at it. The accent is kept
+     for states you asked for — hover, comment mode. */
+  --cmt-mark: #8a93a8;
+  --cmt-mark-rest: .45;
+  --cmt-ring: rgba(255, 255, 255, .7);
+  --cmt-ai-bg: #eef0ff;
+  --cmt-ink: #1f2330;
+  --cmt-muted: #6b7280;
+  --cmt-line: #e6e8ee;
+  --cmt-card: #ffffff;
+  --cmt-shadow: 0 8px 30px rgba(20, 24, 40, 0.16);
+  --cmt-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.cmt-ui, .cmt-ui * { box-sizing: border-box; font-family: var(--cmt-font); }
+
+/* The one floating control — bottom-right. Click opens the comments panel; its colour doubles as
+   the comment-mode lamp (accent = on); it hides whenever the panel it opens is already showing.
+   There used to be a second, heavier button for comment mode in the opposite corner. Mode now
+   lives on the C key and on the switch inside the panel, so one small chip carries both jobs. */
+.cmt-chip {
+  position: fixed; right: 14px; bottom: 14px; z-index: 2147483000;
+  display: flex; align-items: center; gap: 6px;
+  height: 26px; padding: 0 10px; border: 1px solid var(--cmt-line); border-radius: 999px;
+  background: rgba(255, 255, 255, .92); color: var(--cmt-muted);
+  font: 600 10px/1 var(--cmt-font); text-transform: uppercase; letter-spacing: .07em;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  cursor: pointer; box-shadow: 0 1px 4px rgba(20, 24, 40, .10); user-select: none;
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+.cmt-chip:hover { color: var(--cmt-ink); border-color: #c9cdd8; }
+.cmt-chip:active { transform: translateY(1px); }
+.cmt-chip-caret { font-size: 12px; line-height: 1; margin-right: -1px; }
+.cmt-chip-n {
+  min-width: 15px; height: 15px; padding: 0 4px; border-radius: 999px;
+  background: rgba(20, 24, 40, .07); color: inherit; font-size: 10px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.cmt-chip-n[data-zero="1"] { display: none; }
+body.cmt-mode .cmt-chip { background: var(--cmt-accent); border-color: var(--cmt-accent); color: #1f2330; }
+body.cmt-mode .cmt-chip .cmt-chip-n { background: rgba(31, 35, 48, .18); }
+.cmt-ui:has(.cmt-drawer.cmt-open) .cmt-chip { display: none; }
+
+/* Comment mode affordances on content */
+body.cmt-mode { cursor: crosshair; }
+/* Markers are quiet, so the MODE carries the signal: a ring on the viewport while it is on. */
+body.cmt-mode::after {
+  content: ""; position: fixed; inset: 0; z-index: 2147482800; pointer-events: none;
+  box-shadow: inset 0 0 0 2px var(--cmt-accent);
+}
+body.cmt-mode .cmt-hover { outline: 2px solid var(--cmt-accent); outline-offset: 1px; cursor: pointer; }
+
+/* Anchored content */
+/* Element anchor: the mark lives INSIDE the element's own box (an inset shadow costs no layout
+   and covers no neighbour) and the tint is a whisper. A 30%-alpha wash repaints a whole block,
+   which on any page that uses colour to mean something reads as data. */
+.cmt-anchored {
+  background: rgba(224, 168, 0, .09);
+  box-shadow: inset 2px 0 0 rgba(138, 147, 168, .55);
+}
+.cmt-anchored.cmt-resolved { background: transparent; box-shadow: inset 2px 0 0 var(--cmt-line); }
+/* Range anchor keeps the highlighter look — on a span of words you have to see WHICH words. */
+.cmt-highlight {
+  background: var(--cmt-highlight); border-radius: 2px;
+  box-shadow: 0 1px 0 var(--cmt-highlight-strong); cursor: pointer;
+}
+.cmt-highlight.cmt-resolved { background: transparent; box-shadow: none; }
+/* The same look painted through the CSS Custom Highlight API (comment-layer.js, paint()), which is
+   how browsers that have it draw picked words: no span is wrapped, so a pick that crosses a link,
+   a citation or math still paints just those words. A highlight takes colours and text-decoration
+   only, so an underline stands in for the box-shadow. Hover, the words of a comment being written,
+   and the jump from the panel use the strong tint. */
+::highlight(cmt-range) { background-color: var(--cmt-highlight); text-decoration: underline 1px var(--cmt-highlight-strong); }
+::highlight(cmt-range-hover), ::highlight(cmt-range-draft), ::highlight(cmt-range-flash) { background-color: var(--cmt-highlight-strong); }
+body.cmt-mode.cmt-over-mark, body.cmt-mode.cmt-over-mark * { cursor: pointer; }
+/* Present mode (present-layer.css) clears the span tint, so the room never sees comment marks. */
+body.pr-on *::highlight(cmt-range) { background-color: transparent; text-decoration: none; }
+
+/* Flash pulse when jumping to a thread's anchor */
+@keyframes cmt-flash { 0% { outline: 3px solid var(--cmt-accent); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+.cmt-flash { animation: cmt-flash 1.3s ease; }
+
+/* Marker dots.
+   The box is 18px so it is a real click target; the ink is a 9px dot at 45%, and the count
+   only appears on hover. A 26px saturated teardrop with a white ring and a 30px shadow was
+   the loudest object on any page it landed on, and it landed ON the page — not beside it. */
+.cmt-marker-layer { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 2147482000; }
+.cmt-pin {
+  position: absolute; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 999px;
+  background: transparent; cursor: pointer; display: block;
+  transition: background .12s ease, box-shadow .12s ease;
+  /* At rest only the 9px ink is hit-testable, so an 18px transparent box does not steal a
+     click from whatever it sits beside. Hovering the ink still sets :hover on the button,
+     which re-arms the full 18px target — Fitts's Law applies to the marker you are already
+     pointing at, not to the one you are scrolling past. */
+  pointer-events: none;
+}
+.cmt-pin::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px;
+  margin: -4.5px 0 0 -4.5px; border-radius: 999px; background: var(--cmt-mark);
+  box-shadow: 0 0 0 2px var(--cmt-ring); opacity: var(--cmt-mark-rest);
+  transition: opacity .12s ease;
+  pointer-events: auto;
+}
+.cmt-pin:hover { pointer-events: auto; }
+.cmt-pin .cmt-pin-n {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font: 700 11px/1 var(--cmt-font); color: #1f2330; opacity: 0; transition: opacity .12s ease;
+}
+.cmt-pin:hover { background: var(--cmt-accent); box-shadow: 0 1px 5px rgba(20, 24, 40, .22); }
+.cmt-pin:hover::before { opacity: 0; }
+.cmt-pin:hover .cmt-pin-n { opacity: 1; }
+.cmt-pin.cmt-resolved::before { background: transparent; box-shadow: inset 0 0 0 1.5px #c7cdd8, 0 0 0 2px var(--cmt-ring); }
+/* The one thing worth a colour at rest: an AI reply you have not read. */
+.cmt-pin.cmt-ai-unread::before { background: var(--cmt-ai); }
+/* A closed fold with open threads inside it: pins are hidden there, so the summary carries the count. */
+summary[data-cmt-inside]::after {
+  content: attr(data-cmt-inside); margin-left: 8px; padding: 0 7px; border-radius: 999px;
+  font: 500 11px/17px var(--cmt-font); color: #5a6072; background: #eef0f4; white-space: nowrap;
+}
+
+/* Popover (thread card) */
+.cmt-pop {
+  position: absolute; z-index: 2147483100; width: 320px; max-width: calc(100vw - 24px);
+  background: var(--cmt-card); border: 1px solid var(--cmt-line); border-radius: 12px;
+  box-shadow: var(--cmt-shadow); color: var(--cmt-ink); overflow: hidden;
+}
+.cmt-pop-head {
+  padding: 10px 12px; font-size: 12px; color: var(--cmt-muted);
+  border-bottom: 1px solid var(--cmt-line); background: #fafbfc;
+  display: flex; align-items: center; gap: 8px; justify-content: space-between;
+}
+.cmt-pop-target { font-weight: 600; color: var(--cmt-ink); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cmt-pop-body { max-height: 46vh; overflow-y: auto; padding: 6px 12px; }
+.cmt-msg { padding: 8px 0; border-bottom: 1px solid var(--cmt-line); }
+.cmt-msg:last-child { border-bottom: 0; }
+.cmt-msg-meta { font-size: 11px; color: var(--cmt-muted); margin-bottom: 3px; display: flex; gap: 6px; align-items: center; }
+.cmt-msg-author { font-weight: 700; color: var(--cmt-ink); }
+.cmt-msg.cmt-ai .cmt-msg-author { color: var(--cmt-ai); }
+/* Identity chip on AI messages: which session, on which machine (full ids in hover title) */
+.cmt-msg-agent {
+  display: inline-block; vertical-align: middle; cursor: default;
+  font-size: 10px; line-height: 1.5; color: var(--cmt-muted);
+  background: #f5f6f8; border: 1px solid var(--cmt-line); border-radius: 999px; padding: 0 6px;
+  max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.cmt-msg.cmt-ai .cmt-msg-agent, .cmt-item-msg.cmt-ai .cmt-msg-agent {
+  color: var(--cmt-ai); background: var(--cmt-ai-bg); border-color: transparent;
+}
+.cmt-item-msg .cmt-msg-agent { margin-right: 6px; }
+.cmt-msg-text { font-size: 14px; line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+.cmt-msg-edit {
+  margin-left: auto; border: 0; background: none; color: var(--cmt-muted);
+  font-size: 12px; line-height: 1; padding: 2px 4px; border-radius: 4px; cursor: pointer;
+  opacity: 0; transition: opacity .12s ease;
+}
+.cmt-msg:hover .cmt-msg-edit { opacity: 1; }
+.cmt-msg-edit:hover { color: var(--cmt-ink); background: #f5f6f8; }
+.cmt-msg-editor { padding: 2px 0 4px; }
+.cmt-msg-editor textarea { min-height: 48px; }
+.cmt-pop-foot { padding: 8px 12px 10px; border-top: 1px solid var(--cmt-line); }
+/* "Your name" — shown only until the commenter is identified (gate or remembered) */
+.cmt-who {
+  width: 100%; box-sizing: border-box; margin-bottom: 6px; padding: 6px 8px; font-size: 13px;
+  border: 1px solid var(--cmt-line); border-radius: 8px; font-family: var(--cmt-font); color: var(--cmt-ink);
+  background: #fff;
+}
+.cmt-who:focus { outline: 2px solid var(--cmt-accent); border-color: transparent; }
+.cmt-who-inline { width: 110px; margin: 0; padding: 1px 5px; font-size: 11px; border-radius: 5px; }
+.cmt-me { cursor: pointer; border-bottom: 1px dotted var(--cmt-line); }
+.cmt-me.cmt-me-fixed { cursor: default; border-bottom: 0; }
+.cmt-pop textarea {
+  width: 100%; min-height: 56px; resize: vertical; padding: 8px; font-size: 14px;
+  border: 1px solid var(--cmt-line); border-radius: 8px; font-family: var(--cmt-font); color: var(--cmt-ink);
+}
+.cmt-pop textarea:focus { outline: 2px solid var(--cmt-accent); border-color: transparent; }
+.cmt-row { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 8px; }
+.cmt-row .cmt-spacer { margin-right: auto; }
+.cmt-btn {
+  border: 1px solid var(--cmt-line); background: #fff; color: var(--cmt-ink);
+  font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+}
+.cmt-btn:hover { background: #f5f6f8; }
+.cmt-btn.cmt-primary { background: #111827; color: #fff; border-color: #111827; }
+.cmt-btn.cmt-primary:hover { background: #000; }
+.cmt-btn.cmt-ghost { border-color: transparent; color: var(--cmt-muted); }
+.cmt-btn.cmt-ghost:hover { color: var(--cmt-ink); background: #f5f6f8; }
+
+/* Comments panel: overlay slide-in below 1360px, docked (content shifted) above */
+.cmt-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: var(--cmt-panel-w, 340px); max-width: 92vw; z-index: 2147483050;
+  background: var(--cmt-card); border-left: 1px solid var(--cmt-line); box-shadow: var(--cmt-shadow);
+  transform: translateX(100%); transition: transform .2s ease; display: flex; flex-direction: column;
+}
+.cmt-drawer.cmt-open { transform: translateX(0); }
+.cmt-drawer.cmt-resizing { transition: none; user-select: none; }
+.cmt-grip { position: absolute; left: 0; top: 0; width: 6px; height: 100%; cursor: col-resize; z-index: 2; }
+.cmt-grip:hover, .cmt-drawer.cmt-resizing .cmt-grip { background: var(--cmt-highlight); }
+.cmt-drawer-head { padding: 14px 16px; border-bottom: 1px solid var(--cmt-line); display: flex; align-items: center; justify-content: space-between; }
+.cmt-drawer-head h2 { margin: 0; font-size: 15px; }
+.cmt-drawer-list { overflow-y: auto; padding: 8px; flex: 1; }
+.cmt-item { padding: 10px; border: 1px solid var(--cmt-line); border-radius: 10px; margin-bottom: 8px; cursor: pointer; }
+.cmt-item:hover { background: #fafbfc; }
+.cmt-item.cmt-resolved { opacity: .6; }
+.cmt-item.cmt-orphan { border-style: dashed; border-color: var(--cmt-accent); }
+.cmt-item-target { font-size: 12px; color: var(--cmt-muted); margin-bottom: 4px; }
+.cmt-item-flag { color: var(--cmt-accent); font-weight: 600; margin-left: 6px; }
+.cmt-item-msg { margin-top: 6px; font-size: 12.5px; line-height: 1.45; }
+.cmt-item-msg .cmt-item-author { font-weight: 700; color: var(--cmt-ink); margin-right: 6px; }
+.cmt-item-msg.cmt-ai .cmt-item-author { color: var(--cmt-ai); }
+.cmt-item-msg .cmt-item-when { font-size: 10.5px; color: var(--cmt-muted); }
+.cmt-item-text { white-space: pre-wrap; word-break: break-word; margin-top: 1px; }
+.cmt-section-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--cmt-muted); margin: 10px 6px 6px; }
+.cmt-empty { color: var(--cmt-muted); font-size: 13px; padding: 18px 10px; text-align: center; }
+.cmt-backend { font-size: 11px; color: var(--cmt-muted); }
+.cmt-backend b { color: var(--cmt-ink); }
+
+/* Comment-mode switch, inside the panel. The chip outside is only a lamp once the panel is
+   open, so the click target lives here — and next to the key that does the same thing. */
+.cmt-modebar { padding: 7px 11px; border-bottom: 1px solid var(--cmt-line); }
+.cmt-switch {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 5px 5px; border: 0; border-radius: 8px; background: none;
+  color: var(--cmt-muted); font: 600 11px/1 var(--cmt-font);
+  text-transform: uppercase; letter-spacing: .06em; cursor: pointer;
+}
+.cmt-switch:hover { background: #f5f6f8; color: var(--cmt-ink); }
+.cmt-switch-label { flex: 1; text-align: left; }
+.cmt-switch-track {
+  width: 26px; height: 15px; border-radius: 999px; background: #d6dae3;
+  position: relative; flex: none; transition: background .15s ease;
+}
+.cmt-switch-knob {
+  position: absolute; top: 2px; left: 2px; width: 11px; height: 11px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 2px rgba(20, 24, 40, .3); transition: transform .15s ease;
+}
+.cmt-switch[aria-checked="true"] { color: var(--cmt-ink); }
+.cmt-switch[aria-checked="true"] .cmt-switch-track { background: var(--cmt-accent); }
+.cmt-switch[aria-checked="true"] .cmt-switch-knob { transform: translateX(11px); }
+.cmt-kbd {
+  font: 600 10px/1 var(--cmt-font); color: var(--cmt-muted); background: #fafbfc;
+  border: 1px solid var(--cmt-line); border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px;
+}
+
+@media (min-width: 1360px) {
+  body.cmt-docked .cmt-drawer { transform: none; box-shadow: none; }
+  body.cmt-docked .cmt-chip { display: none; }
+}
+
+@media print { .cmt-ui, .cmt-chip, .cmt-drawer, .cmt-marker-layer, .cmt-pop { display: none !important; } .cmt-anchored { background: none; box-shadow: none; } }

@@ -4,15 +4,15 @@
  * Levels: h2.part → parts (top), other h2 → sections, h3 → groups (folded by default).
  * Docs without h2.part: h2 → top, h3 → folded groups. Fewer than 3 headings → no TOC.
  * Docked left of the content on wide viewports (≥1360px, content shifted right);
- * hidden behind a ☰ Contents pill below that (opens as a sidebar the content moves
- * over for; Escape or « closes it). Clicking an entry keeps the nav open, so the
- * reader can click around — it is a map to navigate by, not a menu to dismiss.
+ * hidden behind a ☰ Contents pill below that (opens as an overlay; Escape closes).
  * The « button hides it; drag the right edge to resize. Both choices persist per doc
  * (localStorage, keyed by data-comment-doc). Content margins are coordinated with the
  * comment layer's right panel through window.__dockLayout (defined by whichever layer
  * loads first), so left TOC + right comments panel + content never overlap.
  * Disable entirely with data-toc="off" on <html>, or point at a different content
- * root with data-content="<selector>" on this script tag.
+ * root with data-content="<selector>" on this script tag. Headings inside an element
+ * marked data-toc="skip" (a fold of detail, an archive) stay out of the TOC, since a
+ * link to a heading inside a closed <details> scrolls nowhere.
  *
  * Headings without ids get slugified ones so links work; ids already present are
  * never touched (comment-layer anchors and the TOC share them — prefer stable ids).
@@ -59,7 +59,7 @@
   var root = doc.querySelector(sel) || doc.querySelector('main') || body;
 
   var hs = Array.prototype.slice.call(root.querySelectorAll('h2, h3')).filter(function (h) {
-    return !h.closest('nav') && !h.closest('.toc-layer');
+    return !h.closest('nav') && !h.closest('.toc-layer') && !h.closest('[data-toc="skip"]');
   });
   if (hs.length < 3) return;
 
@@ -146,10 +146,7 @@
   nav.style.width = curW + 'px';
 
   function sync() {
-    // Docked or opened as an overlay: either way the nav stays put while the reader
-    // clicks through it, so the content moves over in both states.
-    var on = body.classList.contains('tl-docked') || body.classList.contains('tl-open');
-    window.__dockLayout.set('left', on ? curW : 0, root);
+    window.__dockLayout.set('left', body.classList.contains('tl-docked') ? curW : 0, root);
   }
   function apply() {
     if (mq.matches && localStorage.getItem(KEY) !== '1') body.classList.add('tl-docked');
@@ -182,14 +179,14 @@
 
   btn.addEventListener('click', function () {
     if (mq.matches) { localStorage.removeItem(KEY); body.classList.add('tl-docked'); sync(); }
-    else { body.classList.add('tl-open'); sync(); }
+    else body.classList.add('tl-open');
   });
   nav.querySelector('.tl-close').addEventListener('click', function () {
     if (body.classList.contains('tl-docked')) { localStorage.setItem(KEY, '1'); body.classList.remove('tl-docked'); }
     body.classList.remove('tl-open');
     sync();
   });
-  doc.addEventListener('keydown', function (e) { if (e.key === 'Escape') { body.classList.remove('tl-open'); sync(); } });
+  doc.addEventListener('keydown', function (e) { if (e.key === 'Escape') body.classList.remove('tl-open'); });
 
   nav.addEventListener('click', function (e) {
     var car = e.target.closest('.tl-car');
@@ -198,7 +195,6 @@
       car.setAttribute('aria-expanded', g.classList.toggle('tl-fold') ? 'false' : 'true');
       return;
     }
-    // A link click scrolls the document and leaves the nav where it is. Closing it
-    // here made every hop cost a reopen (reader's complaint, 2026-09-14).
+    if (e.target.closest('a')) body.classList.remove('tl-open');
   });
 })();

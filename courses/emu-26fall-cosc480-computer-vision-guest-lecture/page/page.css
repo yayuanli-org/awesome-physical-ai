@@ -1,0 +1,103 @@
+/* page.css — the guest lecture's look, for everything inside #content.
+   The comment, contents, citation and present layers style themselves. The rules are
+   the notebook's doc.css and custom.css, kept for what this talk uses, so the page
+   looks the way the notebook did. */
+
+:root {
+  --ink:#1f2330; --muted:#5a6072; --faint:#8b91a3; --line:#e6e8ef; --grey:#c4c8d4;
+  --accent:#d6689a; --accent-soft:#fbeef4; --blue:#5b6ee1; --ok:#2f8f6b;
+  /* the contents sidebar in the same pink */
+  --tl-accent:#d6689a; --tl-accent-line:#f3cddb;
+}
+
+html, body { background:#fff; }
+body { margin:0; color:var(--ink);
+       font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+#content { max-width:920px; margin:0 auto; padding:52px 30px 160px; }
+#content, #content * { box-sizing:border-box; }
+
+/* --- prose ----------------------------------------------------------------- */
+#content h1 { font-size:30px; line-height:1.2; margin:0 0 18px; letter-spacing:-.01em; }
+#content h2 { font-size:22px; margin:52px 0 12px; padding-top:14px;
+              border-top:1px solid var(--line); letter-spacing:-.01em; }
+#content h3 { font-size:17px; margin:30px 0 8px; color:#2b3040; }
+#content p  { margin:10px 0; color:#282d3a; }
+#content ul { margin:8px 0 14px; padding-left:22px; }
+#content li { margin:4px 0; color:#282d3a; }
+#content a  { color:var(--accent); text-decoration:none; }
+#content a:hover { text-decoration:underline; }
+
+.kicker { display:block; font-size:11.5px; font-weight:700; letter-spacing:.10em;
+          text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+
+/* --- tables ---------------------------------------------------------------- */
+#content table { border-collapse:collapse; margin:14px 0; font-size:14px; width:100%; }
+#content caption { caption-side:top; text-align:left; color:var(--faint);
+                   font-size:12.5px; padding-bottom:6px; }
+#content th, #content td { border-bottom:1px solid var(--line); padding:6px 10px;
+                           text-align:left; vertical-align:top; }
+#content th { color:var(--muted); font-weight:600; font-size:12.5px;
+              border-bottom:1px solid var(--faint); }
+#content th.num, #content td.num { text-align:right; font-variant-numeric:tabular-nums; }
+#content tbody tr:hover { background:#fafbfd; }
+/* A "what / why" table reads better with the first column doing the naming. */
+table.k th:first-child, table.k td:first-child { width:22%; font-weight:600; color:var(--ink); }
+table.k td:last-child { color:var(--muted); }
+
+/* --- figures --------------------------------------------------------------- */
+#content figure { margin:18px 0; }
+#content img { max-width:100%; height:auto; }
+/* The charts carry their title and note inside the drawing. */
+figure.chart img { display:block; margin:0 auto; }
+
+/* --- drawings -------------------------------------------------------------- */
+/* Menlo before the system monospace, because the box-drawing characters and the
+   arrows have to come from one font or the columns stop lining up. */
+#content pre.flow { background:#fbfbfd; border:1px dashed var(--line); border-radius:8px;
+                    padding:14px 16px; margin:14px 0; overflow:auto; color:var(--muted);
+                    font:12.5px/1.7 Menlo,"DejaVu Sans Mono",Consolas,ui-monospace,monospace; }
+pre.flow b { color:var(--ink); font-weight:600; }
+pre.flow .yr { color:var(--accent); font-weight:600; }
+
+/* --- the map ---------------------------------------------------------------
+   The talk's table of contents, drawn once under the title and again after every
+   unit as a "where we are" box: what is done in ink, the rest in grey. build.py's
+   render_map() writes the spans, and this only colours them.                    */
+#content pre.flow.map { font-size:12px; line-height:1.65; }
+pre.flow.map .lbl  { font-size:10.5px; font-weight:700; letter-spacing:.08em;
+                     text-transform:uppercase; color:var(--accent); }
+pre.flow.map .grp  { color:var(--faint); font-size:11px; letter-spacing:.05em;
+                     text-transform:uppercase; }
+pre.flow.map .done { color:var(--ink); }
+pre.flow.map .todo,
+pre.flow.map .sep  { color:var(--grey); }
+pre.flow.map b.done { color:var(--ink); font-weight:600; }
+pre.flow.map b.todo { color:var(--grey); font-weight:600; }
+
+/* --- galleries -------------------------------------------------------------
+   A row of figures with captions. .c1 to .c4 fix the column count. A .rowlbl
+   spans the row above the figures and names whose embodiment the row is about,
+   so a step that lights the row lights its label too.                          */
+.gal { display:grid; gap:12px; margin:10px 0 14px; grid-template-columns:repeat(2, minmax(0,1fr)); }
+.gal.c1 { grid-template-columns:minmax(0,1fr); }
+.gal.c3 { grid-template-columns:repeat(3, minmax(0,1fr)); }
+.gal.c4 { grid-template-columns:repeat(4, minmax(0,1fr)); }
+#content .gal figure { margin:0; min-width:0; }
+.gal img { width:100%; height:auto; max-height:300px; object-fit:contain; display:block;
+           border:1px solid var(--line); border-radius:6px; background:#fff; }
+.gal.tall img  { max-height:440px; }
+.gal.short img { max-height:200px; }
+.gal figcaption { font-size:12px; color:var(--faint); margin-top:5px; line-height:1.4; }
+.gal figcaption b { color:var(--ink); font-weight:600; }
+#content .rowlbl { grid-column:1 / -1; margin:4px 0 -4px; font-size:11px; font-weight:700;
+                   letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+#content .rowlbl.robot { color:var(--blue); }
+#content .rowlbl.both  { color:var(--ok); }
+
+@media (max-width:760px) {
+  #content { padding:40px 16px 120px; }
+  .gal.c3, .gal.c4 { grid-template-columns:1fr 1fr; }
+}
+@media print {
+  #content { max-width:none; padding:0; }
+}

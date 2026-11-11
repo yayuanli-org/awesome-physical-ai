@@ -1,0 +1,171 @@
+/* present-layer.css — present mode for commentable-html pages (see present-layer.js).
+   Classes are prefixed pr-. The page never changes layout in present mode: these rules only
+   set opacity on content, plus the chrome around it. */
+
+:root {
+  --pr-accent: #d24d7c;
+  --pr-accent-soft: #fbeef4;
+  --pr-past: .4;                      /* earlier steps; present-layer.js sets both from the script's look */
+  --pr-rest: .1;                      /* everything not lit */
+  --pr-mark: rgba(255, 205, 64, .55); /* the highlighter on marked words */
+  --pr-ink: #1f2330;
+  --pr-muted: #6b7280;
+  --pr-line: #e6e8ee;
+  --pr-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ---- the tiers ---- */
+body.pr-on [data-pr-root] .pr-t { transition: opacity .32s ease; }
+body.pr-on [data-pr-root] .pr-rest { opacity: var(--pr-rest); }
+body.pr-on [data-pr-root] .pr-past { opacity: var(--pr-past); }
+body.pr-on [data-pr-root] .pr-hide { opacity: 0; }
+::highlight(pr-mark) { background-color: var(--pr-mark); }
+::highlight(pr-mark-past) { background-color: rgba(255, 205, 64, .22); }
+
+/* Editing keeps the page readable so the next thing to click can be found; Play (E) shows the
+   true look. Hidden blocks show as ghosts with a dashed edge, the current step is outlined. */
+body.pr-edit [data-pr-root] .pr-rest { opacity: max(var(--pr-rest), .55); }
+body.pr-edit [data-pr-root] .pr-past { opacity: max(var(--pr-past), .8); }
+body.pr-edit [data-pr-root] .pr-hide { opacity: .22; outline: 1.5px dashed #9aa0b1; outline-offset: 2px; }
+body.pr-edit [data-pr-root] .pr-now { outline: 2px solid var(--pr-accent); outline-offset: 3px; border-radius: 3px; }
+body.pr-edit [data-pr-root] .pr-pick { outline: 2px dashed var(--pr-accent); outline-offset: 2px; cursor: pointer; }
+body.pr-edit [data-pr-root] .pr-now.pr-pick { outline-style: solid; }
+body.pr-edit.pr-preview [data-pr-root] .pr-rest { opacity: var(--pr-rest); }
+body.pr-edit.pr-preview [data-pr-root] .pr-past { opacity: var(--pr-past); }
+body.pr-edit.pr-preview [data-pr-root] .pr-hide { opacity: 0; outline: none; }
+body.pr-edit.pr-preview [data-pr-root] .pr-now { outline: none; }
+body.pr-edit::after {
+  content: ""; position: fixed; inset: 0; z-index: 2147482800; pointer-events: none;
+  box-shadow: inset 0 0 0 2px var(--pr-accent);
+}
+body.pr-on [data-pr-root] { cursor: default; }
+body.pr-on:not(.pr-edit) [data-pr-root] a { cursor: default; }
+
+/* ---- the comment layer steps aside while presenting ---- */
+body.pr-on .cmt-ui { display: none !important; }
+body.pr-on .cmt-anchored, body.pr-on .cmt-highlight { background: transparent !important; box-shadow: none !important; }
+body.pr-on summary[data-cmt-inside]::after { display: none; }
+
+/* ---- the TOC is the progress map: done in ink, the current section lit, the rest faint ---- */
+body.pr-on .toc-layer .tl-row a { color: var(--pr-ink); font-weight: 500; transition: opacity .3s ease, color .3s ease; }
+body.pr-on .toc-layer .tl-row.pr-todo a { opacity: .34; }
+body.pr-on .toc-layer .tl-row.pr-done a { opacity: .9; }
+body.pr-on .toc-layer .tl-row.pr-up a { opacity: 1; font-weight: 650; }
+body.pr-on .toc-layer .tl-row.pr-cur { background: var(--pr-accent-soft); border-radius: 6px; margin: 1px -6px; padding: 3px 6px; }
+body.pr-on .toc-layer .tl-row.pr-cur a { opacity: 1; color: var(--pr-accent); font-weight: 700; }
+.pr-tocbtn {
+  margin-left: auto; margin-right: 6px; border: 1px solid var(--tl-line, #e9e7ea); background: #fff;
+  color: var(--tl-muted, #757a87); font: 600 .62rem/1 var(--pr-font); letter-spacing: .08em;
+  text-transform: uppercase; padding: 4px 7px; border-radius: 10px; cursor: pointer;
+}
+.pr-tocbtn:hover, body.pr-on .pr-tocbtn { color: var(--pr-accent); border-color: var(--tl-accent-line, #f3cddb); }
+
+/* ---- chrome ---- */
+.pr-ui, .pr-ui * { box-sizing: border-box; font-family: var(--pr-font); }
+.pr-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 2147483300; pointer-events: none; display: none; }
+.pr-bar i { display: block; height: 100%; width: 0; background: var(--pr-accent); transition: width .3s ease; }
+body.pr-on .pr-bar { display: block; }
+
+.pr-count {
+  position: fixed; right: 14px; bottom: 14px; z-index: 2147483300; display: none;
+  height: 26px; padding: 0 11px; border: 1px solid var(--pr-line); border-radius: 999px;
+  background: rgba(255, 255, 255, .92); color: var(--pr-muted); cursor: pointer;
+  font: 600 11px/1 var(--pr-font); letter-spacing: .04em; font-variant-numeric: tabular-nums;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 0 1px 4px rgba(20, 24, 40, .1);
+  align-items: center; gap: 7px; transition: transform .15s ease, color .15s ease;
+}
+.pr-count em { font-style: normal; text-transform: uppercase; letter-spacing: .08em; font-size: 10px; color: var(--pr-accent); }
+.pr-count:hover { color: var(--pr-ink); }
+.pr-count.pr-bump { transform: scale(1.12); color: var(--pr-accent); }
+body.pr-on .pr-count { display: inline-flex; }
+body.pr-on.pr-edit .pr-count { right: 344px; }   /* clear of the edit panel, docked or overlaid */
+
+.pr-toast {
+  position: fixed; left: 50%; bottom: 22px; z-index: 2147483400; max-width: min(560px, calc(100vw - 32px));
+  transform: translate(-50%, 12px); opacity: 0; pointer-events: none;
+  background: #1f2330; color: #fff; font: 500 13px/1.45 var(--pr-font); padding: 9px 14px; border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(20, 24, 40, .25); transition: opacity .2s ease, transform .2s ease;
+}
+.pr-toast.pr-show { opacity: 1; transform: translate(-50%, 0); }
+
+.pr-blank { position: fixed; inset: 0; z-index: 2147483600; background: #000; display: none; }
+body.pr-blanked .pr-blank { display: block; }
+
+/* ---- the edit panel ---- */
+.pr-panel {
+  position: fixed; top: 0; right: 0; bottom: 0; max-width: 92vw; z-index: 2147483050;
+  display: flex; flex-direction: column; background: #fff; color: var(--pr-ink);
+  border-left: 1px solid var(--pr-line); box-shadow: 0 8px 30px rgba(20, 24, 40, .16);
+  transform: translateX(105%); transition: transform .2s ease;
+}
+.pr-panel.pr-open { transform: none; }
+body.pr-docked .pr-panel { box-shadow: none; }
+.pr-head { display: flex; align-items: center; gap: 8px; padding: 12px 12px 10px 14px; border-bottom: 1px solid var(--pr-line); }
+.pr-head b { font-size: 15px; }
+.pr-store { font-size: 11px; color: var(--pr-muted); }
+.pr-sp { flex: 1; }
+.pr-btn {
+  border: 1px solid var(--pr-line); background: #fff; color: var(--pr-ink); cursor: pointer;
+  font: 600 12px/1 var(--pr-font); padding: 7px 10px; border-radius: 8px;
+}
+.pr-btn:hover { background: #f5f6f8; }
+.pr-play { background: var(--pr-accent); border-color: var(--pr-accent); color: #fff; }
+.pr-play:hover { background: #b93d69; }
+.pr-btn.pr-ghost { border-color: transparent; color: var(--pr-muted); font-size: 16px; padding: 4px 8px; }
+
+.pr-look { padding: 8px 14px 10px; border-bottom: 1px solid var(--pr-line); display: grid; gap: 5px; }
+.pr-lrow { display: grid; grid-template-columns: 92px 1fr auto; align-items: center; gap: 8px; font-size: 12px; color: var(--pr-muted); }
+.pr-lrow select { grid-column: 2 / 4; font: 12px var(--pr-font); padding: 3px 4px; border: 1px solid var(--pr-line); border-radius: 6px; background: #fff; color: var(--pr-ink); }
+.pr-lrow input[type=range] { width: 100%; accent-color: var(--pr-accent); }
+.pr-lrow b { font-size: 11px; color: var(--pr-ink); min-width: 32px; text-align: right; font-variant-numeric: tabular-nums; }
+.pr-look-note { font-size: 10.5px; color: #a4a8b3; }
+
+.pr-list { flex: 1; overflow-y: auto; padding: 6px 10px 10px; }
+.pr-sec { margin: 12px 4px 5px; font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #a4a8b3; }
+.pr-step {
+  display: flex; gap: 8px; align-items: flex-start; padding: 7px 8px; margin: 3px 0;
+  border: 1px solid var(--pr-line); border-radius: 9px; cursor: pointer; background: #fff;
+}
+.pr-step:hover { background: #fafbfc; }
+.pr-step.pr-on-step { border-color: var(--pr-accent); box-shadow: 0 0 0 1px var(--pr-accent) inset; background: #fff; }
+.pr-step.pr-dragging { opacity: .4; }
+.pr-step.pr-drop-before { box-shadow: 0 -2px 0 var(--pr-accent); }
+.pr-step.pr-drop-after { box-shadow: 0 2px 0 var(--pr-accent); }
+.pr-num {
+  flex: none; min-width: 22px; height: 22px; border-radius: 6px; background: #f1f2f6; color: var(--pr-muted);
+  font: 700 11px/22px var(--pr-font); text-align: center; cursor: grab; user-select: none;
+}
+.pr-on-step .pr-num { background: var(--pr-accent); color: #fff; }
+.pr-body { flex: 1; min-width: 0; }
+.pr-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.pr-chip {
+  display: inline-flex; align-items: center; gap: 2px; max-width: 100%;
+  padding: 2px 3px 2px 8px; border-radius: 999px; background: var(--pr-accent-soft); color: #8a2f55;
+  font-size: 12px; line-height: 1.35;
+}
+.pr-chip.pr-lost { background: #fff4e5; color: #9a5b12; }
+.pr-chip-x { border: 0; background: none; color: inherit; opacity: .45; cursor: pointer; font-size: 13px; line-height: 1; padding: 0 4px; }
+.pr-chip-x:hover { opacity: 1; }
+.pr-note {
+  display: block; width: 100%; margin-top: 6px; resize: vertical; min-height: 44px;
+  font: 13px/1.45 var(--pr-font); color: var(--pr-ink); padding: 6px 8px;
+  border: 1px solid var(--pr-line); border-radius: 7px;
+}
+.pr-note:focus { outline: 2px solid var(--pr-accent); border-color: transparent; }
+.pr-peek { margin-top: 4px; font-size: 11.5px; color: var(--pr-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pr-del { flex: none; border: 0; background: none; color: #b4b8c4; cursor: pointer; font-size: 15px; line-height: 1; padding: 2px 3px; }
+.pr-del:hover { color: #b23b52; }
+.pr-empty { color: var(--pr-muted); font-size: 12.5px; line-height: 1.5; padding: 12px 6px; }
+
+.pr-hid { border-top: 1px solid var(--pr-line); padding: 8px 14px; font-size: 12px; color: var(--pr-muted); }
+.pr-hid summary { cursor: pointer; font-weight: 600; }
+.pr-hid-list { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 6px; max-height: 120px; overflow-y: auto; }
+.pr-hid-list .pr-chip { background: #f1f2f6; color: var(--pr-muted); cursor: pointer; }
+
+.pr-keys { border-top: 1px solid var(--pr-line); padding: 8px 14px 12px; font-size: 11.5px; line-height: 1.75; color: var(--pr-muted); }
+.pr-keys kbd {
+  font: 600 10px/1 var(--pr-font); color: var(--pr-ink); background: #fafbfc;
+  border: 1px solid var(--pr-line); border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px;
+}
+
+@media print { .pr-ui, .pr-tocbtn { display: none !important; } }

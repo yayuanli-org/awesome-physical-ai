@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en" data-comment-doc="emu-guest-lecture" data-comment-root="#content">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where Physical AI Stands · EMU guest lecture</title>
+<link rel="stylesheet" href="comment-layer.css">
+<link rel="stylesheet" href="toc-layer.css">
+<link rel="stylesheet" href="cite-layer.css">
+<link rel="stylesheet" href="present-layer.css">
+<link rel="stylesheet" href="page.css">
+</head>
+<body>
+<!-- Built by build.py. Edit build.py and rebuild: edits made here are overwritten. -->
+<main id="content">
+<h1 id="title"><span class="kicker">Guest lecture · EMU COSC 480/592 Computer Vision · November 17, 2026 · Yayuan Li, University of Michigan</span>Where Physical AI Stands: From First-Person Video to Agents That Act</h1>
+
+<pre class="flow map" id="c002">
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="done">represent</span><span class="sep"> · </span><span class="done">anticipate</span><span class="sep"> · </span><span class="done">decide</span><span class="sep"> · </span><span class="done">act</span><span class="sep"> · </span><span class="done">verify</span>
+                         <span class="done">adapt</span>
+  <b class="done">§3 toward production</b>   <span class="done">the missing part</span><span class="sep"> · </span><span class="done">build on today</span>
+<span class="grp">go further</span>
+  <b class="done">§4 where to look next</b>  <span class="done">keywords and links</span>
+</pre>
+
+<ul class="caption" id="c003">
+<li>One pass over the field: what physical AI is, the seven stages people work on, and how far each is from production.</li>
+<li>Broad rather than deep. Every stage names its papers, and the last slide lists keywords to search later.</li>
+<li>Everything here is in <a href="https://yayuanli-org.github.io/awesome-physical-ai/">the hub</a>, an open database of physical AI papers. These slides are on <a href="https://github.com/yayuanli-org/awesome-physical-ai">GitHub</a>.</li>
+<li>Leave knowing which stage interests you and what to search for next.</li>
+</ul>
+
+<h2 id="what-it-is">What physical AI is</h2>
+
+<pre class="flow" id="c005">
+          the physical world, objects and the changes they undergo
+                    │
+              sense │                                       ▲
+                    ▼                                       │
+        ┌─ <b>model it</b> ───────────────────────┐                │  acting changes the world,
+        │   represent ──► anticipate       │                │  so what has to be modeled
+        └────────────────┬─────────────────┘                │  changes too
+                         │ decide                           │
+        ┌─ <b>change it</b> ────▼──────────────────┐               │
+        │   act ──► verify ──► adapt        ├───────────────┘
+        │   through an embodiment: a        │
+        │   person wearing glasses, a       │
+        │   robot, or the two together      │
+        └───────────────────────────────────┘
+</pre>
+
+<ul class="caption" id="c006">
+<li>The subject is the change. Who carries it is a variable: a person wearing glasses, a robot, or both.</li>
+<li>Model the world, then change it through an embodiment, the hub's word for who moves the atoms. Acting changes the model, so the two close into a loop.</li>
+<li>Every hub paper is tagged with the stages it touches, so the loop can be counted. §2 walks it one stage at a time.</li>
+</ul>
+
+<pre class="flow map" id="c007">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="todo">embodiment</span>
+  <b class="todo">§2 the anatomy</b>         <span class="todo">seven stages</span><span class="sep"> · </span><span class="todo">sense</span><span class="sep"> · </span><span class="todo">represent</span><span class="sep"> · </span><span class="todo">anticipate</span><span class="sep"> · </span><span class="todo">decide</span><span class="sep"> · </span><span class="todo">act</span><span class="sep"> · </span><span class="todo">verify</span>
+                         <span class="todo">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h3 id="embodiment">Embodiment: who moves the atoms</h3>
+
+<pre class="flow" id="c009">
+                      <b>a person</b>                     <b>a robot</b>                    <b>the two together</b>
+                      ────────                     ───────                    ────────────────
+   the AI's job       teach the person to do       do the task itself         share one task
+   what it is good    harder tasks than <b>a robot</b>    narrow tasks, full         a couch through
+   for today          can do, with <b>a person</b>'s      automation, no one         a doorway. Not in
+                      hands and judgment           in the loop                the hub yet
+   in the hub         48 papers                    30 papers                  6 papers
+</pre>
+
+<div class="gal c3" id="c010">
+<figure><img src="assets/img/emb-hololens-topside.jpg" alt=""><figcaption><b>A person.</b> An expert at a laptop circles the switch a crew member wearing a headset should flip. NASA NEEMO, 2015.</figcaption></figure>
+<figure><img src="assets/img/emb-pi0-robots.jpg" alt=""><figcaption><b>A robot.</b> The seven platforms one π₀ policy drives, from a single arm to a mobile bimanual base. Black et al., 2024.</figcaption></figure>
+<figure><img src="assets/img/emb-spoton.jpg" alt=""><figcaption><b>Together.</b> A person in mixed reality directs a team of quadrupeds through doors, drawers and light switches. Spot-On, 2025.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c011">
+<li>The AI either teaches a person or is the robot. A person brings hands and judgment, and a robot brings full automation on a narrow task.</li>
+<li>People handle harder tasks than robots today, so a human-side system deploys earlier, and its footage trains the robot later. EgoDex, EgoVLA and DexUMI already do this.</li>
+<li>A person and a robot on one task is the smallest branch, 6 of 110 papers, and the one the next decade needs.</li>
+<li>Both embodiments change the world, so every stage in §2 keeps two rows, a person above and a robot below.</li>
+</ul>
+
+<pre class="flow map" id="c012">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="todo">§2 the anatomy</b>         <span class="todo">seven stages</span><span class="sep"> · </span><span class="todo">sense</span><span class="sep"> · </span><span class="todo">represent</span><span class="sep"> · </span><span class="todo">anticipate</span><span class="sep"> · </span><span class="todo">decide</span><span class="sep"> · </span><span class="todo">act</span><span class="sep"> · </span><span class="todo">verify</span>
+                         <span class="todo">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h2 id="anatomy">The anatomy of the field: seven stages</h2>
+
+<pre class="flow" id="c014">
+          the physical world, objects and the changes they undergo
+                    │
+          <b>2.1 sense</b> │                                       ▲
+                    ▼                                       │
+        ┌─ model it ───────────────────────────────┐        │
+        │   <b>2.2 represent</b> ──► <b>2.3 anticipate</b>       │        │  the loop of §1, with the
+        └────────────────────────┬─────────────────┘        │  stage each subsection
+                                 │ <b>2.4 decide</b>               │  walks written onto it
+        ┌─ change it ────────────▼─────────────────┐        │
+        │   <b>2.5 act</b> ──► <b>2.6 verify</b> ──► <b>2.7 adapt</b>   ├────────┘
+        └──────────────────────────────────────────┘
+</pre>
+
+<ul class="caption" id="c015">
+<li>The research topics of the field are the seven stages of the loop in §1. Each gets a subsection: what it is, what people build, where it stands.</li>
+<li>Every subsection keeps the two rows of embodiment, because the same stage is a different problem for a person and for a robot.</li>
+<li>Two stages, 2.6 verify and 2.7 adapt, are where the hub is thinnest, and the lecture ends up there.</li>
+</ul>
+
+<table class="k" id="c016">
+<thead><tr><th>stage</th><th>the question it answers</th><th>papers that live there</th></tr></thead>
+<tbody>
+<tr><td>2.1 sense</td><td>turn sensors into observations</td><td>SAM 2, HOT3D</td></tr>
+<tr><td>2.2 represent</td><td>turn observations into a state you can act on</td><td>DINOv2, 3D Gaussian Splatting</td></tr>
+<tr><td>2.3 anticipate</td><td>predict what the world does next</td><td>V-JEPA 2, Genie</td></tr>
+<tr><td>2.4 decide</td><td>choose the next step or the plan</td><td>SayCan, VLaMP</td></tr>
+<tr><td>2.5 act</td><td>emit the action: a motor command, an instruction, an overlay</td><td>π₀, ShowHowTo</td></tr>
+<tr><td>2.6 verify</td><td>check whether the intended change happened</td><td>PREGO, SAFE</td></tr>
+<tr><td>2.7 adapt</td><td>change the policy or the model from the outcome</td><td>Every Mistake Counts, Inner Monologue</td></tr>
+</tbody></table>
+
+<ul class="caption" id="c017">
+<li>A paper touches two or three stages as a rule. 81 of the 110 do.</li>
+<li>A vision-language-action policy (camera and instruction in, joint commands out) is sense, decide, act. A task assistant on glasses is sense, decide, act, verify.</li>
+<li>A person skipping a step and a robot policy failing are the same verify stage, and the two literatures barely cite each other.</li>
+</ul>
+
+<pre class="flow map" id="c018">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="todo">sense</span><span class="sep"> · </span><span class="todo">represent</span><span class="sep"> · </span><span class="todo">anticipate</span><span class="sep"> · </span><span class="todo">decide</span><span class="sep"> · </span><span class="todo">act</span><span class="sep"> · </span><span class="todo">verify</span>
+                         <span class="todo">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h3 id="sense">2.1 Sense: what the hardware sees, and where the signal stops</h3>
+
+<div class="gal c4" id="c020">
+<p class="rowlbl">a person</p>
+<figure><img src="assets/img/sense-aria-blowup.png" alt=""><figcaption><b>Research glasses.</b> Project Aria carries two scene cameras, an RGB camera, two eye cameras, seven microphones and two IMUs. Meta, 2023.</figcaption></figure>
+<figure><img src="assets/img/sense-hololens-neemo.jpg" alt=""><figcaption><b>A headset with a display.</b> HoloLens adds a depth camera, hand tracking, and holograms drawn in the wearer's view. NASA NEEMO 21.</figcaption></figure>
+<figure><img src="assets/img/sense-rayban-meta.jpg" alt=""><figcaption><b>Consumer glasses.</b> Ray-Ban Meta has one camera, microphones and speakers, and since September 2025 a display in the lens, for $799.</figcaption></figure>
+<figure><img src="assets/img/sense-sketchmehow.jpg" alt=""><figcaption><b>Projector and camera.</b> The instruction is drawn onto the workspace itself, and no one wears anything. SketchMeHow, 2021.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c021">
+<li>A camera on the head sees what the person sees. 51 of the 110 papers start from that stream, more than from any other sensor.</li>
+<li>The return channel is the second half of the hardware, a display in the lens, a speaker, or a projector that draws on the table.</li>
+<li>The view is partial, hidden by the hands, and moving. All-day glasses with a display are arriving at consumer prices from three vendors in 2026.</li>
+</ul>
+
+<div class="gal c2" id="c022">
+<p class="rowlbl robot">a robot</p>
+<figure><img src="assets/img/sense-umi.jpg" alt=""><figcaption><b>A camera on the wrist.</b> UMI's gripper carries a wide-angle camera, side mirrors for stereo and an IMU, and is held by a person or bolted to an arm. Chi et al., 2024.</figcaption></figure>
+<figure><img src="assets/img/sense-sparsh.jpg" alt=""><figcaption><b>Touch.</b> Vision-based tactile pads (DIGIT, GelSight) film a gel as it deforms. Sparsh learns from 460k such images. Meta, 2024.</figcaption></figure>
+</div>
+
+<div class="gal c3" id="c023">
+<figure><img src="assets/img/sense-realsense.jpg" alt=""><figcaption><b>Depth.</b> A stereo depth camera returns a point cloud, the usual source of the hub's 3D. Intel RealSense D435.</figcaption></figure>
+<figure><img src="assets/img/sense-velodyne.jpg" alt=""><figcaption><b>Range.</b> LiDAR sweeps a laser and returns distance, standard on mobile robots and rare on arms. Velodyne.</figcaption></figure>
+<figure><img src="assets/img/sense-aloha.jpg" alt=""><figcaption><b>The whole rig.</b> ALOHA puts two cameras over the table and one on each wrist, and a person moves the leader arms to teach it. Zhao et al., 2023.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c024">
+<li>A robot's cameras sit on the wrist and over the table. Depth and LiDAR add range, and a tactile pad on the fingertip adds contact.</li>
+<li>Touch is where the hub is thinnest. 2 of 110 papers sense it, and 8 hold force, mass or friction in their state.</li>
+<li>Every sensor is calibrated and priced per arm. Hand-held grippers (UMI, DexUMI) are the way around it, because the data arrives with no robot in the room.</li>
+</ul>
+
+<pre class="flow map" id="c029">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="todo">represent</span><span class="sep"> · </span><span class="todo">anticipate</span><span class="sep"> · </span><span class="todo">decide</span><span class="sep"> · </span><span class="todo">act</span><span class="sep"> · </span><span class="todo">verify</span>
+                         <span class="todo">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h3 id="represent">2.2 Represent: there is no best representation, only the one for the job</h3>
+
+<pre class="flow" id="c031">
+   <span class="yr">2012</span>  AlexNet                supervised features from a labeled corpus
+   <span class="yr">2017</span>  Transformer            attention, built to train in parallel on GPUs
+   <span class="yr">2020</span>  ViT · NeRF             an image as patches; a scene as a neural field
+   <span class="yr">2021</span>  CLIP · MAE · DINO      image and text in one space; masked and self-distilled features
+   <span class="yr">2022</span>  latent diffusion       generate; the representation is what a denoiser learns
+   <span class="yr">2023</span>  I-JEPA · DINOv2 · 3DGS predict in latent space; frozen features; explicit geometry
+   <span class="yr">2024</span>  V-JEPA                 the same prediction over video
+   <span class="yr">2025</span>  V-JEPA 2 · DINOv3      video → latent world model → robot planning
+</pre>
+
+<ul class="caption" id="c032">
+<li>Representation learning is this stage. Each milestone changed what a downstream model can read off an image, from labels to language to geometry to the future.</li>
+<li>The transformer won on parallel training, not accuracy. A ViT trails a ResNet on mid-sized data and only wins past 14M images (Dosovitskiy et al., 2020).</li>
+<li>When compute stops binding, other designs come back. All-MLP (MLP-Mixer, 2021) and recurrent (Mamba, 2023) models both match transformers on their benchmarks.</li>
+</ul>
+
+<div class="gal c2 short" id="c033">
+<figure><img src="assets/img/rep-clip.png" alt=""><figcaption><b>Language-aligned.</b> CLIP puts an image and its caption in one space, so a class can be named instead of labeled. Radford et al., 2021.</figcaption></figure>
+<figure><img src="assets/img/rep-dinov2.jpg" alt=""><figcaption><b>Self-supervised.</b> The first three components of DINOv2's features, with no labels, already separate parts. Oquab et al., 2023.</figcaption></figure>
+</div>
+
+<div class="gal c2 short" id="c034">
+<figure><img src="assets/img/rep-ijepa.png" alt=""><figcaption><b>Predictive.</b> I-JEPA predicts the representation of a masked region, never the pixels. Assran et al., 2023.</figcaption></figure>
+<figure><img src="assets/img/rep-3dgs.jpg" alt=""><figcaption><b>Geometric.</b> 3D Gaussian Splatting holds a scene as explicit primitives that render in real time. Kerbl et al., 2023.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c035">
+<li>There is no best one. Half the hub's world models start from a frozen DINOv2 because freezing it is cheap, not because it fits their task.</li>
+<li>The choice follows the need and the budget. Language-aligned to follow instructions, geometric to plan a grasp, predictive to anticipate, and a convnet when production data is small.</li>
+<li>Read a representation paper for the downstream task it was tested on. That is the job it is good for, and often the only one.</li>
+</ul>
+
+<pre class="flow map" id="c036">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="done">represent</span><span class="sep"> · </span><span class="todo">anticipate</span><span class="sep"> · </span><span class="todo">decide</span><span class="sep"> · </span><span class="todo">act</span><span class="sep"> · </span><span class="todo">verify</span>
+                         <span class="todo">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h3 id="anticipate">2.3 Anticipate: think before you move</h3>
+
+<div class="gal c2" id="c038">
+<figure><img src="assets/img/ant-peva.jpg" alt=""><figcaption><b>A body's world model.</b> PEVA predicts first-person video from the wearer's own 3D pose, and can render the counterfactual move. Bai et al., 2025.</figcaption></figure>
+<figure><img src="assets/img/ant-worldprediction.jpg" alt=""><figcaption><b>The semantic side.</b> WorldPrediction tests whether a model can say which action took a scene from state A to state B, and in which order. 2025.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c039">
+<li>People think before they move, and often run the counterfactual first: what fails if I slice the potato instead of dicing it. Physical AI needs the same stage.</li>
+<li>The text side reasons over steps and effects. Procedural reasoning and counterfactual reasoning are the search terms, and WorldPrediction benchmarks both.</li>
+<li>The vision side is the world model, a video generator rendering the action and its effect from the actor's viewpoint. PEVA for a body, V-JEPA 2 for a robot.</li>
+<li>A person and a robot follow the prediction differently. That difference is 2.4 and 2.5.</li>
+</ul>
+
+<div class="gal c1 short" id="c042">
+<figure><img src="assets/img/ant-vjepa2-flow.png" alt=""><figcaption><b>Video in, robot out.</b> V-JEPA 2 learns from a million hours of internet video, then 62 hours of unlabeled robot video, then picks and places on an arm in a lab it never saw. Meta, 2025.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c043">
+<li>Only the last 62 hours involve a robot. The planner samples actions and keeps the one whose predicted latent lands nearest the goal.</li>
+<li>Predicted futures still break physics where it can be measured. Text-to-video models fail most of PhyGenBench's 27 laws, and scale does not close the gap.</li>
+</ul>
+
+<pre class="flow map" id="c044">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="done">represent</span><span class="sep"> · </span><span class="done">anticipate</span><span class="sep"> · </span><span class="todo">decide</span><span class="sep"> · </span><span class="todo">act</span><span class="sep"> · </span><span class="todo">verify</span>
+                         <span class="todo">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h3 id="decide">2.4 Decide: pick one future, and say why</h3>
+
+<div class="gal c1 short" id="c048">
+<figure><img src="assets/img/dec-vlp-tree.jpg" alt=""><figcaption><b>Sample, score, choose.</b> Video Language Planning grows a tree of generated video futures and keeps the branch a value model scores highest. Du et al., 2023.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c049">
+<li>Selection is a search over imagined outcomes. Video Language Planning searches a tree of generated clips, and V-JEPA 2 samples actions and picks by predicted cost.</li>
+<li>More compute buys a better plan in both, which is the argument for keeping anticipate and decide separable even when one network does both.</li>
+</ul>
+
+<div class="gal c2" id="c050">
+<p class="rowlbl">a person</p>
+<figure><img src="assets/img/dec-satori.jpg" alt=""><figcaption><b>When to speak.</b> Satori models what the person believes, wants and intends, and decides on its own when to show guidance. Li et al., 2024.</figcaption></figure>
+<figure><img src="assets/img/dec-vid2coach.jpg" alt=""><figcaption><b>What to say.</b> Vid2Coach turns a how-to video into instructions a blind cook can act on, with a completion check per step. Huh et al., 2025.</figcaption></figure>
+</div>
+
+<div class="gal c1 short" id="c051">
+<figure><img src="assets/img/dec-arguidance.jpg" alt=""><figcaption><b>How much to show.</b> AR guidance for assembly made workers 31% faster, and they made more errors. 2025.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c052">
+<li>For a person, deciding includes what to say and when. Satori's authors call timing the hard problem, and the AR study shows more guidance is not better.</li>
+<li>Too much and the person is overwhelmed, too little and they distrust it. A chatbot's essay followed by three options is the virtual version of the same failure.</li>
+<li>The physical version has stakes. A step near fire, electricity or a patient needs a decision the person can check before acting, with the reason attached.</li>
+</ul>
+
+<pre class="flow map" id="c053">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="done">represent</span><span class="sep"> · </span><span class="done">anticipate</span><span class="sep"> · </span><span class="done">decide</span><span class="sep"> · </span><span class="todo">act</span><span class="sep"> · </span><span class="todo">verify</span>
+                         <span class="todo">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h3 id="act">2.5 Act: a person just acts, a robot has to be controlled</h3>
+
+<figure class="chart" id="c055"><img src="assets/charts/act_by_channel.svg" alt="What the act-stage papers emit"></figure>
+
+<ul class="caption" id="c056">
+<li>For a person, act is the easy stage. Given a good decision, they do it. The system's act is an instruction, an image or an overlay.</li>
+<li>For a robot, act is control, the chosen plan turned into joint commands at tens of hertz. All of robot learning lives in the motor-action bar.</li>
+</ul>
+
+<pre class="flow" id="c057">
+   <span class="yr">2022</span>  Code as Policies       the language model writes the program that calls the controller
+   <span class="yr">2022</span>  RT-1                   a transformer maps camera and instruction to discrete actions
+   <span class="yr">2023</span>  Diffusion Policy · ACT actions as a denoised trajectory; commit to a chunk at a time
+   <span class="yr">2023</span>  RT-2                   a VLM fine-tuned to emit actions as tokens: the first VLA
+   <span class="yr">2024</span>  OpenVLA · π₀           an open 7B VLA; a flow-matching action head across bodies
+   <span class="yr">2025</span>  GR00T N1 · π₀.₅        a slow reasoner over a fast actor; open-world generalization
+   <span class="yr">2025–26</span>  Genie Envisioner · DreamZero   world action models: predict the video and the action together
+</pre>
+
+<ul class="caption" id="c058">
+<li>Four branches compete: write the program, denoise the trajectory, emit action tokens from a VLM, or predict video and action together. No one knows yet which wins.</li>
+<li>Diffusion Policy beat the prior state of the art by 46.9% across 12 tasks. OpenVLA beat RT-2-X by 16.5 points with 7× fewer parameters.</li>
+<li>A world action model folds anticipate, decide and act into one network. DreamZero runs 14B parameters closed-loop at 7 Hz and generalizes twice as well as VLAs.</li>
+</ul>
+
+<pre class="flow map" id="c062">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="done">represent</span><span class="sep"> · </span><span class="done">anticipate</span><span class="sep"> · </span><span class="done">decide</span><span class="sep"> · </span><span class="done">act</span><span class="sep"> · </span><span class="todo">verify</span>
+                         <span class="todo">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h3 id="verify">2.6 Verify: close the loop on what happened</h3>
+
+<div class="gal c3" id="c064">
+<p class="rowlbl robot">a robot</p>
+<figure><img src="assets/img/ver-im.jpg" alt=""><figcaption><b>Feed the outcome back.</b> Inner Monologue hands the planner a success flag, a scene description or a person's answer after every skill. Huang et al., 2022.</figcaption></figure>
+<figure><img src="assets/img/ver-safe.jpg" alt=""><figcaption><b>Read failure off the policy.</b> SAFE finds a failure zone in a VLA's own features and alerts before the task is lost. Gu et al., 2025.</figcaption></figure>
+<figure><img src="assets/img/ver-reflect.jpg" alt=""><figcaption><b>Explain it.</b> REFLECT summarizes what the robot sensed and asks a language model why the task failed, then replans. Liu et al., 2023.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c065">
+<li>Verify is what makes the next decision rest on what happened rather than on what was intended. Without it the loop is open, however good the policy.</li>
+<li>The robot side has had it since Inner Monologue, a check after every step and a replan. SAFE detects the failure and REFLECT explains it.</li>
+</ul>
+
+<div class="gal c3" id="c066">
+<p class="rowlbl">a person</p>
+<figure><img src="assets/img/ver-prego.png" alt=""><figcaption><b>Detect the mistake.</b> PREGO recognizes the current step, predicts what should come next, and flags the disagreement, trained on correct runs only. CVPR 2024.</figcaption></figure>
+<figure><img src="assets/img/ver-matt.jpg" alt=""><figcaption><b>Attribute it.</b> Mistake Attribution says which part of the instruction was violated, the frame of no return, and where in the frame. 2025.</figcaption></figure>
+<figure><img src="assets/img/ver-tpmd.jpg" alt=""><figcaption><b>Explain it.</b> Transparent PMD requires a rationale and scores whether the rationale entails the verdict. Storks et al., EMNLP 2025.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c067">
+<li>The human side calls it mistake detection. The intervals are longer, a step rather than a motor command, and the verdict needs a reason the person will accept.</li>
+<li>The research has moved from a flag to an account of what was wrong, when it became irreversible, where in the frame, and why the system thinks so.</li>
+<li>The two literatures ask the same question at the same stage and barely cite each other.</li>
+</ul>
+
+<figure class="chart" id="c068"><img src="assets/charts/verify_by_embodiment.svg" alt="Verify-stage papers, by who moves the atoms"></figure>
+
+<table id="c069"><caption>Who closes the loop, in the hub on 2026-09-07. A paper closes the loop when it consumes the effect of its own action at run time.</caption>
+<thead><tr><th>embodiment</th><th class="num">papers</th><th class="num">close the loop</th><th class="num">%</th></tr></thead>
+<tbody>
+<tr><td>Human</td><td class="num">48</td><td class="num">14</td><td class="num">29</td></tr>
+<tr><td>Robot</td><td class="num">30</td><td class="num">23</td><td class="num">77</td></tr>
+<tr><td>Human+Robot</td><td class="num">6</td><td class="num">5</td><td class="num">83</td></tr>
+<tr><td>None</td><td class="num">23</td><td class="num">2</td><td class="num">9</td></tr>
+<tr><td>Simulated</td><td class="num">11</td><td class="num">9</td><td class="num">82</td></tr>
+</tbody></table>
+
+<ul class="caption" id="c070">
+<li>21 of the 31 verify papers watch a person. 5 watch a robot.</li>
+<li>23 of the 30 robot papers consume the effect of their own action. 14 of the 48 human ones do. Most guidance systems emit an instruction and stop.</li>
+<li>A robot policy that never looked at the result would not get published. A guidance system that never does is the norm. That gap is a project.</li>
+</ul>
+
+<pre class="flow map" id="c071">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="done">represent</span><span class="sep"> · </span><span class="done">anticipate</span><span class="sep"> · </span><span class="done">decide</span><span class="sep"> · </span><span class="done">act</span><span class="sep"> · </span><span class="done">verify</span>
+                         <span class="todo">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h3 id="adapt">2.7 Adapt: better on the next attempt because of the last one</h3>
+
+<div class="gal c2" id="c073">
+<figure><img src="assets/img/ada-emc.png" alt=""><figcaption><b>In the physical world.</b> Every Mistake Counts keeps a graph of which parts fit and what must come first, and updates it as it watches. Ding et al., 2023.</figcaption></figure>
+<figure><img src="assets/img/ada-dgm.png" alt=""><figcaption><b>In code.</b> The Darwin Gödel Machine rewrites its own agent code and keeps the versions that score higher. Zhang et al., 2025.</figcaption></figure>
+</div>
+
+<div class="gal c1 tall" id="c074">
+<figure><img src="assets/img/ada-rsi.jpg" alt=""><figcaption><b>The map.</b> A July 2026 survey of 1,250 papers sorts self-improvement by what changes and how closed the loop is. Most of it is bounded self-refinement.</figcaption></figure>
+</div>
+
+<ul class="caption" id="c075">
+<li>The old name is continual learning. The new one is self-evolving AI, and it covers the harness around the model as well as its weights.</li>
+<li>The frontier labs run it on coding agents, where the loop closes cheaply. The Darwin Gödel Machine and its relatives rewrite their own code and keep what scores.</li>
+<li>The same survey finds the open-ended version bounded on every measured axis, and MIT Technology Review's August 2026 read is that it is not coming quickly.</li>
+<li>Physical AI needs it too. A guidance system that changes its next instruction because of what the last one did is this stage, and the stage is empty.</li>
+</ul>
+
+<figure class="chart" id="c076"><img src="assets/charts/loop_stage_counts.svg" alt="Papers per loop stage"></figure>
+
+<ul class="caption" id="c077">
+<li>7 of 110 papers adapt. The field can tell that something went wrong and almost never learns from it while running.</li>
+<li>The exceptions are from 2023 and 2022. Every Mistake Counts updates its constraints as it watches, and Inner Monologue feeds the outcome back as text.</li>
+</ul>
+
+<pre class="flow map" id="c078">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="done">represent</span><span class="sep"> · </span><span class="done">anticipate</span><span class="sep"> · </span><span class="done">decide</span><span class="sep"> · </span><span class="done">act</span><span class="sep"> · </span><span class="done">verify</span>
+                         <span class="done">adapt</span>
+  <b class="todo">§3 toward production</b>   <span class="todo">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<pre class="flow" id="c014-again">
+          the physical world, objects and the changes they undergo
+                    │
+          <b>2.1 sense</b> │                                       ▲
+                    ▼                                       │
+        ┌─ model it ───────────────────────────────┐        │
+        │   <b>2.2 represent</b> ──► <b>2.3 anticipate</b>       │        │  the loop of §1, with the
+        └────────────────────────┬─────────────────┘        │  stage each subsection
+                                 │ <b>2.4 decide</b>               │  walks written onto it
+        ┌─ change it ────────────▼─────────────────┐        │
+        │   <b>2.5 act</b> ──► <b>2.6 verify</b> ──► <b>2.7 adapt</b>   ├────────┘
+        └──────────────────────────────────────────┘
+</pre>
+
+<h2 id="production">Toward production and real-world impact</h2>
+
+<h3 id="missing-part">The missing part is data</h3>
+
+<figure class="chart" id="c085"><img src="assets/charts/hours_by_domain.svg" alt="Hours of released first-person video, by domain"></figure>
+
+<table id="c086"><caption>The datasets behind the bars, with each paper's own count. Assembly101's 513 hours are 12 views of 362 seven-minute sequences.</caption>
+<thead><tr><th>dataset</th><th class="num">hours</th><th>tier</th><th>note</th><th>source</th></tr></thead>
+<tbody>
+<tr><td>Ego4D</td><td class="num">3670</td><td>everyday</td><td>unscripted daily life</td><td>arXiv 2110.07058</td></tr>
+<tr><td>EgoDex</td><td class="num">829</td><td>everyday</td><td>tabletop manipulation with hand tracking</td><td>arXiv 2505.11709</td></tr>
+<tr><td>EPIC-KITCHENS-100</td><td class="num">100</td><td>everyday</td><td>kitchens</td><td>arXiv 2006.13256</td></tr>
+<tr><td>CaptainCook4D</td><td class="num">94.5</td><td>everyday</td><td>recipes with induced errors</td><td>arXiv 2312.14556</td></tr>
+<tr><td>HD-EPIC</td><td class="num">41</td><td>everyday</td><td>kitchens with a digital twin</td><td>arXiv 2502.04144</td></tr>
+<tr><td>HowToDIV</td><td class="num">24</td><td>everyday</td><td>clips behind generated dialogues</td><td>arXiv 2508.11192</td></tr>
+<tr><td>HOT3D</td><td class="num">13.9</td><td>everyday</td><td>833 minutes of hand and object tracking</td><td>arXiv 2411.19167</td></tr>
+<tr><td>EgoOops</td><td class="num">6.8</td><td>everyday</td><td>text-following tasks with mistakes</td><td>arXiv 2410.05343</td></tr>
+<tr><td>HUMOTO</td><td class="num">2.2</td><td>everyday</td><td>mocap human-object interaction</td><td>arXiv 2504.10414</td></tr>
+<tr><td>Ego-Exo4D</td><td class="num">1286</td><td>skill</td><td>ego and exo cameras combined; 5035 takes</td><td>arXiv 2311.18259</td></tr>
+<tr><td>Assembly101</td><td class="num">513</td><td>industrial</td><td>12 views of toy-vehicle assembly; 362 sequences of 7 min</td><td>arXiv 2203.14712</td></tr>
+<tr><td>HoloAssist</td><td class="num">166</td><td>industrial</td><td>instructor talks a performer through a task</td><td>arXiv 2309.17024</td></tr>
+<tr><td>Ego-EXTRA</td><td class="num">50</td><td>industrial</td><td>expert plays the assistant</td><td>arXiv 2512.13238</td></tr>
+<tr><td>IndustReal</td><td class="num">5.8</td><td>industrial</td><td>84 assembly and maintenance sequences</td><td>arXiv 2310.17323</td></tr>
+</tbody></table>
+
+<ul class="caption" id="c087">
+<li>About 4,800 hours of everyday life, 1,286 of skill from one dataset, 735 industrial, 513 of them twelve views of toy assembly, and nothing clinical.</li>
+<li>The professional end owns the value and the intellectual property. Hospitals and factories do not release footage, so the largest record of expert guidance is 50 hours.</li>
+<li>Impact in production is a data problem before a method problem. The routes are one-demonstration learning, synthetic data, or data that never leaves the site.</li>
+</ul>
+
+<pre class="flow map" id="c088">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="done">represent</span><span class="sep"> · </span><span class="done">anticipate</span><span class="sep"> · </span><span class="done">decide</span><span class="sep"> · </span><span class="done">act</span><span class="sep"> · </span><span class="done">verify</span>
+                         <span class="done">adapt</span>
+  <b class="done">§3 toward production</b>   <span class="done">the missing part</span><span class="sep"> · </span><span class="todo">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h3 id="build-on-today">What you can build on today</h3>
+
+<div class="gal c2" id="c090">
+<figure><img src="assets/img/act-pi07.jpg" alt=""><figcaption><b>For a robot, π₀.₇</b>, Physical Intelligence, April 2026. Follows instructions in kitchens it never saw and folds laundry on a robot that never trained on it. <a href='https://www.pi.website/blog/pi07'>blog</a> · <a href='https://arxiv.org/abs/2604.15483'>arXiv</a></figcaption></figure>
+<figure><img src="assets/img/sota-pro2assist.jpg" alt=""><figcaption><b>For a person, Pro²Assist</b>, May 2026. Tracks step progress from AR-glasses sensing and decides when to help, through a whole procedure. <a href='https://arxiv.org/abs/2605.04227'>arXiv</a></figcaption></figure>
+</div>
+
+<ul class="caption" id="c091">
+<li>Two links, one per embodiment, to the latest thing you can start from.</li>
+<li>Both are stacks of 2.1 to 2.5, and the robot one is a product. Neither adapts.</li>
+</ul>
+
+<pre class="flow map" id="c092">
+<span class="lbl">where we are</span>
+<span class="grp">understand the field</span>
+  <b class="done">§1 what it is</b>          <span class="done">the loop</span><span class="sep"> · </span><span class="done">embodiment</span>
+  <b class="done">§2 the anatomy</b>         <span class="done">seven stages</span><span class="sep"> · </span><span class="done">sense</span><span class="sep"> · </span><span class="done">represent</span><span class="sep"> · </span><span class="done">anticipate</span><span class="sep"> · </span><span class="done">decide</span><span class="sep"> · </span><span class="done">act</span><span class="sep"> · </span><span class="done">verify</span>
+                         <span class="done">adapt</span>
+  <b class="done">§3 toward production</b>   <span class="done">the missing part</span><span class="sep"> · </span><span class="done">build on today</span>
+<span class="grp">go further</span>
+  <b class="todo">§4 where to look next</b>  <span class="todo">keywords and links</span>
+</pre>
+
+<h2 id="look-next">Where to look next</h2>
+
+<table class="k" id="g001">
+<thead><tr><th>stage</th><th>search for</th><th>start with</th></tr></thead>
+<tbody>
+<tr><td>2.1 sense</td><td>egocentric video, smart glasses, tactile sensing</td><td>SAM 2, HOT3D</td></tr>
+<tr><td>2.2 represent</td><td>representation learning, self-supervised learning, JEPA</td><td>DINOv2, 3D Gaussian Splatting</td></tr>
+<tr><td>2.3 anticipate</td><td>world models, procedural reasoning, counterfactual reasoning</td><td>V-JEPA 2, Genie</td></tr>
+<tr><td>2.4 decide</td><td>task planning with language models, video language planning, proactive AR assistants</td><td>SayCan, VLaMP</td></tr>
+<tr><td>2.5 act</td><td>vision-language-action models, diffusion policy, world action models</td><td>π₀, ShowHowTo</td></tr>
+<tr><td>2.6 verify</td><td>mistake detection, failure detection</td><td>PREGO, SAFE</td></tr>
+<tr><td>2.7 adapt</td><td>continual learning, self-evolving AI</td><td>Every Mistake Counts, Inner Monologue</td></tr>
+</tbody></table>
+
+<ul class="caption" id="g002">
+<li>Each row is one stage: the words to search for, and two papers to start with.</li>
+<li>Resource hub and these slides: <a href="https://github.com/yayuanli-org/awesome-physical-ai">github.com/yayuanli-org/awesome-physical-ai</a>.</li>
+<li>New to the field? The hub's <a href="https://yayuanli-org.github.io/awesome-physical-ai/#must-read/student">must-read list for students</a> is four papers, each one part of a vision-language-action model.</li>
+</ul>
+</main>
+<script src="comment-layer.js"></script>
+<script src="toc-layer.js"></script>
+<script src="cite-layer.js"></script>
+<script src="present-layer.js"></script>
+</body>
+</html>

@@ -182,7 +182,7 @@ L 502.963413 120.116916
 " style="fill: none; stroke: #8b91a3; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="text_9">
-    <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #8b91a3" x="502.963413" y="24.270662" transform="rotate(-0 502.963413 24.270662)">the hub's dataset papers, each paper's own headline count · multi-view sets count every camera</text>
+    <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #8b91a3" x="502.963413" y="30.5" transform="rotate(-0 502.963413 30.5)">the hub's dataset papers, each paper's own headline count · multi-view sets count every camera</text>
    </g>
    <g id="text_10">
     <text style="font-weight: 700; font-size: 11px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1f2330" x="48.169375" y="17.925" transform="rotate(-0 48.169375 17.925)">Hours of released first-person video, by domain</text>
