@@ -13,10 +13,10 @@ Prepare the five PACES rows for both.
 
 ## Theme debate
 
-Is this week's multi-agent debate system useful for physical AI multi-agents, such as robots working together or robots working with people?
+What makes a good debate in physical AI?
 
-Motion: this week's multi-agent debate system is useful for physical AI multi-agents.
+Motion: in physical AI tasks too, a vote does as well as a debate.
 
-- Useful. Physical agents see and reach different parts of a scene, so a round of debate can pass on facts the others lack. Debate or Vote's proof that talk adds nothing on average covers agents that all read the same question, and robots and people working together never do. A debate also settles a plan before anyone moves, and a move cannot be revised the way an answer can.
-- Not useful. The system needs a question that holds still and time for every agent to answer in every round. Du et al. ran mostly three agents for two rounds because of the compute cost, though more of both helped. In a physical team, the scene and the people change during each round. A debate can also agree on a wrong answer and affirm it with confidence, and a robot would act on it.
-- The motion asks whether a system built for copies of one model answering a fixed question can serve agents that act together in a changing physical world.
+- A vote is enough. Physical tasks run on a clock. A vote takes one round with every agent answering at once, while a debate waits for every agent in every round as the scene keeps changing. Du et al. ran mostly three agents for two rounds because of the compute cost. A debate can also agree on a wrong answer and affirm it with confidence, and in a physical task a robot then acts on it.
+- Debate adds what a vote cannot. Debate or Vote's proof that talk adds nothing on average covers agents that all read the same question. Robots and people in one scene each see and reach different things. If only one of three robots sees a person step into the path, a vote says go, 2 to 1, and a debate lets that robot tell the others.
+- The motion asks whether a physical task changes what a debate between agents can add over a vote.
