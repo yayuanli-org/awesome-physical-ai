@@ -1,14 +1,14 @@
 # Guest lecture: the page
 
-`index.html` is the talk: the first half of ROB 599 Lecture 2, cut to about 40 minutes for
+`index.html` is the talk, the first half of ROB 599 Lecture 2 cut to about 40 minutes for
 EMU's COSC 480/592 Computer Vision on 2026-11-17. The `README.md` one folder up is the same
-talk for GitHub. Both are written by `build.py`.
+talk for GitHub, and `build.py` writes both.
 
 ```sh
 python3 serve.py         # then open http://127.0.0.1:8777/
 ```
 
-Press P to present. With no steps yet, P opens the step editor: click the blocks in the
+Press P to present. With no steps yet, P opens the step editor. Click the blocks in the
 order you will talk about them, then press E to play. The steps save to
 `emu-guest-lecture.present.json` beside the page. Comments (C, or the chip at the bottom
 right) save to `emu-guest-lecture.comments.json`, which git ignores. Opened as a file with
